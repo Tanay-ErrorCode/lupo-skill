@@ -1,0 +1,45 @@
+.card {
+  border-radius: 10px;
+  position: relative;
+}
+.card-image {
+  pointer-events:none;
+  border-radius: 10px 10px 10px 10px;   
+  /* height: 450px; */
+  object-fit: cover;
+}
+@media (min-width: 1024px) {
+  .card_image {
+    height: 450px;
+  }
+}
+@media (min-width: 768px) {
+  .card_image {
+    height: 200px
+  }
+}
+
+@media (max-width: 767px) {
+  .card_image {
+    height: 150px;
+  }
+}
+.btn-c {
+  background-color: rgb(0, 161, 0) !important;
+  border-color: green !important;
+}
+.btn-c:hover {
+  background-color: rgb(0, 190, 0) !important;
+  border-color: green !important;
+}
+.tag {
+  background-color: rgb(233, 255, 199) !important;
+  border-radius: 100px !important;
+  border: 1px solid green;
+  color: #555 !important;
+  transition: 200ms;
+}
+.tag:hover {
+  cursor: pointer;
+  background-color: rgb(201, 255, 121) !important;
+}

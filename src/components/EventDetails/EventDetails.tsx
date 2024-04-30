@@ -1,0 +1,212 @@
+import React, { useEffect, useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Badge,
+  Card,
+  FormControl,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
+import { Image as BootstrapImage } from "react-bootstrap";
+import "./EventDetails.css";
+import bannerImage from "../stat/bannerImage.png";
+import { Link, useParams } from "react-router-dom";
+import { ref, get, child, set, update } from "firebase/database";
+import { toast } from "react-toastify";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
+import {
+  auth,
+  firestore,
+  database,
+  storage,
+  signInWithGooglePopup,
+} from "../../firebaseConf";
+const EventDetails = () => {
+  const { id } = useParams();
+  const userEmailId = localStorage.getItem("userEmailId");
+  const [isHost, setIsHost] = useState(false); // Change this variable to true if the current user is the host
+  // const googleMeetLink = "https://meet.google.com/xyz-pqrs"; // Replace with your Google Meet link
+  console.log(id);
+  const [isLoading, setIsLoading] = useState(true);
+  const [banner_Image, setBannerImage] = useState(bannerImage);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState([]);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [host, setHost] = useState("");
+  const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [googleMeetLink, setGoogleMeetLink] = useState(
+    "Nothing yet, ask the host to add one"
+  );
+
+  useEffect(() => {
+    if (userEmailId==null) {
+      window.location.href = "#/dashboard";
+      toast.warn("You are not signed in");
+    }
+    const fetchData = async () => {
+      const eventRef = ref(database, "events/" + id);
+      const snapshot = await get(eventRef);
+      if (snapshot.exists()) {
+        const eventData = snapshot.val();
+        console.log(eventData);
+        setBannerImage(eventData.banner);
+        setTitle(eventData.title);
+        setDescription(eventData.description);
+        setTags(eventData.tags.split(","));
+        setDate(eventData.date);
+        setTime(eventData.time);
+        setHost(eventData.host);
+        if (eventData.host === userEmailId) {
+          setIsHost(true);
+        }
+        if (eventData.registrants) {
+          setRegisteredUsers(eventData.registrants.split(","));
+          if (!eventData.registrants.split(",").includes(userEmailId) || userEmailId==null) {
+            window.location.href = "#/dashboard";
+            toast.warn("You are not registered for this event");
+          }
+        }
+        if (eventData.googleMeetLink) {
+          setGoogleMeetLink(eventData.googleMeetLink);
+        }
+        setIsLoading(false);
+      } else {
+        toast.error("Event not found");
+      }
+    };
+    fetchData();
+  }, []);
+  const addMeetingLink = () => {
+    const eventRef = ref(database, "events/" + id);
+    update(eventRef, {
+      googleMeetLink: googleMeetLink,
+    });
+    toast.success("Google Meet link added successfully");
+  };
+  return (
+    <div>
+      {isLoading ? (
+                              <div className="d-flex justify-content-center align-items-center">
+                  <Spinner animation="border" />
+                </div>
+      ) : (
+        <Container>
+          <Row>
+            <Col>
+              <Card className="p-3">
+                <Card.Img
+                  variant="top"
+                  src={banner_Image}
+                  alt="Event Header"
+                  className="card-image"
+                />
+                <Card.Body>
+                  <Card.Title>{title}</Card.Title>
+                  <Container>
+                    <Row className="align-items-center mb-2">
+                      <Col xs="auto">
+                        <i className="bi bi-calendar"></i>
+                      </Col>
+                      <Col xs="auto">{date}</Col>
+                      <Col xs="auto">
+                        <i className="bi bi-clock"></i>
+                      </Col>
+                      <Col xs="auto">{time}</Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        Host:{" "}
+                        <a href={"#/profile/"+host.split("%40")[0]} className="link-primary">
+                          {host.split("%40")[0]}
+                        </a>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>{description}</Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        {tags.map((tag, index) => (
+                          <span key={index} className="tag badge me-2">
+                            {tag}
+                          </span>
+                        ))}
+                      </Col>
+                    </Row>
+                  </Container>
+                </Card.Body>
+              </Card>
+              <Card className="p-1 mt-2">
+                <Card.Body>
+                  <div>
+                    {isHost ? (
+                      <>
+                        {" "}
+                        <InputGroup className="mb-3">
+                          <InputGroup.Text>Google Meet link :</InputGroup.Text>
+                          <FormControl
+                            type="text"
+                            value={googleMeetLink}
+                            onChange={(e) => setGoogleMeetLink(e.target.value)}
+                          />
+                          <Button
+                            onClick={() => {
+                              addMeetingLink();
+                            }}
+                            variant="primary"
+                          >
+                            Add Link
+                          </Button>
+                        </InputGroup>
+                      </>
+                    ) : (
+                      <>
+                        Google Meet link :{" "}
+                        {googleMeetLink ===
+                        "Nothing yet, ask the host to add one" ? (
+                          "Nothing yet, ask the host to add one"
+                        ) : (
+                          <a href={googleMeetLink} className="link-primary">
+                            {googleMeetLink}
+                          </a>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </Card.Body>
+              </Card>
+              <Card className="p-1 mt-2">
+                <Card.Body>
+                  All registrants :{" "}
+                  {registeredUsers.map((tag, index) => (
+                    <span key={index} className="tag badge me-2">
+                      {/* {(tag?tag:"").split("%40")[0]} */}
+                      <Link
+                        to={"/profile/" + (tag ? tag : "").split("%40")[0]}
+                        className="link-primary"
+                      >
+                        {(tag ? tag : "").split("%40")[0]}
+                      </Link>
+                    </span>
+                  ))}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      )}
+    </div>
+  );
+};
+
+export default EventDetails;

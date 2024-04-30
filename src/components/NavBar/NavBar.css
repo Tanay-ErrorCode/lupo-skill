@@ -1,0 +1,18 @@
+.navbar {
+  background: radial-gradient(circle at 48.7% 44.3%, rgb(30, 144, 231) 0%, rgb(56, 113, 209) 22.9%, rgb(38, 76, 140) 76.7%, rgb(31, 63, 116) 100.2%);
+  backdrop-filter: blur(8px) !important;
+}
+
+.nav-profile-round {
+  border-radius: 5px !important;
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: cover !important;
+  /* Add additional properties here to further reduce the size */
+  pointer-events: none;
+}
+.nav-profile-dropdown {
+  z-index: 100 !important;
+
+  /* TODO:I have to fix this card is on the top*/
+}

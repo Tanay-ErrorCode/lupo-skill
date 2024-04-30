@@ -1,0 +1,127 @@
+import React, { useEffect, useState } from "react";
+import EventCard from "../Cards/EventCard/EventCard";
+import { Pagination, Spinner } from "react-bootstrap";
+import bannerImage3 from "../stat/bannerImage3.png";
+import {
+  auth,
+  firestore,
+  database,
+  storage,
+  signInWithGooglePopup,
+} from "../../firebaseConf";
+import GoogleButton from "react-google-button";
+import { ref, get, child, set } from "firebase/database";
+import { toast } from "react-toastify";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
+const EventList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [isLoading, setIsLoading] = useState(true);
+  const [eventCardsData, setEventCardsData] = useState([]);
+
+  const [totalPages, setTotalPages] = useState(1);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const dbRef = ref(database, "events");
+      const snapshot = await get(dbRef);
+      if (snapshot.exists()) {
+        console.log(Object.values(snapshot.val()));
+        // setEventCardsData(Object.values(snapshot.val()));
+        // eventCardsData.push(Object.values(snapshot.val()));
+        setEventCardsData(Object.values(snapshot.val()));
+        setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
+        setIsLoading(false)
+      } else {
+        console.log("No data available");
+        setIsLoading(false)
+
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      {isLoading ? (
+                              <div className="d-flex justify-content-center align-items-center">
+                  <Spinner animation="border" />
+                </div>
+      ) : (
+        <>
+          <h1
+            style={{
+              textAlign: "center",
+              marginBottom: "2em",
+              marginTop: "1em",
+            }}
+          >
+            All Events
+          </h1>{console.log(eventCardsData)}
+          {eventCardsData
+            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+            .map(
+              (
+                card: {
+                  id:string;
+                  title: string;
+                  description: string;
+                  date: string;
+                  time: string;
+                  tags: string;
+                  banner:string;
+                  host:string
+                },
+                index
+              ) => (
+                <EventCard
+                  id={card.id}
+                  key={index}
+                  title={card.title}
+                  description={card.description}
+                  date={card.date}
+                  time={card.time}
+                  tags={card.tags}
+                  host={card.host.split("%40")[0]}
+                  isDashboard={false}
+                  image={card.banner}
+                />
+              )
+            )}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Pagination>
+              {[...Array(totalPages)].map((e, i) => (
+                <Pagination.Item
+                  key={i + 1}
+                  active={i + 1 === currentPage}
+                  onClick={() => {
+                    handlePageChange(i + 1);
+                    window.scrollTo({
+                      top: 0,
+                      left: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  {i + 1}
+                </Pagination.Item>
+              ))}
+            </Pagination>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default EventList;
