@@ -57,7 +57,6 @@ const EventDetails = () => {
       const snapshot = await get(eventRef);
       if (snapshot.exists()) {
         const eventData = snapshot.val();
-        console.log(eventData);
         setBannerImage(eventData.banner);
         setTitle(eventData.title);
         setDescription(eventData.description);
