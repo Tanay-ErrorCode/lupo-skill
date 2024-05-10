@@ -11,15 +11,15 @@ import {
   Spinner,
 } from "react-bootstrap";
 import "./ProfilePage.css"; // Import the CSS file
-import dora from "../stat/dora.png";
-import default_user from "../stat/default_user.png";
-import bannerImage from "../stat/bannerImage.png";
-import bannerImage2 from "../stat/bannerImage2.png";
+import dora from "../image_assets/dora.png";
+import default_user from "../image_assets/default_user.png";
+import bannerImage from "../image_assets/bannerImage.png";
+import bannerImage2 from "../image_assets/bannerImage2.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
 
 import { ref, get, child, set } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
@@ -81,7 +81,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (localStorage.getItem("userEmailId") === null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in");
+      toast.warn("You are not signed in",  {transition:Zoom});
     }
     const fetchData = async () => {
       const usersRef = ref(database, "users");
@@ -90,7 +90,6 @@ const ProfilePage = () => {
 
       if (snapshot.exists()) {
         const snap = snapshot.val();
-        console.log(snap);
         const headline = document.getElementById("headline");
         const tags = document.getElementById("tags");
         const website = document.getElementById("website");
@@ -126,22 +125,13 @@ const ProfilePage = () => {
           const eventList = snapshot.val().createdEvents.split(",");
           eventList.forEach((eventId: string) => {
             const trimmedEventId = eventId.trim();
-            console.log(trimmedEventId);
             const eventsRef = ref(database, "events");
             const eventRef = child(eventsRef, trimmedEventId);
             get(eventRef).then((snapshot) => {
               if (snapshot.exists()) {
                 const event = snapshot.val();
-                console.log(event);
                 setCreatedEventCardsData((prev: any[]) => [...prev, event]);
                 setIsCLoading(false);
-                setTotalCreatedPages(
-                  Math.ceil(createdEventCardsData.length / itemsPerPage)
-                );
-                console.log(
-                  Math.ceil(createdEventCardsData.length / itemsPerPage),
-                  createdEventCardsData.length
-                );
               } else {
                 console.log("No data available");
               }
@@ -160,13 +150,11 @@ const ProfilePage = () => {
         // setIsLoading(false);
         eventList.forEach((eventId: string) => {
           const trimmedEventId = eventId.trim();
-          console.log(trimmedEventId);
           const eventsRef = ref(database, "events");
           const eventRef = child(eventsRef, trimmedEventId);
           get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
               const event = snapshot.val();
-              console.log(event);
               setJoinedEventCardsData((prev: any[]) => [...prev, event]);
               setTotalJoinedPages(
                 Math.ceil(joinedEventCardsData.length / itemsPerPage)

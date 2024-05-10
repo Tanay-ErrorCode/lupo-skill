@@ -11,11 +11,10 @@ import "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
-import { toast } from "react-toastify";
-
+import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-// add config here
+  // add config here
 };
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
@@ -41,7 +40,7 @@ const signOutUser = () => {
   signOut(auth)
     .then(() => {
       localStorage.clear();
-      toast.success("Logged out successfully");
+      toast.success("Logged out successfully",  {transition:Zoom});
       window.location.href = "#/";
       window.location.reload();
     })

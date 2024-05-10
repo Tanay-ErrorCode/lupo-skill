@@ -12,10 +12,10 @@ import {
 } from "react-bootstrap";
 import { Image as BootstrapImage } from "react-bootstrap";
 import "./EventDetails.css";
-import bannerImage from "../stat/bannerImage.png";
+import bannerImage from "../image_assets/bannerImage.png";
 import { Link, useParams } from "react-router-dom";
 import { ref, get, child, set, update } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
@@ -34,7 +34,6 @@ const EventDetails = () => {
   const userEmailId = localStorage.getItem("userEmailId");
   const [isHost, setIsHost] = useState(false); // Change this variable to true if the current user is the host
   // const googleMeetLink = "https://meet.google.com/xyz-pqrs"; // Replace with your Google Meet link
-  console.log(id);
   const [isLoading, setIsLoading] = useState(true);
   const [banner_Image, setBannerImage] = useState(bannerImage);
   const [title, setTitle] = useState("");
@@ -49,9 +48,9 @@ const EventDetails = () => {
   );
 
   useEffect(() => {
-    if (userEmailId==null) {
+    if (userEmailId == null) {
       window.location.href = "#/dashboard";
-      toast.warn("You are not signed in");
+      toast.warn("You are not signed in",  {transition:Zoom});
     }
     const fetchData = async () => {
       const eventRef = ref(database, "events/" + id);
@@ -71,9 +70,18 @@ const EventDetails = () => {
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
-          if (!eventData.registrants.split(",").includes(userEmailId) || userEmailId==null) {
+          console.log(
+            !eventData.registrants.split(",").includes(userEmailId) ||
+              (userEmailId == null && userEmailId !== eventData.host),
+            eventData.host
+          );
+          if (
+            (!eventData.registrants.split(",").includes(userEmailId) ||
+              userEmailId == null) &&
+            userEmailId !== eventData.host
+          ) {
             window.location.href = "#/dashboard";
-            toast.warn("You are not registered for this event");
+            toast.warn("You are not registered for this event",  {transition:Zoom});
           }
         }
         if (eventData.googleMeetLink) {
@@ -81,7 +89,7 @@ const EventDetails = () => {
         }
         setIsLoading(false);
       } else {
-        toast.error("Event not found");
+        toast.error("Event not found",  {transition:Zoom});
       }
     };
     fetchData();
@@ -91,19 +99,19 @@ const EventDetails = () => {
     update(eventRef, {
       googleMeetLink: googleMeetLink,
     });
-    toast.success("Google Meet link added successfully");
+    toast.success("Google Meet link added successfully",  {transition:Zoom});
   };
   return (
     <div>
       {isLoading ? (
-                              <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
+        <div className="d-flex justify-content-center align-items-center">
+          <Spinner animation="border" />
+        </div>
       ) : (
         <Container>
           <Row>
             <Col>
-              <Card className="p-3">
+              <Card className="p-3 shadow mt-2">
                 <Card.Img
                   variant="top"
                   src={banner_Image}
@@ -126,7 +134,10 @@ const EventDetails = () => {
                     <Row>
                       <Col>
                         Host:{" "}
-                        <a href={"#/profile/"+host.split("%40")[0]} className="link-primary">
+                        <a
+                          href={"#/profile/" + host.split("%40")[0]}
+                          className="link-primary"
+                        >
                           {host.split("%40")[0]}
                         </a>
                       </Col>
@@ -146,7 +157,7 @@ const EventDetails = () => {
                   </Container>
                 </Card.Body>
               </Card>
-              <Card className="p-1 mt-2">
+              <Card className="p-1 mt-2 shadow">
                 <Card.Body>
                   <div>
                     {isHost ? (
@@ -185,7 +196,7 @@ const EventDetails = () => {
                   </div>
                 </Card.Body>
               </Card>
-              <Card className="p-1 mt-2">
+              <Card className="p-1 mt-2 shadow">
                 <Card.Body>
                   All registrants :{" "}
                   {registeredUsers.map((tag, index) => (

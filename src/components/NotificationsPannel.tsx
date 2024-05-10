@@ -14,7 +14,7 @@ export const NotificationsPannel = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme="light"
       />
     </div>
   );

@@ -7,12 +7,12 @@ import {
   Offcanvas,
 } from "react-bootstrap";
 import "./NavBar.css";
-import default_user from "../stat/default_user.png";
+import default_user from "../image_assets/default_user.png";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import Signup from "../Signup/Signup";
 import { toast } from "react-toastify";
 import { signOutUser } from "../../firebaseConf";
-import logo from "../stat/logo.png";
+import logo from "../image_assets/logo.png";
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
 
@@ -78,7 +78,6 @@ const NavBar = () => {
                   </NavDropdown.Item>
 
                   <NavDropdown.Item
-                    // href="#/logout"
                     className="text-danger  nav-profile-dropdown"
                     onClick={() => {
                       signOutUser();

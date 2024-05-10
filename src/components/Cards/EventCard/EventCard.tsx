@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import "./EventCard.css";
-// import props.image from "../../stat/props.image.png";
+// import props.image from "../../image_assets/props.image.png";
 import { Link } from "@mui/material";
 import {
   auth,
@@ -12,7 +12,7 @@ import {
 } from "../../../firebaseConf";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set, update } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
@@ -36,8 +36,8 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     const userEmailId = localStorage.getItem("userEmailId");
 
     if (userEmailId === null) {
-      toast.warn("You are not signed in");
-    
+      toast.warn("You are not signed in", { transition: Zoom });
+
       return;
     }
     const userRef = child(usersRef, userEmailId);
@@ -46,10 +46,11 @@ const EventCard: React.FC<EventCardProps> = (props) => {
 
     if (snapshot.exists()) {
       if (snapshot.hasChild("registeredEvents")) {
-
         let registeredEventsArray = snapshot.val().registeredEvents.split(",");
         if (registeredEventsArray.includes(props.id)) {
-          toast.error("You are already registered for this event");
+          toast.error("You are already registered for this event", {
+            transition: Zoom,
+          });
           return;
         }
 
@@ -64,7 +65,9 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 ? snapshot.val().registrants.split(",")
                 : [];
               if (registrantsArray.includes(userEmailId)) {
-                toast.error("You are already registered for this event");
+                toast.error("You are already registered for this event", {
+                  transition: Zoom,
+                });
                 return;
               }
 
@@ -73,14 +76,16 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 registrants: registrantsArray.join(","),
               });
             } else {
-              toast.error("Event does not exist");
+              toast.error("Event does not exist", { transition: Zoom });
             }
           })
           .catch((error) => {
             console.error(error);
           });
 
-        toast.success("Successfully registered for the event");
+        toast.success("Successfully registered for the event", {
+          transition: Zoom,
+        });
       } else {
         // const registeredEvents = [props.id];
         // update(userRef, { registeredEvents });
@@ -98,7 +103,9 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 ? snapshot.val().registrants.split(",")
                 : [];
               if (registrantsArray.includes(userEmailId)) {
-                toast.error("You are already registered for this event");
+                toast.error("You are already registered for this event", {
+                  transition: Zoom,
+                });
                 return;
               }
 
@@ -107,17 +114,19 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 registrants: registrantsArray.join(","),
               });
             } else {
-              toast.error("Event does not exist");
+              toast.error("Event does not exist", { transition: Zoom });
             }
           })
           .catch((error) => {
             console.error(error);
           });
 
-        toast.success("Successfully registered for the event");
+        toast.success("Successfully registered for the event", {
+          transition: Zoom,
+        });
       }
     } else {
-      toast.error("User does not exist");
+      toast.error("User does not exist", { transition: Zoom });
     }
   };
   return (
@@ -153,12 +162,26 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     </span>
                   ))}
                 </Card.Text>
-                <Button
+                {new Date(props.date) > new Date() ? (
+                  <Button
+                    className="btn-c position-absolute bottom-0 end-0 m-3"
+                    onClick={registerForEventX}
+                  >
+                    Register
+                  </Button>
+                ) : (
+                  <Button
+                    className="btn-d position-absolute bottom-0 end-0 m-3"
+                  >
+                    Expired
+                  </Button>
+                )}
+                {/* <Button
                   className="btn-c position-absolute bottom-0 end-0 m-3"
                   onClick={registerForEventX}
                 >
                   Register
-                </Button>
+                </Button> */}
               </Card.Body>
             </Card>
           </Col>
@@ -166,8 +189,8 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       ) : (
         <Row className="justify-content-md-center">
           <Col xs={12} md={8} lg={6}>
-            <Link href={"#/eventDetails/"+props.id} className="link-nothing">
-              <Card className="mt-2 mb-2 shadow card">
+            <Link href={"#/eventDetails/" + props.id} className="link-nothing">
+              <Card className="mt-2 mb-2 shadow card card-background">
                 <Card.Img
                   src={props.image}
                   alt="Card Image"
@@ -200,12 +223,21 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     ))}
                   </Card.Text>
                   {!props.isDashboard ? (
-                    <Button
-                      className="btn-c position-absolute bottom-0 end-0 m-3"
-                      onClick={registerForEventX}
-                    >
-                      Register
-                    </Button>
+                    new Date(props.date) > new Date() ? (
+                      <Button
+                        className="btn-c position-absolute bottom-0 end-0 m-3"
+                        onClick={registerForEventX}
+                      >
+                        Register
+                      </Button>
+                    ) : (
+                      <Button
+                        className="btn-c position-absolute bottom-0 end-0 m-3"
+                        variant="danger"
+                      >
+                        Expired
+                      </Button>
+                    )
                   ) : null}
                 </Card.Body>
               </Card>

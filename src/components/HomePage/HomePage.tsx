@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import cover1 from "../stat/cover1.jpg"
-import cover2 from "../stat/cover2.jpg"
-import cover3 from "../stat/cover3.jpg"
-import cover4 from "../stat/cover4.png"
+import cover1 from "../image_assets/cover1.jpg"
+import cover2 from "../image_assets/cover2.jpg"
+import cover3 from "../image_assets/cover3.jpg"
+import cover4 from "../image_assets/cover4.png"
 
 const HomePage = () => {
   const [bgImage, setBgImage] = useState('');

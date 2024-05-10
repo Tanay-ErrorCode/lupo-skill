@@ -20,7 +20,7 @@ import {
 } from "../../../firebaseConf";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
@@ -135,7 +135,8 @@ const CreateEvent = ({ props }: any) => {
                   pending: "Creating Event ...",
                   success: "Event Created succesfully !",
                   error: "Failed to create event",
-                }
+                },
+                {transition:Zoom}
               );
             }
           }
@@ -145,9 +146,9 @@ const CreateEvent = ({ props }: any) => {
         });
     } else {
       if (userEmailId === null) {
-        toast.error("Please Login first");
+        toast.error("Please Login first", {transition:Zoom});
       } else {
-        toast.error("Fill all the required details first");
+        toast.error("Fill all the required details first",  {transition:Zoom});
       }
     }
   };
@@ -163,10 +164,10 @@ const CreateEvent = ({ props }: any) => {
       )}
 
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton className="modal_back">
           <Modal.Title>Create Event</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="modal_back">
           <Form>
             <Form.Group controlId="formTitle">
               <Form.Label>Title</Form.Label>
@@ -232,11 +233,11 @@ const CreateEvent = ({ props }: any) => {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="modal_back">
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={createEventDb}>
+          <Button className="btn-create"  onClick={createEventDb}>
             Create
           </Button>
         </Modal.Footer>

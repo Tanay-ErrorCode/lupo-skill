@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import ProfilePage from "../ProfilePage/ProfilePage";
-import bannerImage3 from "../stat/bannerImage3.png";
+import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./DashBoard.css";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination } from "react-bootstrap";
@@ -16,14 +16,14 @@ import {
 } from "../../firebaseConf";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
 type Event = {
-  id:string;
+  id: string;
   title: string;
   description: string;
   date: string;
@@ -45,9 +45,9 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (localStorage.getItem("userEmailId")==null) {
+    if (localStorage.getItem("userEmailId") == null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in");
+      toast.warn("You are not signed in",  {transition:Zoom});
     }
     const fetchData = async () => {
       const usersRef = ref(database, "users");
@@ -64,21 +64,27 @@ const Dashboard = () => {
       if (snapshot.exists()) {
         let eventList: any[] = [];
         if (snapshot.hasChild("createdEvents")) {
-          eventList = [...eventList, ...snapshot.val().createdEvents.split(",")];
+          eventList = [
+            ...eventList,
+            ...snapshot.val().createdEvents.split(","),
+          ];
         }
         if (snapshot.hasChild("registeredEvents")) {
-          eventList = [...eventList, ...snapshot.val().registeredEvents.split(",")];
+          const registeredEvents = snapshot.val().registeredEvents.split(",");
+          registeredEvents.forEach((event: string) => {
+            if (!eventList.includes(event)) {
+              eventList.push(event);
+            }
+          });
         }
-      
+        
         eventList.forEach((eventId: string) => {
           const trimmedEventId = eventId.trim();
-          console.log(trimmedEventId);
           const eventsRef = ref(database, "events");
           const eventRef = child(eventsRef, trimmedEventId);
           get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
               const event = snapshot.val();
-              console.log(event);
               setEventCardsData((prev: any[]) => [...prev, event]);
               setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
               setIsLoading(false);
@@ -91,7 +97,6 @@ const Dashboard = () => {
         console.log("No data available");
         setIsLoading(false);
       }
-      
     };
 
     fetchData();
@@ -99,9 +104,9 @@ const Dashboard = () => {
   return (
     <div>
       {isLoading ? (
-                              <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
+        <div className="d-flex justify-content-center align-items-center">
+          <Spinner animation="border" />
+        </div>
       ) : (
         <>
           <h1
@@ -131,7 +136,7 @@ const Dashboard = () => {
                 index
               ) => (
                 <EventCard
-                id={card.id}
+                  id={card.id}
                   key={index}
                   title={card.title}
                   description={card.description}

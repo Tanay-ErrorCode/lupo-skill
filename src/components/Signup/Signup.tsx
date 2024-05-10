@@ -11,7 +11,7 @@ import {
 // import "./Signup.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import default_user from "../stat/default_user.png";
+import default_user from "../image_assets/default_user.png";
 import "./Signup.css";
 import {
   auth,
@@ -22,16 +22,16 @@ import {
 } from "../../firebaseConf";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
 
-import bannerImage from "../stat/bannerImage.png";
-import bannerImage2 from "../stat/bannerImage2.png";
-import bannerImage3 from "../stat/bannerImage3.png";
+import bannerImage from "../image_assets/bannerImage.png";
+import bannerImage2 from "../image_assets/bannerImage2.png";
+import bannerImage3 from "../image_assets/bannerImage3.png";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -57,7 +57,7 @@ const Signup = () => {
           localStorage.setItem("userEmailId", user_email_to_post);
           localStorage.setItem("userPic", pic ? pic : "");
           window.location.reload();
-          toast.success("Logged in successfully");
+          toast.success("Logged in successfully",  {transition:Zoom});
         } else {
           set(userRef, {
             name: username,
@@ -74,11 +74,9 @@ const Signup = () => {
 
           const images = [bannerImage, bannerImage2, bannerImage3];
           const randomImage = images[Math.floor(Math.random() * images.length)];
-          console.log(randomImage, "randomImage");
           fetch(randomImage)
             .then((res) => res.blob())
             .then((blob) => {
-              console.log(blob, "blob");
               toast.promise(
                 uploadBytes(bannerRef, blob).then(() => {
                   getDownloadURL(bannerRef).then(
@@ -105,7 +103,9 @@ const Signup = () => {
                   pending: "Signing up...",
                   success: "Signed Up succesfully !",
                   error: "Failed to sign up",
-                }
+                  
+                },
+                {transition:Zoom}
               );
             });
         }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination, Spinner } from "react-bootstrap";
-import bannerImage3 from "../stat/bannerImage3.png";
+import bannerImage3 from "../image_assets/bannerImage3.png";
 import {
   auth,
   firestore,
@@ -35,7 +35,6 @@ const EventList = () => {
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
-        console.log(Object.values(snapshot.val()));
         // setEventCardsData(Object.values(snapshot.val()));
         // eventCardsData.push(Object.values(snapshot.val()));
         setEventCardsData(Object.values(snapshot.val()));
@@ -67,7 +66,7 @@ const EventList = () => {
             }}
           >
             All Events
-          </h1>{console.log(eventCardsData)}
+          </h1>
           {eventCardsData
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
             .map(

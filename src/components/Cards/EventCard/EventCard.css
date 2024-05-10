@@ -50,3 +50,12 @@
   
 
 }
+.btn-d{
+  background-color: #FF204E !important;
+  border-color: #FF204E !important;
+}
+.btn-d:hover{
+  background-color: #ff4c70 !important;
+  border-color: #FF204E !important;
+  cursor: not-allowed !important;
+}
