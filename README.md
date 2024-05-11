@@ -59,6 +59,7 @@ Lupo Skill is an open-source platform for sharing skills through events. Users c
 
 Thank you for considering contributing to Lupo Skill. We appreciate your interest in improving our platform. To ensure smooth collaboration, please follow these guidelines when contributing.
 - ### **We allow a maximum of 2 issues to be assigned per person.**
+- ### The issues are assigned on *FIRST-COME-FIRST-SERVE* basis.
   
 ## Using Issue Templates
 
