@@ -59,6 +59,32 @@ Lupo Skill is an open-source platform for sharing skills through events. Users c
 
 Thank you for considering contributing to Lupo Skill. We appreciate your interest in improving our platform. To ensure smooth collaboration, please follow these guidelines when contributing.
 - ### **We allow a maximum of 2 issues to be assigned per person.**
+  
+## Using Issue Templates
+
+1. Always use the provided issue templates when creating new issues.
+2. Choose the appropriate template based on the type of issue you are reporting (bug, feature request, etc.).
+3. Fill out all the required fields in the template to provide clear and concise information.
+
+## Reporting Issues
+
+When reporting a new issue, please provide the following details:
+- Description of the issue.
+- Steps to reproduce (if applicable).
+- Expected behavior.
+- Actual behavior.
+- Any relevant screenshots or error messages.
+
+## Making Pull Requests
+
+If you're submitting a pull request, please:
+- Describe the changes made and the reason for the changes.
+- Reference any related issues by using keywords such as "Fixes #<issue_number>" in your pull request description.
+
+## Code of Conduct
+
+Please review our [Code of Conduct](./CODE_OF_CONDUCT.md) before contributing. We expect all contributors to adhere to the code of conduct to maintain a positive and inclusive community environment.
+
 ## Getting Started
 
 1. **Fork the repository:** Start by forking the Lupo Skill repository to your own GitHub account.
