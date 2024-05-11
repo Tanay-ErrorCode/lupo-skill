@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: 'bug : [Add title here]'
-labels: bug
+labels: bug, gssoc, unapproved
 assignees: ''
 
 ---
