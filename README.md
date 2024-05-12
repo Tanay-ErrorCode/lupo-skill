@@ -99,22 +99,30 @@ git clone https://github.com/your-username/lupo-skill.git
 ```bash
 cd lupo-skill
 ```
-5. **Install dependencies:** Use npm to install the project dependencies.
+4. **Install dependencies:** Use npm to install the project dependencies.
 ```bash
 npm install
 ```
-7. **Set up Firebase:**
+5. **Set up Firebase:**
 - Create a Firebase project on the Firebase console.
 - Configure Firebase authentication, Firestore database(rtdb), and storage (remeber to edit the rules).
 - Update Firebase configurations in the project. in **`firebaseConf.ts`**
 6. **Make your changes:** Implement your changes or add new features to the codebase.
-8. **Commit your changes:** Commit your changes with clear and descriptive messages.
+7. **Commit your changes:** Commit your changes with clear and descriptive messages.
 ```bash
 git commit -m "Your commit message"
 ```
-9. **Push your changes:** Push your changes to your forked repository.
+8. **Create a branch:** Create a new branch in your fork.
 ```bash
-git push origin main
+git branch <branch name>
+```
+9. **Switch to the created branch**
+```bash
+git checkout <branch name>
+```
+10. **Push your changes:** Push your changes to your forked repository.
+```bash
+git push origin <branch name>
 ```
 11. **Create a pull request:** Submit a pull request to the original Lupo Skill repository.
 
