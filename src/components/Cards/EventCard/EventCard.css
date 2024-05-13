@@ -9,6 +9,11 @@
   pointer-events: none;
 }
 
+.registration_color{
+  background-color: black;
+  color: white;
+}
+
 @media (min-width: 768px) {
   .card_image {
     height: 200px; /* height for lg screens */
@@ -20,13 +25,17 @@
     height: 140px; /* height for sl screens */
   }
 }
-.btn-c {
+/* .btn-c {
   background-color: rgb(0, 161, 0) !important;
   border-color: green !important;
 }
 .btn-c:hover {
   background-color: rgb(0, 190, 0) !important;
   border-color: green !important;
+} */
+.registration_color{
+  background-color: black !important;
+  
 }
 .tag {
   background-color: rgb(233, 255, 199) !important;

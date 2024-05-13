@@ -49,6 +49,7 @@ const Dashboard = () => {
             window.location.href = "#/";
             toast.warn("You are not signed in", { transition: Zoom });
         }
+        console.log("BROOO",localStorage.getItem("userEmailId"))
         const fetchData = async () => {
             const usersRef = ref(database, "users");
             const userEmailId = localStorage.getItem("userEmailId");
@@ -85,6 +86,10 @@ const Dashboard = () => {
                 eventList.forEach((eventId: string) => {
                     const trimmedEventId = eventId.trim();
                     const eventsRef = ref(database, "events");
+                    
+                    if(trimmedEventId[0] =='{'){
+                        return;
+                    }
                     const eventRef = child(eventsRef, trimmedEventId);
                     get(eventRef).then((snapshot) => {
                         if (snapshot.exists()) {
@@ -141,6 +146,8 @@ const Dashboard = () => {
                                 index
                             ) => (
                                 <EventCard
+                                    isValid={false}
+
                                     id={card.id}
                                     key={index}
                                     title={card.title}

@@ -43,19 +43,17 @@ const EventList = () => {
       } else {
         console.log("No data available");
         setIsLoading(false)
-
       }
     };
 
     fetchData();
   }, []);
-
   return (
     <div>
       {isLoading ? (
-                              <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
+        <div className="d-flex justify-content-center align-items-center">
+          <Spinner animation="border" />
+        </div>
       ) : (
         <>
           <h1
@@ -72,18 +70,25 @@ const EventList = () => {
             .map(
               (
                 card: {
-                  id:string;
+                  id: string;
                   title: string;
                   description: string;
                   date: string;
                   time: string;
                   tags: string;
-                  banner:string;
-                  host:string
+                  banner: string;
+                  host: string,
+                  registrants: string[]
                 },
                 index
-              ) => (
-                <EventCard
+              ) => {
+                const user_email = localStorage.getItem("userEmailId");
+                let isRegistered = false;
+                if(card.registrants.includes(user_email!)){
+                  isRegistered = true;
+                }
+                return <EventCard
+                  isValid={true}
                   id={card.id}
                   key={index}
                   title={card.title}
@@ -94,8 +99,9 @@ const EventList = () => {
                   host={card.host.split("%40")[0]}
                   isDashboard={false}
                   image={card.banner}
+                  isRegistered={isRegistered}
                 />
-              )
+              }
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
