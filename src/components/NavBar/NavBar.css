@@ -3,10 +3,6 @@
   backdrop-filter: blur(8px) !important;
 }
 
-.sticky-navbar {
-  position: sticky; /* Ensure the navbar appears above other content */
-}
-
 .nav-profile-round {
   border-radius: 5px !important;
   width: 40px !important;
