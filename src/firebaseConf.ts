@@ -14,7 +14,14 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  // add config here
+  apiKey: "AIzaSyA_Q1ZdPfafShrLqZ6AhIxahCJfKRCOk5c",
+  authDomain: "lupo-skill-11.firebaseapp.com",
+  projectId: "lupo-skill-11",
+  storageBucket: "lupo-skill-11.appspot.com",
+  messagingSenderId: "776849758518",
+  appId: "1:776849758518:web:48516c2ea4a5b8598bbb97",
+  measurementId: "G-3ZSDLLJ3HG",
+  databaseURL:"https://lupo-skill-11-default-rtdb.firebaseio.com/"
 };
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication

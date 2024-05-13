@@ -25,7 +25,8 @@ const NavBar = () => {
   const userEmailId = localStorage.getItem("userEmailId");
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }}>
+    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }}
+    className='sticky-navbar' sticky="top">
       <Container>
         <Navbar.Brand href="#/" className="me-auto">
           <img
