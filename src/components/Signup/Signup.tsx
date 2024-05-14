@@ -1,21 +1,10 @@
-import { Link } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-    Modal,
-    Button,
-    Form,
-    InputGroup,
-    FormControl,
-    Nav,
-} from "react-bootstrap";
-// import "./Signup.css";
+import { Modal, } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import default_user from "../image_assets/default_user.png";
 import "./Signup.css";
 import {
-    auth,
-    firestore,
     database,
     storage,
     signInWithGooglePopup,
@@ -28,30 +17,19 @@ import {
     uploadBytes,
     getDownloadURL,
 } from "firebase/storage";
-
 import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 
-const Signup = ({isShow,returnShow}:any) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => {
-    setShow(false)
-    returnShow(false)
-  };
-  const handleShow = () => setShow(true);
-  useEffect(()=>{
-    setShow(isShow)
-  },[isShow])
-  const logGoogleUser = async () => {
-    const response = await signInWithGooglePopup();
-    const email = response.user.email;
-    const username = response.user.displayName;
-    const pic = response.user.photoURL;
-const Signup = () => {
+const Signup = ({ isShow, returnShow }: any) => {
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => {
+        setShow(false);
+        returnShow(false);
+    };
+    useEffect(() => {
+        setShow(isShow);
+    }, [isShow]);
 
     const logGoogleUser = async () => {
         const response = await signInWithGooglePopup();
@@ -118,7 +96,6 @@ const Signup = () => {
                                     pending: "Signing up...",
                                     success: "Signed Up succesfully !",
                                     error: "Failed to sign up",
-
                                 },
                                 { transition: Zoom }
                             );
@@ -128,13 +105,9 @@ const Signup = () => {
             .catch((error) => {
                 console.error(error);
             });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  return (
+    };
+
+    return (
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
