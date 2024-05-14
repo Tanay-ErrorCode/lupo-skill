@@ -43,6 +43,7 @@ type Event = {
   tags: string;
   banner: string;
   host: string;
+  registrants: string[];
 };
 
 const ProfilePage = () => {
@@ -81,7 +82,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (localStorage.getItem("userEmailId") === null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in",  {transition:Zoom});
+      toast.warn("You are not signed in", { transition: Zoom });
     }
     const fetchData = async () => {
       const usersRef = ref(database, "users");
@@ -127,9 +128,10 @@ const ProfilePage = () => {
             const trimmedEventId = eventId.trim();
             const eventsRef = ref(database, "events");
             const eventRef = child(eventsRef, trimmedEventId);
-            get(eventRef).then((snapshot) => {
+            get(eventRef).then((snapshot: any) => {
               if (snapshot.exists()) {
                 const event = snapshot.val();
+                
                 setCreatedEventCardsData((prev: any[]) => [...prev, event]);
                 setIsCLoading(false);
               } else {
@@ -249,7 +251,7 @@ const ProfilePage = () => {
           </Card>
         </Col>
         <Col md={8}>
-          <Card className="mb-3" style={{zIndex:"-1"}}>
+          <Card className="mb-3" style={{ zIndex: "-1" }}>
             <Card.Body>
               <Row>
                 <Col sm={3}>
@@ -260,9 +262,9 @@ const ProfilePage = () => {
 
               {isCLoading ? (
                 <div className="d-flex justify-content-center align-items-center">
-                                  <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" />
+                  </div>
                 </div>
               ) : (
                 <div>
@@ -282,10 +284,18 @@ const ProfilePage = () => {
                           tags: string;
                           banner: string;
                           host: string;
+                          registrants: string[];
                         },
                         index
-                      ) => (
-                        <EventCard
+                      ) => {
+                        const user_email = localStorage.getItem("userEmailId");
+                        let isRegistered = false;
+                        if (card.registrants.includes(user_email!)) {
+                          isRegistered = true;
+                        }
+                        return <EventCard
+                          isValid={true}
+                          isRegistered={isRegistered}
                           id={card.id}
                           key={index}
                           title={card.title}
@@ -297,7 +307,7 @@ const ProfilePage = () => {
                           isDashboard={false}
                           image={card.banner}
                         />
-                      )
+                      }
                     )}
                 </div>
               )}
@@ -333,7 +343,7 @@ const ProfilePage = () => {
               </Row>
               <hr />
               {isJLoading ? (
-                                <div className="d-flex justify-content-center align-items-center">
+                <div className="d-flex justify-content-center align-items-center">
                   <Spinner animation="border" />
                 </div>
               ) : (
@@ -343,9 +353,16 @@ const ProfilePage = () => {
                       (currentJoinedPage - 1) * itemsPerPage,
                       currentJoinedPage * itemsPerPage
                     )
-                    .map((card, index) => (
-                      <EventCard
-                        id="{card.id}"
+                    .map((card, index) => {
+                      const user_email = localStorage.getItem("userEmailId");
+                      let isRegistered = false;
+                      if (card.registrants.includes(user_email!)) {
+                        isRegistered = true;
+                      }
+                      return <EventCard
+                        isValid={true}
+                        isRegistered={isRegistered}
+                        id={card.id}
                         key={index}
                         title={card.title}
                         description={card.description}
@@ -356,7 +373,7 @@ const ProfilePage = () => {
                         isDashboard={false}
                         image={card.banner}
                       />
-                    ))}
+                    })}
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "center" }}>

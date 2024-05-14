@@ -32,7 +32,7 @@ const NavBar = () => {
         setShow(!show);
   }
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }}>
+    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }} fixed="top">
       <Signup isShow={show} returnShow={setShow} />
       <Container>
         <Navbar.Brand href="#/" className="me-auto">
