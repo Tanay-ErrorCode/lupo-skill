@@ -1,13 +1,11 @@
-body{
+body {
   /* background-color: rgb(255, 244, 244) !important; */
   background-color: rgb(244, 255, 248) !important;
 }
 
-
-
-
-
-
-
-
-
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

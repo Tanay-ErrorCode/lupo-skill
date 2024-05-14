@@ -17,6 +17,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import "./EventList.css";
 
 const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,19 +40,19 @@ const EventList = () => {
         // eventCardsData.push(Object.values(snapshot.val()));
         setEventCardsData(Object.values(snapshot.val()));
         setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-        setIsLoading(false)
+        setIsLoading(false);
       } else {
         console.log("No data available");
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
   return (
-    <div>
+    <div className="mt-5 pt-3">
       {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center">
+        <div className="spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
@@ -77,30 +78,32 @@ const EventList = () => {
                   time: string;
                   tags: string;
                   banner: string;
-                  host: string,
-                  registrants: string[]
+                  host: string;
+                  registrants: string[];
                 },
                 index
               ) => {
                 const user_email = localStorage.getItem("userEmailId");
                 let isRegistered = false;
-                if(card.registrants.includes(user_email!)){
+                if (card.registrants.includes(user_email!)) {
                   isRegistered = true;
                 }
-                return <EventCard
-                  isValid={true}
-                  id={card.id}
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  date={card.date}
-                  time={card.time}
-                  tags={card.tags}
-                  host={card.host.split("%40")[0]}
-                  isDashboard={false}
-                  image={card.banner}
-                  isRegistered={isRegistered}
-                />
+                return (
+                  <EventCard
+                    isValid={true}
+                    id={card.id}
+                    key={index}
+                    title={card.title}
+                    description={card.description}
+                    date={card.date}
+                    time={card.time}
+                    tags={card.tags}
+                    host={card.host.split("%40")[0]}
+                    isDashboard={false}
+                    image={card.banner}
+                    isRegistered={isRegistered}
+                  />
+                );
               }
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
