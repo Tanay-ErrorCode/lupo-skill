@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   Nav,
   NavDropdown,
   Container,
   Offcanvas,
-  Button
 } from "react-bootstrap";
-import { Link } from 'react-router-dom';
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
@@ -17,7 +15,6 @@ import { signOutUser } from "../../firebaseConf";
 import logo from "../image_assets/logo.png";
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
-  const[show,setShow]=useState(false)
 
   const handleToggle = () => {
     setExpanded(!expanded);
@@ -27,13 +24,8 @@ const NavBar = () => {
   const is_signup = userPic ? true : false;
   const userEmailId = localStorage.getItem("userEmailId");
 
-  const handleDashboard = () => {
-      if(!is_signup)
-        setShow(!show);
-  }
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }} fixed="top">
-      <Signup isShow={show} returnShow={setShow} />
+    <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }}fixed="top">
       <Container>
         <Navbar.Brand href="#/" className="me-auto">
           <img
@@ -44,7 +36,7 @@ const NavBar = () => {
             alt="Lupo Skill logo"
             style={{ pointerEvents: "none" }}
           />{" "}
-          Lupo Skill
+          Lupo Skill 
         </Navbar.Brand>
 
         <Navbar.Toggle
@@ -55,15 +47,14 @@ const NavBar = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="m-auto align-items-center">
             <Nav.Link href="#/">Home</Nav.Link>
-            <Nav.Link href="#/dashboard" onClick={handleDashboard}>Dashboard</Nav.Link>
+            <Nav.Link href="#/dashboard">Dashboard</Nav.Link>
             <Nav.Link href="#/events">Events</Nav.Link>
             {/* /dashboard */}
             <CreateEvent props={"navbar"} />
           </Nav>
           <Nav className="align-items-center">
             {!is_signup ? (
-              // <Signup />
-                <Button variant="success" onClick={handleDashboard}>Login</Button>
+              <Signup />
             ) : (
               <NavDropdown
                 title={

@@ -10,7 +10,7 @@ import {
 import "./CreateEvent.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Signup from "../../Signup/Signup";
+
 import {
   auth,
   firestore,
@@ -47,15 +47,8 @@ function generateUUID() {
 }
 const CreateEvent = ({ props }: any) => {
   const [show, setShow] = useState(false);
-  const is_signup=localStorage.getItem("userEmailId")?true:false;
-  const[isSignupModelOpen,setIsSignupModelOpen]=useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => {
-    if(is_signup)
-      setShow(true)
-    else
-      setIsSignupModelOpen(!isSignupModelOpen);
-  };
+  const handleShow = () => setShow(true);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -159,9 +152,9 @@ const CreateEvent = ({ props }: any) => {
       }
     }
   };
+
   return (
     <>
-    <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen}/>
       {props === "other" ? (
         <Button variant="primary" onClick={handleShow} className="main-button">
           Create Event
