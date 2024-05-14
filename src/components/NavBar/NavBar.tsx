@@ -31,10 +31,6 @@ const NavBar = () => {
       if(!is_signup)
         setShow(!show);
   }
-  useEffect(()=>{
-    console.log(show)
-  },[show])
-
   return (
     <Navbar bg="dark" variant="dark" expand="lg" expanded={expanded} style={{ userSelect: 'none' }}>
       <Signup isShow={show} returnShow={setShow} />
