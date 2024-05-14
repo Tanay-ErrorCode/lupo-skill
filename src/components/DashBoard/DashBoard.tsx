@@ -49,7 +49,7 @@ const Dashboard = () => {
             window.location.href = "#/";
             toast.warn("You are not signed in", { transition: Zoom });
         }
-        console.log("BROOO",localStorage.getItem("userEmailId"))
+        
         const fetchData = async () => {
             const usersRef = ref(database, "users");
             const userEmailId = localStorage.getItem("userEmailId");
@@ -65,7 +65,7 @@ const Dashboard = () => {
             const snapshot = await get(userRef);
 
             if (snapshot.exists()) {
-                console.log(snapshot)
+                
                 let eventList: any[] = [];
                 if (snapshot.hasChild("createdEvents")) {
                     
@@ -82,7 +82,6 @@ const Dashboard = () => {
                         }
                     });
                 }
-
                 eventList.forEach((eventId: string) => {
                     const trimmedEventId = eventId.trim();
                     const eventsRef = ref(database, "events");
@@ -98,13 +97,13 @@ const Dashboard = () => {
                             setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
                             setIsLoading(false);
                         } else {
-                            console.log("No data available in A");
+                            console.log("No data available");
                         }
                     });
                 });
                 setIsLoading(false);
             } else {
-                console.log("No data available in B");
+                console.log("No data available");
                 setIsLoading(false);
             }
         };

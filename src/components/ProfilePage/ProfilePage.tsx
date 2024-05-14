@@ -131,7 +131,7 @@ const ProfilePage = () => {
             get(eventRef).then((snapshot: any) => {
               if (snapshot.exists()) {
                 const event = snapshot.val();
-                console.log("EVENT HEHE ", event)
+                
                 setCreatedEventCardsData((prev: any[]) => [...prev, event]);
                 setIsCLoading(false);
               } else {
