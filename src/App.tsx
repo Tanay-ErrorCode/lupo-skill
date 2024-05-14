@@ -14,7 +14,7 @@ import { NotificationsPannel } from "./components/NotificationsPannel";
 function App() {
   return (
     <div className="App">
-      <NavBar />
+      <NavBar/>
       <NotificationsPannel />
       <HashRouter>
         <Routes>

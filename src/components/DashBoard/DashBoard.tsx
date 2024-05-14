@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
+import Signup from '../Signup/Signup';
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import bannerImage3 from "../image_assets/bannerImage3.png";

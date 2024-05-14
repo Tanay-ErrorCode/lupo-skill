@@ -1,5 +1,5 @@
 import { Link } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     Button,
@@ -33,6 +33,21 @@ import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 
+const Signup = ({isShow,returnShow}:any) => {
+  const [show, setShow] = useState(false);
+  const handleClose = () => {
+    setShow(false)
+    returnShow(false)
+  };
+  const handleShow = () => setShow(true);
+  useEffect(()=>{
+    setShow(isShow)
+  },[isShow])
+  const logGoogleUser = async () => {
+    const response = await signInWithGooglePopup();
+    const email = response.user.email;
+    const username = response.user.displayName;
+    const pic = response.user.photoURL;
 const Signup = () => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -113,14 +128,14 @@ const Signup = () => {
             .catch((error) => {
                 console.error(error);
             });
-    };
-    return (
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  return (
         <>
-            <Link onClick={handleShow} className="signup-link">
-                {/* <img src={default_user} className="signup-round" /> */}
-                <Button variant="success">Login</Button>
-            </Link>
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Sign Up</Modal.Title>
