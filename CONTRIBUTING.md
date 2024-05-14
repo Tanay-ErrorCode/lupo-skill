@@ -84,4 +84,3 @@ git push origin <branch name>
 
 9. **Wait for Review:**
     Your pull request will now be available for review by the project maintainers. They may provide feedback or ask for changes before merging your pull request into the main branch of the lupo-skill repository.
-
