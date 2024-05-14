@@ -153,9 +153,6 @@ const ProfilePage = () => {
         eventList.forEach((eventId: string) => {
           const trimmedEventId = eventId.trim();
           const eventsRef = ref(database, "events");
-          if (trimmedEventId[0] == '{') {
-            return;
-          }
           const eventRef = child(eventsRef, trimmedEventId);
           get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
