@@ -1,21 +1,10 @@
-import { Link } from "@mui/material";
-import React, { useState } from "react";
-import {
-    Modal,
-    Button,
-    Form,
-    InputGroup,
-    FormControl,
-    Nav,
-} from "react-bootstrap";
-// import "./Signup.css";
+import React, { useEffect, useState } from "react";
+import { Modal, } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import default_user from "../image_assets/default_user.png";
 import "./Signup.css";
 import {
-    auth,
-    firestore,
     database,
     storage,
     signInWithGooglePopup,
@@ -28,15 +17,19 @@ import {
     uploadBytes,
     getDownloadURL,
 } from "firebase/storage";
-
 import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 
-const Signup = () => {
+const Signup = ({ isShow, returnShow }: any) => {
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => {
+        setShow(false);
+        returnShow(false);
+    };
+    useEffect(() => {
+        setShow(isShow);
+    }, [isShow]);
 
     const logGoogleUser = async () => {
         const response = await signInWithGooglePopup();
@@ -103,7 +96,6 @@ const Signup = () => {
                                     pending: "Signing up...",
                                     success: "Signed Up succesfully !",
                                     error: "Failed to sign up",
-
                                 },
                                 { transition: Zoom }
                             );
@@ -114,13 +106,9 @@ const Signup = () => {
                 console.error(error);
             });
     };
+
     return (
         <>
-            <Link onClick={handleShow} className="signup-link">
-                {/* <img src={default_user} className="signup-round" /> */}
-                <Button variant="success">Login</Button>
-            </Link>
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Sign Up</Modal.Title>
