@@ -51,7 +51,7 @@ const NavBar = () => {
       <Signup isShow={show} returnShow={setShow} />
       <Container>
         <Navbar.Brand href="#/" className="me-auto">
- <img
+<img
             src={logo}
             width="30"
             height="30"
