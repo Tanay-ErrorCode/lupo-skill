@@ -168,7 +168,11 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 </Card.Text>
                 {new Date(props.date) > new Date() ? (
                   <Button
-                    className={`${(props.isValid && props.isRegistered) || register_data ? "registration_color" : "btn-c"} position-absolute bottom-0 end-0 m-3 `}
+                    className={`${
+                      (props.isValid && props.isRegistered) || register_data
+                        ? "registration_color"
+                        : "btn-c"
+                    } position-absolute bottom-0 end-0 m-3 `}
                     onClick={registerForEventX}
                     disabled={
                       (props.isValid && props.isRegistered) || register_data

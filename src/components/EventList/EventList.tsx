@@ -81,7 +81,7 @@ const EventList = () => {
                   registrants: string[];
                   hostName: string;
                 },
-                index,
+                index
               ) => {
                 const user_uid = localStorage.getItem("userUid");
                 let isRegistered = false;
@@ -105,7 +105,7 @@ const EventList = () => {
                     hostName={card.hostName}
                   />
                 );
-              },
+              }
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>

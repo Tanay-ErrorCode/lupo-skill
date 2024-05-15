@@ -58,7 +58,7 @@ const ProfilePage = () => {
   const [joinedEventCardsData, setJoinedEventCardsData] = useState<Event[]>([]);
 
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
-    [],
+    []
   );
 
   // const totalJoinedPages = Math.ceil(
@@ -111,7 +111,7 @@ const ProfilePage = () => {
           const tagsHTML = tagsArray
             .map(
               (tag: string, index: number) =>
-                `<span key=${index} class="tag badge me-2">${tag}</span>`,
+                `<span key=${index} class="tag badge me-2">${tag}</span>`
             )
             .join("");
           (tags as HTMLElement).innerHTML = tagsHTML;
@@ -119,7 +119,7 @@ const ProfilePage = () => {
           const tagsHTML = ["none"]
             .map(
               (tag: string, index: number) =>
-                `<span key=${index} class="tag badge me-2">${tag}</span>`,
+                `<span key=${index} class="tag badge me-2">${tag}</span>`
             )
             .join("");
           (tags as HTMLElement).innerHTML = tagsHTML;
@@ -161,7 +161,7 @@ const ProfilePage = () => {
               const event = snapshot.val();
               setJoinedEventCardsData((prev: any[]) => [...prev, event]);
               setTotalJoinedPages(
-                Math.ceil(joinedEventCardsData.length / itemsPerPage),
+                Math.ceil(joinedEventCardsData.length / itemsPerPage)
               );
               setIsJLoading(false);
             } else {
@@ -210,7 +210,7 @@ const ProfilePage = () => {
                       <span key={index} className="tag badge me-2">
                         {tag}
                       </span>
-                    ),
+                    )
                   )}
                 </div>
               </div>
@@ -273,7 +273,7 @@ const ProfilePage = () => {
                   {createdEventCardsData
                     .slice(
                       (currentCreatedPage - 1) * itemsPerPage,
-                      currentCreatedPage * itemsPerPage,
+                      currentCreatedPage * itemsPerPage
                     )
                     .map(
                       (
@@ -289,7 +289,7 @@ const ProfilePage = () => {
                           registrants: string[];
                           hostName: string;
                         },
-                        index,
+                        index
                       ) => {
                         const user_uid = localStorage.getItem("userUid");
                         let isRegistered = false;
@@ -313,7 +313,7 @@ const ProfilePage = () => {
                             hostName={card.hostName}
                           />
                         );
-                      },
+                      }
                     )}
                 </div>
               )}
@@ -357,7 +357,7 @@ const ProfilePage = () => {
                   {joinedEventCardsData
                     .slice(
                       (currentJoinedPage - 1) * itemsPerPage,
-                      currentJoinedPage * itemsPerPage,
+                      currentJoinedPage * itemsPerPage
                     )
                     .map((card, index) => {
                       const user_uid = localStorage.getItem("userUid");

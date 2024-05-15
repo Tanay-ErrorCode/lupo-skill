@@ -103,7 +103,7 @@ const CreateEvent = ({ props }: any) => {
           } else {
             const bannerRef = storageRef(
               storage,
-              `/event-banners/banner-${newEventId}`,
+              `/event-banners/banner-${newEventId}`
             );
             if (image !== null) {
               toast.promise(
@@ -131,7 +131,7 @@ const CreateEvent = ({ props }: any) => {
                     },
                     function (error) {
                       console.log(error);
-                    },
+                    }
                   );
                 }),
                 {
@@ -139,7 +139,7 @@ const CreateEvent = ({ props }: any) => {
                   success: "Event Created succesfully !",
                   error: "Failed to create event",
                 },
-                { transition: Zoom },
+                { transition: Zoom }
               );
             }
           }

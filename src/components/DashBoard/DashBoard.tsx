@@ -139,7 +139,7 @@ const Dashboard = () => {
                   host: string;
                   hostName: string;
                 },
-                index,
+                index
               ) => (
                 <EventCard
                   isValid={false}
@@ -155,7 +155,7 @@ const Dashboard = () => {
                   image={card.banner}
                   hostName={card.hostName}
                 />
-              ),
+              )
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>

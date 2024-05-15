@@ -45,7 +45,7 @@ const EventDetails = () => {
   const [hostName, setHostName] = useState("");
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [googleMeetLink, setGoogleMeetLink] = useState(
-    "Nothing yet, ask the host to add one",
+    "Nothing yet, ask the host to add one"
   );
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const EventDetails = () => {
           console.log(
             !eventData.registrants.split(",").includes(userUid) ||
               (userUid == null && userUid !== eventData.host),
-            eventData.host,
+            eventData.host
           );
           if (
             (!eventData.registrants.split(",").includes(userUid) ||

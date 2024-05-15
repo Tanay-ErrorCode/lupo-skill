@@ -37,9 +37,15 @@
     "lint": "prettier --check .",
     "format": "prettier --write ."
   },
+  "lint-staged": {
+    "*.{ts,tsx,css}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "lint-staged"
     }
   },
   "eslintConfig": {
@@ -62,7 +68,8 @@
   },
   "devDependencies": {
     "@types/react-datepicker": "^6.2.0",
-    "husky": "^9.0.11",
+    "husky": "^4.3.8",
+    "lint-staged": "^15.2.2",
     "prettier": "2.8.8"
   }
 }

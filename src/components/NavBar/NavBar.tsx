@@ -32,17 +32,8 @@ const NavBar = () => {
   };
   return (
     <Navbar
-      bg="dark"   variant="dark"
-
-
-
-
-
-
-
-
-
-
+      bg="dark"
+      variant="dark"
       expand="lg"
       expanded={expanded}
       style={{ userSelect: "none" }}
@@ -51,15 +42,12 @@ const NavBar = () => {
       <Signup isShow={show} returnShow={setShow} />
       <Container>
         <Navbar.Brand href="#/" className="me-auto">
-<img
+          <img
             src={logo}
             width="30"
             height="30"
             className="d-inline-block align-top"
             alt="Lupo Skill logo"
-
-
-
             style={{ pointerEvents: "none" }}
           />{" "}
           Lupo Skill

@@ -81,7 +81,7 @@ const Signup = ({ isShow, returnShow }: any) => {
 
                     function (error) {
                       console.log(error);
-                    },
+                    }
                   );
                 }),
                 {
@@ -89,7 +89,7 @@ const Signup = ({ isShow, returnShow }: any) => {
                   success: "Signed Up succesfully !",
                   error: "Failed to sign up",
                 },
-                { transition: Zoom },
+                { transition: Zoom }
               );
             });
         }

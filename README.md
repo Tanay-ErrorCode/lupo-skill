@@ -26,40 +26,11 @@
   href="https://github.com/Tanay-ErrorCode/lupo-skill">
     <img src="https://img.shields.io/github/last-commit/Tanay-ErrorCode/lupo-skill?color=crimson" alt="GitHub last commit">
   </a>
-
-
-
-
-
-
-
-
-  
 </div>
 
 # Lupo Skill
 
 Lupo Skill is an open-source platform for sharing skills through events. Users can both host and join events to share their expertise and learn from others. This platform is built using React.js with TypeScript, Firebase for backend services, and React-Bootstrap for UI components.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Features
 
