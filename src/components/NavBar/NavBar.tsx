@@ -32,7 +32,7 @@ const NavBar = () => {
   };
   return (
     <Navbar
-      bg="light"
+      bg="dark"
       variant="dark"
       expand="lg"
       expanded={expanded}
