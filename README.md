@@ -29,6 +29,14 @@
     <img src="https://img.shields.io/github/last-commit/Tanay-ErrorCode/lupo-skill?color=crimson" alt="GitHub last commit">
   </a>
 
+
+
+
+
+
+
+
+
   
 </div>
 
