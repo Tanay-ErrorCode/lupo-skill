@@ -31,6 +31,26 @@
 
 Lupo Skill is an open-source platform for sharing skills through events. Users can both host and join events to share their expertise and learn from others. This platform is built using React.js with TypeScript, Firebase for backend services, and React-Bootstrap for UI components.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Features
 
 - **Host Events:** Share your skills and knowledge by hosting events on the platform.
