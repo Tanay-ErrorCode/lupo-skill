@@ -15,22 +15,6 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase configuration
-
-  apiKey: "AIzaSyD-ypfyCd8FI9VirZReWnwStDPHPHPIxvg",
-
-  authDomain: "puppujoy.firebaseapp.com",
-
-  databaseURL: "https://puppujoy-default-rtdb.firebaseio.com",
-
-  projectId: "puppujoy",
-
-  storageBucket: "puppujoy.appspot.com",
-
-  messagingSenderId: "591618229479",
-
-  appId: "1:591618229479:web:3d6d372fa0eca13d59ce42",
-
-  measurementId: "G-QSLL8VL50N",
 };
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
