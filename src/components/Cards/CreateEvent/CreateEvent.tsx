@@ -47,14 +47,12 @@ function generateUUID() {
 }
 const CreateEvent = ({ props }: any) => {
   const [show, setShow] = useState(false);
-  const is_signup=localStorage.getItem("userEmailId")?true:false;
-  const[isSignupModelOpen,setIsSignupModelOpen]=useState(false);
+  const is_signup = localStorage.getItem("userUid") ? true : false;
+  const [isSignupModelOpen, setIsSignupModelOpen] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
-    if(is_signup)
-      setShow(true)
-    else
-      setIsSignupModelOpen(!isSignupModelOpen);
+    if (is_signup) setShow(true);
+    else setIsSignupModelOpen(!isSignupModelOpen);
   };
 
   const [title, setTitle] = useState("");
@@ -65,7 +63,7 @@ const CreateEvent = ({ props }: any) => {
   const [startTime, setStartTime] = useState(new Date());
   const [image, setImage] = useState<File | null>(null);
   const createEventDb = () => {
-    const userEmailId = localStorage.getItem("userEmailId");
+    const userUid = localStorage.getItem("userUid");
     if (
       image !== null &&
       image !== undefined &&
@@ -74,14 +72,13 @@ const CreateEvent = ({ props }: any) => {
       tags !== "" &&
       startDate !== null &&
       startTime !== null &&
-      userEmailId !== null
+      userUid !== null
     ) {
       const eventRef = ref(database, "events");
       const newEventId = generateUUID();
 
-
       const usersRef = ref(database, "users");
-      const userRef = child(usersRef, userEmailId);
+      const userRef = child(usersRef, userUid);
 
       get(userRef)
         .then((snapshot) => {
@@ -104,10 +101,9 @@ const CreateEvent = ({ props }: any) => {
         .then((snapshot) => {
           if (snapshot.exists()) {
           } else {
-
             const bannerRef = storageRef(
               storage,
-              `/event-banners/banner-${newEventId}`
+              `/event-banners/banner-${newEventId}`,
             );
             if (image !== null) {
               toast.promise(
@@ -122,11 +118,11 @@ const CreateEvent = ({ props }: any) => {
                         date: startDate.toDateString(),
                         time: startTime.toTimeString(),
                         id: newEventId,
-                        host: userEmailId,
+                        host: userUid,
                         registrants: "",
-                        banner:value,
+                        banner: value,
                         createdAt: Date.now(),
-
+                        hostName: auth.currentUser?.displayName,
                       };
                       set(eventRefChild, event);
 
@@ -135,7 +131,7 @@ const CreateEvent = ({ props }: any) => {
                     },
                     function (error) {
                       console.log(error);
-                    }
+                    },
                   );
                 }),
                 {
@@ -143,7 +139,7 @@ const CreateEvent = ({ props }: any) => {
                   success: "Event Created succesfully !",
                   error: "Failed to create event",
                 },
-                {transition:Zoom}
+                { transition: Zoom },
               );
             }
           }
@@ -152,16 +148,18 @@ const CreateEvent = ({ props }: any) => {
           console.error(error);
         });
     } else {
-      if (userEmailId === null) {
-        toast.error("Please Login first", {transition:Zoom});
+      if (userUid === null) {
+        toast.error("Please Login first", { transition: Zoom });
       } else {
-        toast.error("Fill all the required details first",  {transition:Zoom});
+        toast.error("Fill all the required details first", {
+          transition: Zoom,
+        });
       }
     }
   };
   return (
     <>
-    <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen}/>
+      <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
       {props === "other" ? (
         <Button variant="primary" onClick={handleShow} className="main-button">
           Create Event
@@ -244,7 +242,7 @@ const CreateEvent = ({ props }: any) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button className="btn-create"  onClick={createEventDb}>
+          <Button className="btn-create" onClick={createEventDb}>
             Create
           </Button>
         </Modal.Footer>

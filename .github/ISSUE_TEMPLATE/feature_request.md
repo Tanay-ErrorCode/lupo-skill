@@ -1,15 +1,12 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: 'feat: add title here'
+title: "feat: add title here"
 labels: enhancement, gssoc, unapproved
-assignees: ''
-
+assignees: ""
 ---
 
-<!-- Do not remove this template !, make the changes in the template itself --> 
-
-
+<!-- Do not remove this template !, make the changes in the template itself -->
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is.

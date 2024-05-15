@@ -31,7 +31,7 @@ import {
 } from "../../firebaseConf";
 const EventDetails = () => {
   const { id } = useParams();
-  const userEmailId = localStorage.getItem("userEmailId");
+  const userUid = localStorage.getItem("userUid");
   const [isHost, setIsHost] = useState(false); // Change this variable to true if the current user is the host
   // const googleMeetLink = "https://meet.google.com/xyz-pqrs"; // Replace with your Google Meet link
   const [isLoading, setIsLoading] = useState(true);
@@ -42,22 +42,23 @@ const EventDetails = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [host, setHost] = useState("");
+  const [hostName, setHostName] = useState("");
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [googleMeetLink, setGoogleMeetLink] = useState(
-    "Nothing yet, ask the host to add one"
+    "Nothing yet, ask the host to add one",
   );
 
   useEffect(() => {
-    if (userEmailId == null) {
+    if (userUid == null) {
       window.location.href = "#/dashboard";
-      toast.warn("You are not signed in",  {transition:Zoom});
+      toast.warn("You are not signed in", { transition: Zoom });
     }
     const fetchData = async () => {
       const eventRef = ref(database, "events/" + id);
       const snapshot = await get(eventRef);
       if (snapshot.exists()) {
         const eventData = snapshot.val();
-        
+
         setBannerImage(eventData.banner);
         setTitle(eventData.title);
         setDescription(eventData.description);
@@ -65,23 +66,26 @@ const EventDetails = () => {
         setDate(eventData.date);
         setTime(eventData.time);
         setHost(eventData.host);
-        if (eventData.host === userEmailId) {
+        setHostName(eventData.hostName);
+        if (eventData.host === userUid) {
           setIsHost(true);
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
           console.log(
-            !eventData.registrants.split(",").includes(userEmailId) ||
-              (userEmailId == null && userEmailId !== eventData.host),
-            eventData.host
+            !eventData.registrants.split(",").includes(userUid) ||
+              (userUid == null && userUid !== eventData.host),
+            eventData.host,
           );
           if (
-            (!eventData.registrants.split(",").includes(userEmailId) ||
-              userEmailId == null) &&
-            userEmailId !== eventData.host
+            (!eventData.registrants.split(",").includes(userUid) ||
+              userUid == null) &&
+            userUid !== eventData.host
           ) {
             window.location.href = "#/dashboard";
-            toast.warn("You are not registered for this event",  {transition:Zoom});
+            toast.warn("You are not registered for this event", {
+              transition: Zoom,
+            });
           }
         }
         if (eventData.googleMeetLink) {
@@ -89,7 +93,7 @@ const EventDetails = () => {
         }
         setIsLoading(false);
       } else {
-        toast.error("Event not found",  {transition:Zoom});
+        toast.error("Event not found", { transition: Zoom });
       }
     };
     fetchData();
@@ -99,7 +103,7 @@ const EventDetails = () => {
     update(eventRef, {
       googleMeetLink: googleMeetLink,
     });
-    toast.success("Google Meet link added successfully",  {transition:Zoom});
+    toast.success("Google Meet link added successfully", { transition: Zoom });
   };
   return (
     <div>
@@ -134,11 +138,8 @@ const EventDetails = () => {
                     <Row>
                       <Col>
                         Host:{" "}
-                        <a
-                          href={"#/profile/" + host.split("%40")[0]}
-                          className="link-primary"
-                        >
-                          {host.split("%40")[0]}
+                        <a href={"#/profile/" + host} className="link-primary">
+                          {hostName}
                         </a>
                       </Col>
                     </Row>
@@ -198,18 +199,7 @@ const EventDetails = () => {
               </Card>
               <Card className="p-1 mt-2 shadow">
                 <Card.Body>
-                  All registrants :{" "}
-                  {registeredUsers.map((tag, index) => (
-                    <span key={index} className="tag badge me-2">
-                      {/* {(tag?tag:"").split("%40")[0]} */}
-                      <Link
-                        to={"/profile/" + (tag ? tag : "").split("%40")[0]}
-                        className="link-primary"
-                      >
-                        {(tag ? tag : "").split("%40")[0]}
-                      </Link>
-                    </span>
-                  ))}
+                  Number of registerents : {registeredUsers.length}
                 </Card.Body>
               </Card>
             </Col>

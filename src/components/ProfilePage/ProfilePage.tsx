@@ -44,6 +44,7 @@ type Event = {
   banner: string;
   host: string;
   registrants: string[];
+  hostName: string;
 };
 
 const ProfilePage = () => {
@@ -57,7 +58,7 @@ const ProfilePage = () => {
   const [joinedEventCardsData, setJoinedEventCardsData] = useState<Event[]>([]);
 
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
-    []
+    [],
   );
 
   // const totalJoinedPages = Math.ceil(
@@ -73,20 +74,21 @@ const ProfilePage = () => {
     setCurrentCreatedPage(pageNumber);
   };
 
-  const userEmailId = localStorage.getItem("userEmailId");
-  if (userEmailId === null) {
+  const userUid = localStorage.getItem("userUid");
+  if (userUid === null) {
     window.location.href = "#/";
   }
   const usersRef = ref(database, "users");
 
   useEffect(() => {
-    if (localStorage.getItem("userEmailId") === null) {
+    if (localStorage.getItem("userUid") === null) {
       window.location.href = "#/";
       toast.warn("You are not signed in", { transition: Zoom });
     }
     const fetchData = async () => {
       const usersRef = ref(database, "users");
-      const userRef = child(usersRef, id + "%40gmail%2Ecom");
+      // const userRef = child(usersRef, id + "%40gmail%2Ecom");
+      const userRef = child(usersRef, id ? id : "");
       const snapshot = await get(userRef);
 
       if (snapshot.exists()) {
@@ -109,7 +111,7 @@ const ProfilePage = () => {
           const tagsHTML = tagsArray
             .map(
               (tag: string, index: number) =>
-                `<span key=${index} class="tag badge me-2">${tag}</span>`
+                `<span key=${index} class="tag badge me-2">${tag}</span>`,
             )
             .join("");
           (tags as HTMLElement).innerHTML = tagsHTML;
@@ -117,7 +119,7 @@ const ProfilePage = () => {
           const tagsHTML = ["none"]
             .map(
               (tag: string, index: number) =>
-                `<span key=${index} class="tag badge me-2">${tag}</span>`
+                `<span key=${index} class="tag badge me-2">${tag}</span>`,
             )
             .join("");
           (tags as HTMLElement).innerHTML = tagsHTML;
@@ -131,7 +133,7 @@ const ProfilePage = () => {
             get(eventRef).then((snapshot: any) => {
               if (snapshot.exists()) {
                 const event = snapshot.val();
-                
+
                 setCreatedEventCardsData((prev: any[]) => [...prev, event]);
                 setIsCLoading(false);
               } else {
@@ -159,7 +161,7 @@ const ProfilePage = () => {
               const event = snapshot.val();
               setJoinedEventCardsData((prev: any[]) => [...prev, event]);
               setTotalJoinedPages(
-                Math.ceil(joinedEventCardsData.length / itemsPerPage)
+                Math.ceil(joinedEventCardsData.length / itemsPerPage),
               );
               setIsJLoading(false);
             } else {
@@ -169,7 +171,7 @@ const ProfilePage = () => {
         });
       }
     };
-    if (usersRef !== null && userEmailId !== null && id !== null) {
+    if (usersRef !== null && userUid !== null && id !== null) {
       fetchData();
     }
   }, []);
@@ -208,7 +210,7 @@ const ProfilePage = () => {
                       <span key={index} className="tag badge me-2">
                         {tag}
                       </span>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -251,7 +253,7 @@ const ProfilePage = () => {
           </Card>
         </Col>
         <Col md={8}>
-          <Card className="mb-3" style={{ zIndex: "-1" }}>
+          <Card className="mb-3">
             <Card.Body>
               <Row>
                 <Col sm={3}>
@@ -271,7 +273,7 @@ const ProfilePage = () => {
                   {createdEventCardsData
                     .slice(
                       (currentCreatedPage - 1) * itemsPerPage,
-                      currentCreatedPage * itemsPerPage
+                      currentCreatedPage * itemsPerPage,
                     )
                     .map(
                       (
@@ -285,29 +287,33 @@ const ProfilePage = () => {
                           banner: string;
                           host: string;
                           registrants: string[];
+                          hostName: string;
                         },
-                        index
+                        index,
                       ) => {
-                        const user_email = localStorage.getItem("userEmailId");
+                        const user_uid = localStorage.getItem("userUid");
                         let isRegistered = false;
-                        if (card.registrants.includes(user_email!)) {
+                        if (card.registrants.includes(user_uid!)) {
                           isRegistered = true;
                         }
-                        return <EventCard
-                          isValid={true}
-                          isRegistered={isRegistered}
-                          id={card.id}
-                          key={index}
-                          title={card.title}
-                          description={card.description}
-                          date={card.date}
-                          time={card.time}
-                          tags={card.tags}
-                          host={card.host.split("%40")[0]}
-                          isDashboard={false}
-                          image={card.banner}
-                        />
-                      }
+                        return (
+                          <EventCard
+                            isValid={true}
+                            isRegistered={isRegistered}
+                            id={card.id}
+                            key={index}
+                            title={card.title}
+                            description={card.description}
+                            date={card.date}
+                            time={card.time}
+                            tags={card.tags}
+                            host={card.host}
+                            isDashboard={false}
+                            image={card.banner}
+                            hostName={card.hostName}
+                          />
+                        );
+                      },
                     )}
                 </div>
               )}
@@ -351,28 +357,31 @@ const ProfilePage = () => {
                   {joinedEventCardsData
                     .slice(
                       (currentJoinedPage - 1) * itemsPerPage,
-                      currentJoinedPage * itemsPerPage
+                      currentJoinedPage * itemsPerPage,
                     )
                     .map((card, index) => {
-                      const user_email = localStorage.getItem("userEmailId");
+                      const user_uid = localStorage.getItem("userUid");
                       let isRegistered = false;
-                      if (card.registrants.includes(user_email!)) {
+                      if (card.registrants.includes(user_uid!)) {
                         isRegistered = true;
                       }
-                      return <EventCard
-                        isValid={true}
-                        isRegistered={isRegistered}
-                        id={card.id}
-                        key={index}
-                        title={card.title}
-                        description={card.description}
-                        date={card.date}
-                        time={card.time}
-                        tags={card.tags}
-                        host={card.host.split("%40")[0]}
-                        isDashboard={false}
-                        image={card.banner}
-                      />
+                      return (
+                        <EventCard
+                          isValid={true}
+                          isRegistered={isRegistered}
+                          id={card.id}
+                          key={index}
+                          title={card.title}
+                          description={card.description}
+                          date={card.date}
+                          time={card.time}
+                          tags={card.tags}
+                          host={card.host}
+                          isDashboard={false}
+                          image={card.banner}
+                          hostName={card.hostName}
+                        />
+                      );
                     })}
                 </div>
               )}

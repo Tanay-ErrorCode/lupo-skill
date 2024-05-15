@@ -39,10 +39,10 @@ const EventList = () => {
         // eventCardsData.push(Object.values(snapshot.val()));
         setEventCardsData(Object.values(snapshot.val()));
         setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-        setIsLoading(false)
+        setIsLoading(false);
       } else {
         console.log("No data available");
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
 
@@ -77,31 +77,35 @@ const EventList = () => {
                   time: string;
                   tags: string;
                   banner: string;
-                  host: string,
-                  registrants: string[]
+                  host: string;
+                  registrants: string[];
+                  hostName: string;
                 },
-                index
+                index,
               ) => {
-                const user_email = localStorage.getItem("userEmailId");
+                const user_uid = localStorage.getItem("userUid");
                 let isRegistered = false;
-                if(card.registrants.includes(user_email!)){
+                if (card.registrants.includes(user_uid!)) {
                   isRegistered = true;
                 }
-                return <EventCard
-                  isValid={true}
-                  id={card.id}
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  date={card.date}
-                  time={card.time}
-                  tags={card.tags}
-                  host={card.host.split("%40")[0]}
-                  isDashboard={false}
-                  image={card.banner}
-                  isRegistered={isRegistered}
-                />
-              }
+                return (
+                  <EventCard
+                    isValid={true}
+                    id={card.id}
+                    key={index}
+                    title={card.title}
+                    description={card.description}
+                    date={card.date}
+                    time={card.time}
+                    tags={card.tags}
+                    host={card.host}
+                    isDashboard={false}
+                    image={card.banner}
+                    isRegistered={isRegistered}
+                    hostName={card.hostName}
+                  />
+                );
+              },
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
