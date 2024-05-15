@@ -22,9 +22,14 @@
     <img src="https://img.shields.io/github/issues-pr/Tanay-ErrorCode/lupo-skill" alt="GitHub Issues or Pull Requests">
   </a>
   &nbsp;
-  <a href="https://github.com/Tanay-ErrorCode/lupo-skill">
+  <a 
+  
+  
+  href="https://github.com/Tanay-ErrorCode/lupo-skill">
     <img src="https://img.shields.io/github/last-commit/Tanay-ErrorCode/lupo-skill?color=crimson" alt="GitHub last commit">
   </a>
+
+  
 </div>
 
 # Lupo Skill
