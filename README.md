@@ -58,6 +58,7 @@ Lupo Skill is an open-source platform for sharing skills through events. Users c
 ## Contributing to Lupo Skill
 
 Visit [Contributing.md](https://github.com/Tanay-ErrorCode/lupo-skill/blob/main/CONTRIBUTING.md) for contribution guide.
+### You can find the [video for setup here](https://www.youtube.com/watch?v=iE9CTZnW9NU)
 
 ## Using Issue Templates
 
