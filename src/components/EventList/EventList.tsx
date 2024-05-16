@@ -54,7 +54,7 @@ const EventList = () => {
         const snapshotValue = snapshot.val();
         if (snapshotValue !== null && typeof snapshotValue === "object") {
           const res: Event[] = Object.values(snapshotValue) as Event[];
-          res.sort((a: Event, b: Event) => a.createdAt - b.createdAt);
+          res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
           // console.log(res)
           setEventCardsData(res);
         }
