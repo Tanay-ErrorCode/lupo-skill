@@ -40,9 +40,6 @@ npm run start
 ```
 
 7. **Make your changes:** Implement your changes or add new features to the codebase.
-> **Note :**
->
->Add **`firebaseConf.ts`** to the **`.gitignore`** file. (for safety reasons)
 
 8. **Commit your changes:** Commit your changes with clear and descriptive messages.
 
