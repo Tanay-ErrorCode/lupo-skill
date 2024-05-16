@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination, Spinner } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
@@ -18,12 +18,25 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
+interface Event {
+  banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
+  host: string;
+  hostName: string;
+  id: string;
+  registrants: string;
+  tags: string;
+  time: string;
+  title: string;
+}
+
 const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
-  const [eventCardsData, setEventCardsData] = useState([]);
-
+  const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
   const handlePageChange = (pageNumber: number) => {
@@ -37,7 +50,15 @@ const EventList = () => {
       if (snapshot.exists()) {
         // setEventCardsData(Object.values(snapshot.val()));
         // eventCardsData.push(Object.values(snapshot.val()));
-        setEventCardsData(Object.values(snapshot.val()));
+
+        const snapshotValue = snapshot.val();
+        if (snapshotValue !== null && typeof snapshotValue === "object") {
+          const res: Event[] = Object.values(snapshotValue) as Event[];
+          res.sort((a: Event, b: Event) => a.createdAt - b.createdAt);
+          // console.log(res)
+          setEventCardsData(res);
+        }
+
         setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
         setIsLoading(false);
       } else {
@@ -67,46 +88,30 @@ const EventList = () => {
           </h1>
           {eventCardsData
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-            .map(
-              (
-                card: {
-                  id: string;
-                  title: string;
-                  description: string;
-                  date: string;
-                  time: string;
-                  tags: string;
-                  banner: string;
-                  host: string;
-                  registrants: string[];
-                  hostName: string;
-                },
-                index
-              ) => {
-                const user_uid = localStorage.getItem("userUid");
-                let isRegistered = false;
-                if (card.registrants.includes(user_uid!)) {
-                  isRegistered = true;
-                }
-                return (
-                  <EventCard
-                    isValid={true}
-                    id={card.id}
-                    key={index}
-                    title={card.title}
-                    description={card.description}
-                    date={card.date}
-                    time={card.time}
-                    tags={card.tags}
-                    host={card.host}
-                    isDashboard={false}
-                    image={card.banner}
-                    isRegistered={isRegistered}
-                    hostName={card.hostName}
-                  />
-                );
+            .map((card: Event, index) => {
+              const user_uid = localStorage.getItem("userUid");
+              let isRegistered = false;
+              if (card.registrants.includes(user_uid!)) {
+                isRegistered = true;
               }
-            )}
+              return (
+                <EventCard
+                  isValid={true}
+                  id={card.id}
+                  key={index}
+                  title={card.title}
+                  description={card.description}
+                  date={card.date}
+                  time={card.time}
+                  tags={card.tags}
+                  host={card.host}
+                  isDashboard={false}
+                  image={card.banner}
+                  isRegistered={isRegistered}
+                  hostName={card.hostName}
+                />
+              );
+            })}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((e, i) => (
