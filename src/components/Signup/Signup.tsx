@@ -28,75 +28,79 @@ const Signup = ({ isShow, returnShow }: any) => {
   }, [isShow]);
 
   const logGoogleUser = async () => {
-    const response = await signInWithGooglePopup();
-    const email = response.user.email;
-    const uid = response.user.uid;
-    const username = response.user.displayName;
-    const pic = response.user.photoURL;
+    try {
+      const response = await signInWithGooglePopup();
+      const {
+        email,
+        uid,
+        displayName: username,
+        photoURL: pic,
+      } = response.user;
 
-    const usersRef = ref(database, "users");
-    const userRef = child(usersRef, uid);
+      const usersRef = ref(database, "users");
+      const userRef = child(usersRef, uid);
 
-    get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          localStorage.setItem("userUid", uid);
-          localStorage.setItem("userPic", pic ? pic : "");
-          window.location.reload();
-          toast.success("Logged in successfully", { transition: Zoom });
-        } else {
-          set(userRef, {
-            name: username,
-            email: response.user.email,
-            pic: pic,
-            tags: "",
-            banner: "",
-            uid: uid,
-          });
+      const snapshot = await get(userRef);
 
-          const bannerRef = storageRef(storage, `/user-banners/banner-${uid}`);
+      if (snapshot.exists()) {
+        localStorage.setItem("userUid", uid);
+        localStorage.setItem("userPic", pic ? pic : "");
+        window.location.reload();
+        toast.success("Logged in successfully", { transition: Zoom });
+      } else {
+        set(userRef, {
+          name: username,
+          email,
+          pic: pic || "",
+          tags: "",
+          banner: "",
+          uid,
+        });
 
-          const images = [bannerImage, bannerImage2, bannerImage3];
-          const randomImage = images[Math.floor(Math.random() * images.length)];
-          fetch(randomImage)
-            .then((res) => res.blob())
-            .then((blob) => {
-              toast.promise(
-                uploadBytes(bannerRef, blob).then(() => {
-                  getDownloadURL(bannerRef).then(
-                    function (value) {
-                      console.log(value, "banner uploaded");
-                      localStorage.setItem("userUid", uid);
-                      localStorage.setItem("userPic", pic ? pic : "");
-                      set(userRef, {
-                        name: username,
-                        email: email,
-                        pic: pic,
-                        tags: "",
-                        banner: value,
-                        uid: uid,
-                      });
-                      window.location.reload();
-                    },
+        const bannerRef = storageRef(storage, `/user-banners/banner-${uid}`);
 
-                    function (error) {
-                      console.log(error);
-                    }
-                  );
-                }),
-                {
-                  pending: "Signing up...",
-                  success: "Signed Up succesfully !",
-                  error: "Failed to sign up",
-                },
-                { transition: Zoom }
-              );
+        const images = [bannerImage, bannerImage2, bannerImage3];
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        const blob = await fetch(randomImage).then((res) => res.blob());
+
+        toast.promise(
+          uploadBytes(bannerRef, blob).then(async () => {
+            const value = await getDownloadURL(bannerRef);
+            console.log(value, "banner uploaded");
+            localStorage.setItem("userUid", uid);
+            localStorage.setItem("userPic", pic || "");
+            set(userRef, {
+              name: username,
+              email,
+              pic: pic || "",
+              tags: "",
+              banner: value,
+              uid,
             });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+            window.location.reload();
+          }),
+          {
+            pending: "Signing up...",
+            success: "Signed Up successfully!",
+            error: "Failed to sign up",
+          },
+          { transition: Zoom }
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      // Check the type of error using instanceof
+      if (error instanceof Error && error.message.includes("popup")) {
+        // Handle pop-up closed by user
+        // toast.error("Sign up process was canceled", { transition: Zoom });
+      } else {
+        // Handle other authentication errors
+        toast.error("Failed to sign up. Please try again.", {
+          transition: Zoom,
+        });
+      }
+    }
   };
 
   return (
