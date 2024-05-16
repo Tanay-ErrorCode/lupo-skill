@@ -22,9 +22,14 @@ Lupo Skill is an open-source platform where people can share their skills throug
 <br/>
 
 - **Firebase :** Firebase, being maintained by Google, offers reliable backend services with frequent updates and ample documentation to guide development.
-
+   
   - **Firebase-auth :** I used firebase-auth because it provides google SignIn/SignUp feature.
   - **Firebase-RTDB :** Firebase RTDB (Real-time database) provides a JSON like data structure which makes it easier to retrive and store data with lesser read costs. _Example-_
     ![image](https://github.com/Tanay-ErrorCode/lupo-skill/assets/90561803/2cb64b72-f94e-4159-a0b5-1ed855a824c6)
 
   - **Firebase-storage :** Firebase Storage provides a safe and efficient way to store files like images. I used Firebase storage to store the user banners, and the event banners.
+
+For more detailed guide kindly go through the respective docs:
+-  [**Firebase-auth**](https://firebase.google.com/docs/auth/web/start)
+-  [**Firebase-RTDB**](https://firebase.google.com/docs/database/web/start)
+-  [**Firebase Storage**](https://firebase.google.com/docs/storage/web/start)
