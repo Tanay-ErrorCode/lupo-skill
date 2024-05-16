@@ -26,6 +26,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+
 function generateUUID() {
   var d = new Date().getTime();
   var d2 =
@@ -45,6 +46,7 @@ function generateUUID() {
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
 }
+
 const CreateEvent = ({ props }: any) => {
   const [show, setShow] = useState(false);
   const is_signup = localStorage.getItem("userUid") ? true : false;
@@ -62,17 +64,36 @@ const CreateEvent = ({ props }: any) => {
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [image, setImage] = useState<File | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check if the file type is an image
+      if (file.type && file.type.startsWith("image/")) {
+        setImage(file);
+      } else {
+        // Display error for non-image file types
+        setImage(null);
+        toast.error("Please select a valid image file (JPEG/PNG)", {
+          transition: Zoom,
+        });
+
+        // Reset the file input element to clear the selected file
+        e.target.value = "";
+      }
+    }
+  };
+
   const createEventDb = () => {
     const userUid = localStorage.getItem("userUid");
     if (
-      image !== null &&
-      image !== undefined &&
-      title !== "" &&
-      description !== "" &&
-      tags !== "" &&
-      startDate !== null &&
-      startTime !== null &&
-      userUid !== null
+      image &&
+      title.trim() !== "" &&
+      description.trim() !== "" &&
+      tags.trim() !== "" &&
+      startDate &&
+      startTime &&
+      userUid
     ) {
       const eventRef = ref(database, "events");
       const newEventId = generateUUID();
@@ -89,7 +110,6 @@ const CreateEvent = ({ props }: any) => {
                 ? snapshot.val().createdEvents + "," + newEventId
                 : newEventId,
             });
-          } else {
           }
         })
         .catch((error) => {
@@ -99,56 +119,48 @@ const CreateEvent = ({ props }: any) => {
       const eventRefChild = child(eventRef, newEventId);
       get(eventRefChild)
         .then((snapshot) => {
-          if (snapshot.exists()) {
-          } else {
+          if (!snapshot.exists()) {
             const bannerRef = storageRef(
               storage,
               `/event-banners/banner-${newEventId}`
             );
-            if (image !== null) {
-              toast.promise(
-                uploadBytes(bannerRef, image).then(() => {
-                  getDownloadURL(bannerRef).then(
-                    function (value) {
-                      console.log(value, "banner uploaded");
-                      const event = {
-                        title: title,
-                        description: description,
-                        tags: tags,
-                        date: startDate.toDateString(),
-                        time: startTime.toTimeString(),
-                        id: newEventId,
-                        host: userUid,
-                        registrants: "",
-                        banner: value,
-                        createdAt: Date.now(),
-                        hostName: auth.currentUser?.displayName,
-                      };
-                      set(eventRefChild, event);
 
-                      handleClose();
-                      window.location.reload();
-                    },
-                    function (error) {
-                      console.log(error);
-                    }
-                  );
-                }),
-                {
-                  pending: "Creating Event ...",
-                  success: "Event Created succesfully !",
-                  error: "Failed to create event",
-                },
-                { transition: Zoom }
-              );
-            }
+            toast.promise(
+              uploadBytes(bannerRef, image).then(() => {
+                getDownloadURL(bannerRef).then((value) => {
+                  const event = {
+                    title: title,
+                    description: description,
+                    tags: tags,
+                    date: startDate.toDateString(),
+                    time: startTime.toTimeString(),
+                    id: newEventId,
+                    host: userUid,
+                    registrants: "",
+                    banner: value,
+                    createdAt: Date.now(),
+                    hostName: auth.currentUser?.displayName,
+                  };
+                  set(eventRefChild, event);
+
+                  handleClose();
+                  window.location.reload();
+                });
+              }),
+              {
+                pending: "Creating Event ...",
+                success: "Event Created successfully!",
+                error: "Failed to create event",
+              },
+              { transition: Zoom }
+            );
           }
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
-      if (userUid === null) {
+      if (!userUid) {
         toast.error("Please Login first", { transition: Zoom });
       } else {
         toast.error("Fill all the required details first", {
@@ -157,6 +169,7 @@ const CreateEvent = ({ props }: any) => {
       }
     }
   };
+
   return (
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
@@ -223,18 +236,7 @@ const CreateEvent = ({ props }: any) => {
             </Form.Group>
             <Form.Group controlId="formImageUpload">
               <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  const files = target.files;
-                  if (files) {
-                    setImage(files[0]);
-                  } else {
-                    setImage(null);
-                  }
-                }}
-              />
+              <Form.Control type="file" onChange={handleImageChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
