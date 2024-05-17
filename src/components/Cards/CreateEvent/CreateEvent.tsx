@@ -236,7 +236,11 @@ const CreateEvent = ({ props }: any) => {
             </Form.Group>
             <Form.Group controlId="formImageUpload">
               <Form.Label>Image</Form.Label>
-              <Form.Control type="file" onChange={handleImageChange} />
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
