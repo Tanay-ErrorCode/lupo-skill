@@ -145,6 +145,7 @@ const ProfilePage = () => {
                 setIsCLoading(false);
               } else {
                 console.log("No data available");
+                setIsCLoading(false);
               }
             });
           });
@@ -178,9 +179,12 @@ const ProfilePage = () => {
               setIsJLoading(false);
             } else {
               console.log("No data available");
+              setIsJLoading(false);
             }
           });
         });
+      } else {
+        setIsJLoading(false);
       }
     };
     if (usersRef !== null && userUid !== null && id !== null) {
@@ -276,9 +280,7 @@ const ProfilePage = () => {
 
               {isCLoading ? (
                 <div className="d-flex justify-content-center align-items-center">
-                  <div className="d-flex justify-content-center align-items-center">
-                    <Spinner animation="border" />
-                  </div>
+                  <Spinner animation="border" />
                 </div>
               ) : (
                 <div>
@@ -350,35 +352,39 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <div>
-                  {joinedEventCardsData
-                    .slice(
-                      (currentJoinedPage - 1) * itemsPerPage,
-                      currentJoinedPage * itemsPerPage
-                    )
-                    .map((card, index) => {
-                      const user_uid = localStorage.getItem("userUid");
-                      let isRegistered = false;
-                      if (card.registrants.includes(user_uid!)) {
-                        isRegistered = true;
-                      }
-                      return (
-                        <EventCard
-                          isValid={true}
-                          isRegistered={isRegistered}
-                          id={card.id}
-                          key={index}
-                          title={card.title}
-                          description={card.description}
-                          date={card.date}
-                          time={card.time}
-                          tags={card.tags}
-                          host={card.host}
-                          isDashboard={false}
-                          image={card.banner}
-                          hostName={card.hostName}
-                        />
-                      );
-                    })}
+                  {joinedEventCardsData.length === 0 ? (
+                    <p className="text-center">No Events joined</p>
+                  ) : (
+                    joinedEventCardsData
+                      .slice(
+                        (currentJoinedPage - 1) * itemsPerPage,
+                        currentJoinedPage * itemsPerPage
+                      )
+                      .map((card, index) => {
+                        const user_uid = localStorage.getItem("userUid");
+                        let isRegistered = false;
+                        if (card.registrants.includes(user_uid!)) {
+                          isRegistered = true;
+                        }
+                        return (
+                          <EventCard
+                            isValid={true}
+                            isRegistered={isRegistered}
+                            id={card.id}
+                            key={index}
+                            title={card.title}
+                            description={card.description}
+                            date={card.date}
+                            time={card.time}
+                            tags={card.tags}
+                            host={card.host}
+                            isDashboard={false}
+                            image={card.banner}
+                            hostName={card.hostName}
+                          />
+                        );
+                      })
+                  )}
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "center" }}>
