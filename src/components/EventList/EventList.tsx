@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination, Spinner } from "react-bootstrap";
+import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import {
   auth,
@@ -18,16 +18,46 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-const EventList = () => {
+const EventList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
-  const [eventCardsData, setEventCardsData] = useState([]);
-
+  const [eventCardsData, setEventCardsData] = useState<any[]>([]);
+  const [sortedEvents, setSortedEvents] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortOption, setSortOption] = useState<
+    "All" | "Ongoing" | "Past" | "Upcoming"
+  >("All");
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const sortEvents = (
+    events: any[],
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ): any[] => {
+    const now = new Date();
+    switch (option) {
+      case "Ongoing":
+        return events.filter((event) => {
+          const eventDate = new Date(`${event.date} ${event.time}`);
+          const eventEndDate = new Date(eventDate);
+          eventEndDate.setHours(eventDate.getHours() + 2); // Assuming events last 2 hours
+          return eventDate <= now && now <= eventEndDate;
+        });
+      case "Past":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) < now
+        );
+      case "Upcoming":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) > now
+        );
+      case "All":
+      default:
+        return events;
+    }
   };
 
   useEffect(() => {
@@ -35,10 +65,11 @@ const EventList = () => {
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
-        // setEventCardsData(Object.values(snapshot.val()));
-        // eventCardsData.push(Object.values(snapshot.val()));
-        setEventCardsData(Object.values(snapshot.val()));
-        setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
+        const events: any[] = Object.values(snapshot.val());
+        setEventCardsData(events);
+        const filteredEvents = sortEvents(events, sortOption);
+        setSortedEvents(filteredEvents);
+        setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
         setIsLoading(false);
       } else {
         console.log("No data available");
@@ -48,6 +79,13 @@ const EventList = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filteredEvents = sortEvents(eventCardsData, sortOption);
+    setSortedEvents(filteredEvents);
+    setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+  }, [eventCardsData, sortOption]);
+
   return (
     <div>
       {isLoading ? (
@@ -59,13 +97,37 @@ const EventList = () => {
           <h1
             style={{
               textAlign: "center",
-              marginBottom: "2em",
-              marginTop: "1em",
+              marginBottom: "1em",
+              marginTop: "3em",
             }}
           >
             All Events
           </h1>
-          {eventCardsData
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "1em",
+              marginRight: "15%",
+            }}
+          >
+            <DropdownButton
+              id="dropdown-basic-button"
+              title={`Sort by: ${sortOption}`}
+              variant="dark"
+              onSelect={(e: any) => {
+                setSortOption(e);
+                setCurrentPage(1); // Reset to first page when sort option changes
+              }}
+              style={{ marginBottom: "1em", textAlign: "center" }}
+            >
+              <Dropdown.Item eventKey="All">All Events</Dropdown.Item>
+              <Dropdown.Item eventKey="Upcoming">Upcoming</Dropdown.Item>
+              <Dropdown.Item eventKey="Ongoing">Ongoing</Dropdown.Item>
+              <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
+            </DropdownButton>
+          </div>
+          {sortedEvents
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
             .map(
               (
