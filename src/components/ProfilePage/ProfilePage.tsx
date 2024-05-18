@@ -141,7 +141,6 @@ const ProfilePage = () => {
                 data.push(event);
                 data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
                 setCreatedEventCardsData(data);
-                console.log(data);
                 setIsCLoading(false);
               } else {
                 console.log("No data available");
@@ -172,7 +171,6 @@ const ProfilePage = () => {
               data.push(event);
               data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
               setJoinedEventCardsData(data);
-              console.log(data);
               setTotalJoinedPages(
                 Math.ceil(joinedEventCardsData.length / itemsPerPage)
               );
@@ -284,7 +282,10 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <div>
-                  {createdEventCardsData
+                {createdEventCardsData.length === 0 ? (
+                  <p className="text-center">No Events created</p>
+                ) : (
+                  createdEventCardsData
                     .slice(
                       (currentCreatedPage - 1) * itemsPerPage,
                       currentCreatedPage * itemsPerPage
@@ -312,7 +313,9 @@ const ProfilePage = () => {
                           hostName={card.hostName}
                         />
                       );
-                    })}
+                    })
+                  )}
+
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "center" }}>
