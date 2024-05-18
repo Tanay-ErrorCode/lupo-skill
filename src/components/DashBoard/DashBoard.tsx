@@ -23,17 +23,21 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  tags: string;
+import { reload } from "firebase/auth";
+
+interface Event {
   banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
   host: string;
   hostName: string;
-};
+  id: string;
+  registrants: string;
+  tags: string;
+  time: string;
+  title: string;
+}
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,7 +93,12 @@ const Dashboard = () => {
           get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
               const event = snapshot.val();
-              setEventCardsData((prev: any[]) => [...prev, event]);
+              // setEventCardsData((prev: any[]) => [...prev, event]);
+              let data = eventCardsData;
+              data.push(event);
+              data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+              setEventCardsData(data);
+              console.log(data);
               setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
               setIsLoading(false);
             } else {
