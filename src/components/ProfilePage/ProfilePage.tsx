@@ -34,18 +34,20 @@ import {
   signInWithGooglePopup,
 } from "../../firebaseConf";
 import { useParams } from "react-router-dom";
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  tags: string;
+
+interface Event {
   banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
   host: string;
-  registrants: string[];
   hostName: string;
-};
+  id: string;
+  registrants: string;
+  tags: string;
+  time: string;
+  title: string;
+}
 
 const ProfilePage = () => {
   const [currentJoinedPage, setCurrentJoinedPage] = useState(1);
@@ -134,7 +136,12 @@ const ProfilePage = () => {
               if (snapshot.exists()) {
                 const event = snapshot.val();
 
-                setCreatedEventCardsData((prev: any[]) => [...prev, event]);
+                // setCreatedEventCardsData((prev: any[]) => [...prev, event]);
+                let data = createdEventCardsData;
+                data.push(event);
+                data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+                setCreatedEventCardsData(data);
+                console.log(data);
                 setIsCLoading(false);
               } else {
                 console.log("No data available");
@@ -159,7 +166,12 @@ const ProfilePage = () => {
           get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
               const event = snapshot.val();
-              setJoinedEventCardsData((prev: any[]) => [...prev, event]);
+              // setJoinedEventCardsData((prev: any[]) => [...prev, event]);
+              let data = joinedEventCardsData;
+              data.push(event);
+              data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+              setJoinedEventCardsData(data);
+              console.log(data);
               setTotalJoinedPages(
                 Math.ceil(joinedEventCardsData.length / itemsPerPage)
               );
@@ -275,46 +287,30 @@ const ProfilePage = () => {
                       (currentCreatedPage - 1) * itemsPerPage,
                       currentCreatedPage * itemsPerPage
                     )
-                    .map(
-                      (
-                        card: {
-                          id: string;
-                          title: string;
-                          description: string;
-                          date: string;
-                          time: string;
-                          tags: string;
-                          banner: string;
-                          host: string;
-                          registrants: string[];
-                          hostName: string;
-                        },
-                        index
-                      ) => {
-                        const user_uid = localStorage.getItem("userUid");
-                        let isRegistered = false;
-                        if (card.registrants.includes(user_uid!)) {
-                          isRegistered = true;
-                        }
-                        return (
-                          <EventCard
-                            isValid={true}
-                            isRegistered={isRegistered}
-                            id={card.id}
-                            key={index}
-                            title={card.title}
-                            description={card.description}
-                            date={card.date}
-                            time={card.time}
-                            tags={card.tags}
-                            host={card.host}
-                            isDashboard={false}
-                            image={card.banner}
-                            hostName={card.hostName}
-                          />
-                        );
+                    .map((card: Event, index) => {
+                      const user_uid = localStorage.getItem("userUid");
+                      let isRegistered = false;
+                      if (card.registrants.includes(user_uid!)) {
+                        isRegistered = true;
                       }
-                    )}
+                      return (
+                        <EventCard
+                          isValid={true}
+                          isRegistered={isRegistered}
+                          id={card.id}
+                          key={index}
+                          title={card.title}
+                          description={card.description}
+                          date={card.date}
+                          time={card.time}
+                          tags={card.tags}
+                          host={card.host}
+                          isDashboard={false}
+                          image={card.banner}
+                          hostName={card.hostName}
+                        />
+                      );
+                    })}
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "center" }}>
