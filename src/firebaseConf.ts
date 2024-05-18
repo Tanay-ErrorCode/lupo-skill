@@ -15,14 +15,6 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase configuration
-  apiKey: "AIzaSyBQgNBQyC1AIY8yqOwuK9tiyhHJ1vkF2Zs",
-  authDomain: "lupo-skill-62b65.firebaseapp.com",
-  projectId: "lupo-skill-62b65",
-  storageBucket: "lupo-skill-62b65.appspot.com",
-  messagingSenderId: "770931678454",
-  appId: "1:770931678454:web:74f0fe54e02f0a882020d7",
-  measurementId: "G-R8BE7P4DRG",
-  databaseURL:"https://lupo-skill-62b65-default-rtdb.asia-southeast1.firebasedatabase.app/"
 };
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
