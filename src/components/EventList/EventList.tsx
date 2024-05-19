@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
+import "./EventList.css";
 import {
   auth,
   firestore,
@@ -86,6 +87,22 @@ const EventList: React.FC = () => {
     setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
   }, [eventCardsData, sortOption]);
 
+  const renderNoEventsMessage = (
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ) => {
+    switch (option) {
+      case "Upcoming":
+        return "No upcoming events found";
+      case "Past":
+        return "No past events found";
+      case "Ongoing":
+        return "No ongoing events found";
+      case "All":
+      default:
+        return "No events found";
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -127,48 +144,65 @@ const EventList: React.FC = () => {
               <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
             </DropdownButton>
           </div>
-          {sortedEvents
-            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-            .map(
-              (
-                card: {
-                  id: string;
-                  title: string;
-                  description: string;
-                  date: string;
-                  time: string;
-                  tags: string;
-                  banner: string;
-                  host: string;
-                  registrants: string[];
-                  hostName: string;
-                },
-                index
-              ) => {
-                const user_uid = localStorage.getItem("userUid");
-                let isRegistered = false;
-                if (card.registrants.includes(user_uid!)) {
-                  isRegistered = true;
+          {sortedEvents.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "5em",
+                fontSize: "20px",
+              }}
+            >
+              {renderNoEventsMessage(sortOption)}
+            </div>
+          ) : (
+            sortedEvents
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map(
+                (
+                  card: {
+                    id: string;
+                    title: string;
+                    description: string;
+                    date: string;
+                    time: string;
+                    tags: string;
+                    banner: string;
+                    host: string;
+                    registrants: string[];
+                    hostName: string;
+                  },
+                  index
+                ) => {
+                  const user_uid = localStorage.getItem("userUid");
+                  let isRegistered = false;
+                  if (card.registrants.includes(user_uid!)) {
+                    isRegistered = true;
+                  }
+                  return (
+                    <div className="event-card-wrapper" key={index}>
+                      <EventCard
+                        isValid={true}
+                        id={card.id}
+                        key={index}
+                        title={card.title}
+                        description={card.description}
+                        date={card.date}
+                        time={card.time}
+                        tags={card.tags}
+                        host={card.host}
+                        isDashboard={false}
+                        image={card.banner}
+                        isRegistered={isRegistered}
+                        hostName={card.hostName}
+                      />
+                    </div>
+                  );
                 }
-                return (
-                  <EventCard
-                    isValid={true}
-                    id={card.id}
-                    key={index}
-                    title={card.title}
-                    description={card.description}
-                    date={card.date}
-                    time={card.time}
-                    tags={card.tags}
-                    host={card.host}
-                    isDashboard={false}
-                    image={card.banner}
-                    isRegistered={isRegistered}
-                    hostName={card.hostName}
-                  />
-                );
-              }
-            )}
+              )
+          )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((e, i) => (
