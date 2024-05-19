@@ -17,7 +17,7 @@ import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
-
+import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import {
@@ -98,6 +98,9 @@ const ProfilePage = () => {
         const headline = document.getElementById("headline");
         const tags = document.getElementById("tags");
         const website = document.getElementById("website");
+        const instagram = document.getElementById("instagram");
+        const facebook = document.getElementById("facebook");
+        const twitter = document.getElementById("twitter");
         const userName = document.getElementById("user-name");
         const profileBanner = document.getElementById("profile-banner");
         const profileImage = document.getElementById("profile-image");
@@ -105,6 +108,9 @@ const ProfilePage = () => {
         (headline as HTMLParagraphElement).innerText = snap.name;
         (userName as HTMLHeadingElement).innerText = snap.name;
         (website as HTMLSpanElement).innerText = "NAN";
+        (instagram as HTMLSpanElement).innerText = snap.instagram || "NAN";
+        (twitter as HTMLSpanElement).innerText = snap.twitter || "NAN";
+        (facebook as HTMLSpanElement).innerText = snap.facebook || "NAN";
         (profileBanner as HTMLImageElement).src = snap.banner;
         (profileImage as HTMLImageElement).src = snap.pic;
 
@@ -261,7 +267,20 @@ const ProfilePage = () => {
                     NAN
                   </span>
                 </li>
-                {/* Other list items */}
+                <li style={{ display: "flex" }}>
+                  <Instagram />
+                  <Twitter />
+                  <Facebook />
+                  <span className="text-secondary" id="instagram">
+                    NAN
+                  </span>
+                  <span className="text-secondary" id="twitter">
+                    NAN
+                  </span>
+                  <span className="text-secondary" id="facebook">
+                    NAN
+                  </span>
+                </li>
               </ul>
             </Card.Body>
           </Card>
@@ -282,40 +301,39 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <div>
-                {createdEventCardsData.length === 0 ? (
-                  <p className="text-center">No Events created</p>
-                ) : (
-                  createdEventCardsData
-                    .slice(
-                      (currentCreatedPage - 1) * itemsPerPage,
-                      currentCreatedPage * itemsPerPage
-                    )
-                    .map((card: Event, index) => {
-                      const user_uid = localStorage.getItem("userUid");
-                      let isRegistered = false;
-                      if (card.registrants.includes(user_uid!)) {
-                        isRegistered = true;
-                      }
-                      return (
-                        <EventCard
-                          isValid={true}
-                          isRegistered={isRegistered}
-                          id={card.id}
-                          key={index}
-                          title={card.title}
-                          description={card.description}
-                          date={card.date}
-                          time={card.time}
-                          tags={card.tags}
-                          host={card.host}
-                          isDashboard={false}
-                          image={card.banner}
-                          hostName={card.hostName}
-                        />
-                      );
-                    })
+                  {createdEventCardsData.length === 0 ? (
+                    <p className="text-center">No Events created</p>
+                  ) : (
+                    createdEventCardsData
+                      .slice(
+                        (currentCreatedPage - 1) * itemsPerPage,
+                        currentCreatedPage * itemsPerPage
+                      )
+                      .map((card: Event, index) => {
+                        const user_uid = localStorage.getItem("userUid");
+                        let isRegistered = false;
+                        if (card.registrants.includes(user_uid!)) {
+                          isRegistered = true;
+                        }
+                        return (
+                          <EventCard
+                            isValid={true}
+                            isRegistered={isRegistered}
+                            id={card.id}
+                            key={index}
+                            title={card.title}
+                            description={card.description}
+                            date={card.date}
+                            time={card.time}
+                            tags={card.tags}
+                            host={card.host}
+                            isDashboard={false}
+                            image={card.banner}
+                            hostName={card.hostName}
+                          />
+                        );
+                      })
                   )}
-
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "center" }}>
