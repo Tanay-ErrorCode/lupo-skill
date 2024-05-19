@@ -4,3 +4,30 @@
   height: 100px;
   object-fit: cover;
 }
+.social-media-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.social-media-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.instagram-icon {
+  font-size: 24px;
+  color: #e4405f;
+}
+
+.twitter-icon {
+  font-size: 24px;
+  color: #1da1f2;
+}
+
+.facebook-icon {
+  font-size: 24px;
+  color: #1877f2;
+}

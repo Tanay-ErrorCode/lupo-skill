@@ -267,19 +267,25 @@ const ProfilePage = () => {
                     NAN
                   </span>
                 </li>
-                <li style={{ display: "flex" }}>
-                  <Instagram />
-                  <Twitter />
-                  <Facebook />
-                  <span className="text-secondary" id="instagram">
-                    NAN
-                  </span>
-                  <span className="text-secondary" id="twitter">
-                    NAN
-                  </span>
-                  <span className="text-secondary" id="facebook">
-                    NAN
-                  </span>
+                <li className="social-media-list">
+                  <div className="social-media-item">
+                    <Instagram className="instagram-icon" />
+                    <span className="text-secondary" id="instagram">
+                      NAN
+                    </span>
+                  </div>
+                  <div className="social-media-item">
+                    <Twitter className="twitter-icon" />
+                    <span className="text-secondary" id="twitter">
+                      NAN
+                    </span>
+                  </div>
+                  <div className="social-media-item">
+                    <Facebook className="facebook-icon" />
+                    <span className="text-secondary" id="facebook">
+                      NAN
+                    </span>
+                  </div>
                 </li>
               </ul>
             </Card.Body>
