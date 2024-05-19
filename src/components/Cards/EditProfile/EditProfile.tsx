@@ -95,7 +95,7 @@ const EditProfile = () => {
       if (profileImage) {
         const profileImageRef = storageRef(
           storage,
-          `profileimg/user-profile-pic-${uid}`
+          `user-profile-pics/user-profile-pic-${uid}`
         );
         await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
