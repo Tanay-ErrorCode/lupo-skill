@@ -1,26 +1,126 @@
-import React, { useState } from "react";
-import { Modal, Button, Form, InputGroup, FormControl } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { ref as dbRef, get, set } from "firebase/database";
+import { storage, database, auth } from "../../../firebaseConf";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./EditProfile.css";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState("");
   const [website, setWebsite] = useState("");
-  const [bannerImage, setBannerImage] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchUserData = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const uid = user.uid;
+    const userDetailsRef = dbRef(database, `users/${uid}`);
+
+    try {
+      const snapshot = await get(userDetailsRef);
+      const userData = snapshot.exists() ? snapshot.val() : {};
+
+      setName(userData.name || "");
+      setHeadline(userData.headline || "");
+      setTags(userData.tags || "");
+      setWebsite(userData.website || "");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      fetchUserData();
+    }
+  }, [show]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleImageUpload = (e: any, setImage: any) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setImage: React.Dispatch<React.SetStateAction<File | null>>
+  ) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
   };
 
-  const handleTagChange = (e: any) => {
-    if (e.target.value.split(",").length <= 5) {
-      setTags(e.target.value.split(","));
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsArray = e.target.value.split(",");
+    if (tagsArray.length <= 5) {
+      setTags(e.target.value);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const uid = user.uid;
+    const userDetailsRef = dbRef(database, `users/${uid}`);
+
+    try {
+      const snapshot = await get(userDetailsRef);
+      const currentUserDetails = snapshot.exists() ? snapshot.val() : {};
+
+      let bannerImageUrl = currentUserDetails.banner || ""; // Initialize with current banner URL
+
+      if (bannerImage) {
+        const bannerImageRef = storageRef(
+          storage,
+          `user-banners/banner-${uid}`
+        );
+        await uploadBytes(bannerImageRef, bannerImage);
+        bannerImageUrl = await getDownloadURL(bannerImageRef);
+      }
+
+      let profileImageUrl = currentUserDetails.pic || ""; // Initialize with current profile pic URL
+
+      if (profileImage) {
+        const profileImageRef = storageRef(
+          storage,
+          `profileimg/user-profile-pic-${uid}`
+        );
+        await uploadBytes(profileImageRef, profileImage);
+        profileImageUrl = await getDownloadURL(profileImageRef);
+      }
+
+      const updatedUserDetails = {
+        ...currentUserDetails,
+        banner: bannerImageUrl,
+        email: user.email || currentUserDetails.email,
+        name: name || currentUserDetails.name,
+        headline: headline || currentUserDetails.headline,
+        tags: tags || currentUserDetails.tags,
+        website: website || currentUserDetails.website,
+        pic: profileImageUrl,
+        uid: uid,
+      };
+
+      await set(userDetailsRef, updatedUserDetails);
+      toast.success("User details have been successfully updated");
+      setIsLoading(false);
+      handleClose();
+      window.location.reload();
+    } catch (error) {
+      toast.error("An error occurred while updating user details");
+      setIsLoading(false);
     }
   };
 
@@ -41,7 +141,9 @@ const EditProfile = () => {
               <Form.Control
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
               />
             </Form.Group>
 
@@ -50,7 +152,9 @@ const EditProfile = () => {
               <Form.Control
                 type="text"
                 value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setHeadline(e.target.value)
+                }
               />
             </Form.Group>
 
@@ -58,7 +162,7 @@ const EditProfile = () => {
               <Form.Label>Tags (max 5)</Form.Label>
               <Form.Control
                 type="text"
-                value={tags.join(",")}
+                value={tags}
                 onChange={handleTagChange}
               />
             </Form.Group>
@@ -68,7 +172,9 @@ const EditProfile = () => {
               <Form.Control
                 type="text"
                 value={website}
-                onChange={(e) => setWebsite(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setWebsite(e.target.value)
+                }
               />
             </Form.Group>
 
@@ -76,7 +182,9 @@ const EditProfile = () => {
               <Form.Label>Banner Image</Form.Label>
               <Form.Control
                 type="file"
-                onChange={(e) => handleImageUpload(e, setBannerImage)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleImageUpload(e, setBannerImage)
+                }
               />
             </Form.Group>
 
@@ -84,7 +192,9 @@ const EditProfile = () => {
               <Form.Label>Profile Image</Form.Label>
               <Form.Control
                 type="file"
-                onChange={(e) => handleImageUpload(e, setProfileImage)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleImageUpload(e, setProfileImage)
+                }
               />
             </Form.Group>
           </Form>
@@ -93,11 +203,12 @@ const EditProfile = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </>
   );
 };
