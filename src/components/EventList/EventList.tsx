@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination, Spinner } from "react-bootstrap";
+import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
+import "./EventList.css";
 import {
   auth,
   firestore,
@@ -38,9 +39,41 @@ const EventList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortedEvents, setSortedEvents] = useState<any[]>([]);
+
+  const [sortOption, setSortOption] = useState<
+    "All" | "Ongoing" | "Past" | "Upcoming"
+  >("All");
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const sortEvents = (
+    events: any[],
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ): any[] => {
+    const now = new Date();
+    switch (option) {
+      case "Ongoing":
+        return events.filter((event) => {
+          const eventDate = new Date(`${event.date} ${event.time}`);
+          const eventEndDate = new Date(eventDate);
+          eventEndDate.setHours(eventDate.getHours() + 2); // Assuming events last 2 hours
+          return eventDate <= now && now <= eventEndDate;
+        });
+      case "Past":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) < now
+        );
+      case "Upcoming":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) > now
+        );
+      case "All":
+      default:
+        return events;
+    }
   };
 
   useEffect(() => {
@@ -57,6 +90,8 @@ const EventList = () => {
           res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
           // console.log(res)
           setEventCardsData(res);
+          const filteredEvents = sortEvents(res, sortOption);
+          setSortedEvents(filteredEvents);
         }
 
         setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
@@ -69,6 +104,29 @@ const EventList = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filteredEvents = sortEvents(eventCardsData, sortOption);
+    setSortedEvents(filteredEvents);
+    setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+  }, [eventCardsData, sortOption]);
+
+  const renderNoEventsMessage = (
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ) => {
+    switch (option) {
+      case "Upcoming":
+        return "No upcoming events found";
+      case "Past":
+        return "No past events found";
+      case "Ongoing":
+        return "No ongoing events found";
+      case "All":
+      default:
+        return "No events found";
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -80,38 +138,80 @@ const EventList = () => {
           <h1
             style={{
               textAlign: "center",
-              marginBottom: "2em",
-              marginTop: "1em",
+              marginBottom: "1em",
+              marginTop: "3em",
             }}
           >
             All Events
           </h1>
-          {eventCardsData
-            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-            .map((card: Event, index) => {
-              const user_uid = localStorage.getItem("userUid");
-              let isRegistered = false;
-              if (card.registrants.includes(user_uid!)) {
-                isRegistered = true;
-              }
-              return (
-                <EventCard
-                  isValid={true}
-                  id={card.id}
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  date={card.date}
-                  time={card.time}
-                  tags={card.tags}
-                  host={card.host}
-                  isDashboard={false}
-                  image={card.banner}
-                  isRegistered={isRegistered}
-                  hostName={card.hostName}
-                />
-              );
-            })}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "1em",
+              marginRight: "15%",
+            }}
+          >
+            <DropdownButton
+              id="dropdown-basic-button"
+              title={`Sort by: ${sortOption}`}
+              variant="dark"
+              onSelect={(e: any) => {
+                setSortOption(e);
+                setCurrentPage(1); // Reset to first page when sort option changes
+              }}
+              style={{ marginBottom: "1em", textAlign: "center" }}
+            >
+              <Dropdown.Item eventKey="All">All Events</Dropdown.Item>
+              <Dropdown.Item eventKey="Upcoming">Upcoming</Dropdown.Item>
+              <Dropdown.Item eventKey="Ongoing">Ongoing</Dropdown.Item>
+              <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
+            </DropdownButton>
+          </div>
+          {sortedEvents.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "5em",
+                fontSize: "20px",
+              }}
+            >
+              {renderNoEventsMessage(sortOption)}
+            </div>
+          ) : (
+            sortedEvents
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map((card: Event, index) => {
+                  const user_uid = localStorage.getItem("userUid");
+                  let isRegistered = false;
+                  if (card.registrants.includes(user_uid!)) {
+                    isRegistered = true;
+                  }
+                  return (
+                    <div className="event-card-wrapper" key={index}>
+                    <EventCard
+                    isValid={true}
+                    id={card.id}
+                    key={index}
+                    title={card.title}
+                    description={card.description}
+                    date={card.date}
+                    time={card.time}
+                    tags={card.tags}
+                    host={card.host}
+                    isDashboard={false}
+                    image={card.banner}
+                    isRegistered={isRegistered}
+                    hostName={card.hostName}
+                  />
+                    </div>
+                  );
+                }
+              )
+          )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((e, i) => (
