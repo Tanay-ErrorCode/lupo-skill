@@ -10,6 +10,7 @@ import { storage, database, auth } from "../../../firebaseConf";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./EditProfile.css";
+import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
@@ -17,6 +18,9 @@ const EditProfile = () => {
   const [headline, setHeadline] = useState("");
   const [tags, setTags] = useState("");
   const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [facebook, setFacebook] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +40,9 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       setTags(userData.tags || "");
       setWebsite(userData.website || "");
+      setInstagram(userData.instagram || "");
+      setTwitter(userData.twitter || "");
+      setFacebook(userData.facebook || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -122,6 +129,9 @@ const EditProfile = () => {
         headline: headline || currentUserDetails.headline,
         tags: tags || currentUserDetails.tags,
         website: website || currentUserDetails.website,
+        instagram: instagram || currentUserDetails.instagram,
+        twitter: twitter || currentUserDetails.twitter,
+        facebook: facebook || currentUserDetails.facebook,
         pic: profileImageUrl,
         uid: uid,
       };
@@ -187,6 +197,45 @@ const EditProfile = () => {
                 value={website}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setWebsite(e.target.value)
+                }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                <Instagram />
+                Instagram URL
+              </Form.Label>
+              <Form.Control
+                type="text"
+                value={instagram}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setInstagram(e.target.value)
+                }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                <Twitter />
+                Twitter URL
+              </Form.Label>
+              <Form.Control
+                type="text"
+                value={twitter}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTwitter(e.target.value)
+                }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                <Facebook />
+                Facebook URL
+              </Form.Label>
+              <Form.Control
+                type="text"
+                value={facebook}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFacebook(e.target.value)
                 }
               />
             </Form.Group>

@@ -18,6 +18,7 @@ import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
+import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 
 interface Event {
   banner: string;
@@ -114,6 +115,11 @@ const ProfilePage = () => {
       ) as HTMLParagraphElement;
       const tags = document.getElementById("tags") as HTMLElement;
       const website = document.getElementById("website") as HTMLSpanElement;
+      const instagram = document.getElementById(
+        "instagram"
+      ) as HTMLAnchorElement;
+      const twitter = document.getElementById("twitter") as HTMLAnchorElement;
+      const facebook = document.getElementById("facebook") as HTMLAnchorElement;
       const userName = document.getElementById(
         "user-name"
       ) as HTMLHeadingElement;
@@ -127,6 +133,9 @@ const ProfilePage = () => {
       headline.innerText = userData.headline || "Developer";
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
+      instagram.href = userData.instagram || "#";
+      twitter.href = userData.twitter || "#";
+      facebook.href = userData.facebook || "#";
       profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.pic || default_user;
 
@@ -221,6 +230,41 @@ const ProfilePage = () => {
                   <span className="text-secondary" id="website">
                     NAN
                   </span>
+                  <div className="social-media-list d-flex justify-content-center align-items-center flex-wrap">
+                    <div className="social-media-item">
+                      <a
+                        id="instagram"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Instagram className="instagram-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="twitter"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Twitter className="twitter-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="facebook"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Facebook className="facebook-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                  </div>
                 </li>
               </ul>
             </Card.Body>
