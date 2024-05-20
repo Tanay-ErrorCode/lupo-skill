@@ -27,7 +27,7 @@ interface Event {
   host: string;
   hostName: string;
   id: string;
-  registrants: string;
+  registrants: string[];
   tags: string;
   time: string;
   title: string;
@@ -39,8 +39,7 @@ const EventList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [sortedEvents, setSortedEvents] = useState<any[]>([]);
-
+  const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
   const [sortOption, setSortOption] = useState<
     "All" | "Ongoing" | "Past" | "Upcoming"
   >("All");
@@ -50,9 +49,9 @@ const EventList = () => {
   };
 
   const sortEvents = (
-    events: any[],
+    events: Event[],
     option: "All" | "Ongoing" | "Past" | "Upcoming"
-  ): any[] => {
+  ): Event[] => {
     const now = new Date();
     switch (option) {
       case "Ongoing":
@@ -81,21 +80,16 @@ const EventList = () => {
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
-        // setEventCardsData(Object.values(snapshot.val()));
-        // eventCardsData.push(Object.values(snapshot.val()));
-
         const snapshotValue = snapshot.val();
         if (snapshotValue !== null && typeof snapshotValue === "object") {
           const res: Event[] = Object.values(snapshotValue) as Event[];
           res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
-          // console.log(res)
           setEventCardsData(res);
           const filteredEvents = sortEvents(res, sortOption);
           setSortedEvents(filteredEvents);
+          setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+          setIsLoading(false);
         }
-
-        setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-        setIsLoading(false);
       } else {
         console.log("No data available");
         setIsLoading(false);
@@ -135,23 +129,10 @@ const EventList = () => {
         </div>
       ) : (
         <>
-          <h1
-            style={{
-              textAlign: "center",
-              marginBottom: "1em",
-              marginTop: "3em",
-            }}
-          >
+          <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
             All Events
           </h1>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginBottom: "1em",
-              marginRight: "15%",
-            }}
-          >
+          <div className="d-flex justify-content-center">
             <DropdownButton
               id="dropdown-basic-button"
               title={`Sort by: ${sortOption}`}
@@ -185,36 +166,32 @@ const EventList = () => {
                 currentPage * itemsPerPage
               )
               .map((card: Event, index) => {
-                  const user_uid = localStorage.getItem("userUid");
-                  let isRegistered = false;
-                  if (card.registrants.includes(user_uid!)) {
-                    isRegistered = true;
-                  }
-                  return (
-                    <div className="event-card-wrapper" key={index}>
+                const user_uid = localStorage.getItem("userUid");
+                const isRegistered = card.registrants.includes(user_uid!);
+                return (
+                  <div className="event-card-wrapper" key={index}>
                     <EventCard
-                    isValid={true}
-                    id={card.id}
-                    key={index}
-                    title={card.title}
-                    description={card.description}
-                    date={card.date}
-                    time={card.time}
-                    tags={card.tags}
-                    host={card.host}
-                    isDashboard={false}
-                    image={card.banner}
-                    isRegistered={isRegistered}
-                    hostName={card.hostName}
-                  />
-                    </div>
-                  );
-                }
-              )
+                      isValid={true}
+                      id={card.id}
+                      key={index}
+                      title={card.title}
+                      description={card.description}
+                      date={card.date}
+                      time={card.time}
+                      tags={card.tags}
+                      host={card.host}
+                      isDashboard={false}
+                      image={card.banner}
+                      isRegistered={isRegistered}
+                      hostName={card.hostName}
+                    />
+                  </div>
+                );
+              })
           )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
-              {[...Array(totalPages)].map((e, i) => (
+              {[...Array(totalPages)].map((_, i) => (
                 <Pagination.Item
                   key={i + 1}
                   active={i + 1 === currentPage}
