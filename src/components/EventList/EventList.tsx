@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
@@ -19,13 +19,28 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-const EventList: React.FC = () => {
+interface Event {
+  banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
+  host: string;
+  hostName: string;
+  id: string;
+  registrants: string;
+  tags: string;
+  time: string;
+  title: string;
+}
+
+const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
-  const [eventCardsData, setEventCardsData] = useState<any[]>([]);
-  const [sortedEvents, setSortedEvents] = useState<any[]>([]);
+  const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortedEvents, setSortedEvents] = useState<any[]>([]);
+
   const [sortOption, setSortOption] = useState<
     "All" | "Ongoing" | "Past" | "Upcoming"
   >("All");
@@ -66,11 +81,20 @@ const EventList: React.FC = () => {
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
-        const events: any[] = Object.values(snapshot.val());
-        setEventCardsData(events);
-        const filteredEvents = sortEvents(events, sortOption);
-        setSortedEvents(filteredEvents);
-        setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+        // setEventCardsData(Object.values(snapshot.val()));
+        // eventCardsData.push(Object.values(snapshot.val()));
+
+        const snapshotValue = snapshot.val();
+        if (snapshotValue !== null && typeof snapshotValue === "object") {
+          const res: Event[] = Object.values(snapshotValue) as Event[];
+          res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+          // console.log(res)
+          setEventCardsData(res);
+          const filteredEvents = sortEvents(res, sortOption);
+          setSortedEvents(filteredEvents);
+        }
+
+        setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
         setIsLoading(false);
       } else {
         console.log("No data available");
@@ -160,22 +184,7 @@ const EventList: React.FC = () => {
                 (currentPage - 1) * itemsPerPage,
                 currentPage * itemsPerPage
               )
-              .map(
-                (
-                  card: {
-                    id: string;
-                    title: string;
-                    description: string;
-                    date: string;
-                    time: string;
-                    tags: string;
-                    banner: string;
-                    host: string;
-                    registrants: string[];
-                    hostName: string;
-                  },
-                  index
-                ) => {
+              .map((card: Event, index) => {
                   const user_uid = localStorage.getItem("userUid");
                   let isRegistered = false;
                   if (card.registrants.includes(user_uid!)) {
@@ -183,21 +192,21 @@ const EventList: React.FC = () => {
                   }
                   return (
                     <div className="event-card-wrapper" key={index}>
-                      <EventCard
-                        isValid={true}
-                        id={card.id}
-                        key={index}
-                        title={card.title}
-                        description={card.description}
-                        date={card.date}
-                        time={card.time}
-                        tags={card.tags}
-                        host={card.host}
-                        isDashboard={false}
-                        image={card.banner}
-                        isRegistered={isRegistered}
-                        hostName={card.hostName}
-                      />
+                    <EventCard
+                    isValid={true}
+                    id={card.id}
+                    key={index}
+                    title={card.title}
+                    description={card.description}
+                    date={card.date}
+                    time={card.time}
+                    tags={card.tags}
+                    host={card.host}
+                    isDashboard={false}
+                    image={card.banner}
+                    isRegistered={isRegistered}
+                    hostName={card.hostName}
+                  />
                     </div>
                   );
                 }
