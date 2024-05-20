@@ -114,7 +114,7 @@ const ProfilePage = () => {
       ) as HTMLParagraphElement;
       const tags = document.getElementById("tags") as HTMLElement;
       const website = document.getElementById("website") as HTMLSpanElement;
-      const instagram = document.getElementById("website") as HTMLSpanElement;
+      const instagram = document.getElementById("instagram") as HTMLSpanElement;
       const twitter = document.getElementById("twitter") as HTMLSpanElement;
       const facebook = document.getElementById("facebook") as HTMLSpanElement;
       const userName = document.getElementById(
@@ -228,7 +228,7 @@ const ProfilePage = () => {
                     NAN
                   </span>
                 </li>
-                <li className="social-media-list">
+                <li className="social-media-list list-group-item d-flex justify-content-between align-items-center flex-wrap">
                   <div className="social-media-item">
                     <Instagram className="instagram-icon" />
                     <span className="text-secondary" id="instagram">
