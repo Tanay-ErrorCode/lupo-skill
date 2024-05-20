@@ -7,7 +7,7 @@ import {
 } from "firebase/storage";
 import { ref as dbRef, get, set } from "firebase/database";
 import { storage, database, auth } from "../../../firebaseConf";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./EditProfile.css";
 
@@ -54,8 +54,21 @@ const EditProfile = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     setImage: React.Dispatch<React.SetStateAction<File | null>>
   ) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check if the file type is an image
+      if (file.type && file.type.startsWith("image/")) {
+        setImage(file);
+      } else {
+        // Display error for non-image file types
+        setImage(null);
+        toast.error("Please select a valid image file (JPEG/PNG)", {
+          transition: Zoom,
+        });
+
+        // Reset the file input element to clear the selected file
+        e.target.value = "";
+      }
     }
   };
 
@@ -182,6 +195,7 @@ const EditProfile = () => {
               <Form.Label>Banner Image</Form.Label>
               <Form.Control
                 type="file"
+                accept="image/*"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleImageUpload(e, setBannerImage)
                 }
@@ -192,6 +206,7 @@ const EditProfile = () => {
               <Form.Label>Profile Image</Form.Label>
               <Form.Control
                 type="file"
+                accept="image/*"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleImageUpload(e, setProfileImage)
                 }
