@@ -18,12 +18,12 @@ const EditProfile = () => {
   const [headline, setHeadline] = useState("");
   const [tags, setTags] = useState("");
   const [website, setWebsite] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [facebook, setFacebook] = useState("");
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -40,12 +40,8 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      setInstagram(userData.instagram || "");
-      setTwitter(userData.twitter || "");
-      setFacebook(userData.facebook || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
-      toast.error("Error fetching user data");
     }
   };
 
@@ -64,13 +60,17 @@ const EditProfile = () => {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.type.startsWith("image/")) {
+      // Check if the file type is an image
+      if (file.type && file.type.startsWith("image/")) {
         setImage(file);
       } else {
+        // Display error for non-image file types
         setImage(null);
         toast.error("Please select a valid image file (JPEG/PNG)", {
           transition: Zoom,
         });
+
+        // Reset the file input element to clear the selected file
         e.target.value = "";
       }
     }
@@ -80,8 +80,6 @@ const EditProfile = () => {
     const tagsArray = e.target.value.split(",");
     if (tagsArray.length <= 5) {
       setTags(e.target.value);
-    } else {
-      toast.error("You can add up to 5 tags only", { transition: Zoom });
     }
   };
 
@@ -89,11 +87,7 @@ const EditProfile = () => {
     setIsLoading(true);
 
     const user = auth.currentUser;
-    if (!user) {
-      toast.error("User not authenticated", { transition: Zoom });
-      setIsLoading(false);
-      return;
-    }
+    if (!user) return;
 
     const uid = user.uid;
     const userDetailsRef = dbRef(database, `users/${uid}`);
@@ -102,7 +96,7 @@ const EditProfile = () => {
       const snapshot = await get(userDetailsRef);
       const currentUserDetails = snapshot.exists() ? snapshot.val() : {};
 
-      let bannerImageUrl = currentUserDetails.banner || "";
+      let bannerImageUrl = currentUserDetails.banner || ""; // Initialize with current banner URL
 
       if (bannerImage) {
         const bannerImageRef = storageRef(
@@ -113,7 +107,7 @@ const EditProfile = () => {
         bannerImageUrl = await getDownloadURL(bannerImageRef);
       }
 
-      let profileImageUrl = currentUserDetails.pic || "";
+      let profileImageUrl = currentUserDetails.pic || ""; // Initialize with current profile pic URL
 
       if (profileImage) {
         const profileImageRef = storageRef(
@@ -140,17 +134,12 @@ const EditProfile = () => {
       };
 
       await set(userDetailsRef, updatedUserDetails);
-      toast.success("User details have been successfully updated", {
-        transition: Zoom,
-      });
+      toast.success("User details have been successfully updated");
+      setIsLoading(false);
       handleClose();
-      window.location.reload(); // Consider if this is necessary
+      window.location.reload();
     } catch (error) {
-      console.error("Error updating user details:", error);
-      toast.error("An error occurred while updating user details", {
-        transition: Zoom,
-      });
-    } finally {
+      toast.error("An error occurred while updating user details");
       setIsLoading(false);
     }
   };
@@ -247,7 +236,6 @@ const EditProfile = () => {
                 }
               />
             </Form.Group>
-
             <Form.Group>
               <Form.Label>Banner Image</Form.Label>
               <Form.Control
