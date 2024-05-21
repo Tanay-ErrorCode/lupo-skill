@@ -175,7 +175,8 @@ const CreateEvent = ({ props }: any) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const newTag = popTags.trim();
-    if (e.key === "Enter" && newTag !== "") {
+    const tagsArray = tags.split(", ").length;
+    if (e.key === "Enter" && newTag !== "" && tagsArray < 5) {
       setTags((prevTags) => (prevTags ? `${prevTags}, ${newTag}` : newTag));
       setListTags((prev) => [...prev, newTag]);
       setPopTags("");
@@ -248,7 +249,7 @@ const CreateEvent = ({ props }: any) => {
             </Form.Group>
 
             <Form.Group controlId="formTags">
-              <Form.Label>Tags</Form.Label>
+              <Form.Label>Tags (max 5)</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter tags"
