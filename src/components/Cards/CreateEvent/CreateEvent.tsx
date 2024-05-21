@@ -26,7 +26,8 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 function generateUUID() {
   var d = new Date().getTime();
   var d2 =
@@ -60,6 +61,8 @@ const CreateEvent = ({ props }: any) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
+  const [popTags, setPopTags] = useState<string>("");
+  const [listTags, setListTags] = useState<string[]>([]);
 
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
@@ -170,6 +173,24 @@ const CreateEvent = ({ props }: any) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const newTag = popTags.trim();
+    if (e.key === "Enter" && newTag !== "") {
+      setTags((prevTags) => (prevTags ? `${prevTags}, ${newTag}` : newTag));
+      setListTags((prev) => [...prev, newTag]);
+      setPopTags("");
+    }
+  };
+
+  const handleDelete = (tag: string) => {
+    setListTags(listTags.filter((ele) => ele !== tag));
+    setTags((prevTags) =>
+      prevTags
+        .split(", ")
+        .filter((ele) => ele !== tag)
+        .join(", ")
+    );
+  };
   return (
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
@@ -231,8 +252,23 @@ const CreateEvent = ({ props }: any) => {
               <Form.Control
                 type="text"
                 placeholder="Enter tags"
-                onChange={(e) => setTags(e.target.value)}
+                onChange={(e) => setPopTags(e.target.value)}
+                onKeyDown={handleKeyDown}
+                value={popTags}
               />
+              <Stack direction="row" className="mt-2" spacing={1}>
+                {listTags.map((ele, index) => {
+                  return (
+                    <Chip
+                      key={index}
+                      label={ele}
+                      onDelete={() => handleDelete(ele)}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                })}
+              </Stack>
             </Form.Group>
             <Form.Group controlId="formImageUpload">
               <Form.Label>Image</Form.Label>
