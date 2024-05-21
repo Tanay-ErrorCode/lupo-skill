@@ -40,6 +40,9 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       setTags(userData.tags || "");
       setWebsite(userData.website || "");
+      setInstagram(userData.instagram || "");
+      setTwitter(userData.twitter || "");
+      setFacebook(userData.facebook || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
