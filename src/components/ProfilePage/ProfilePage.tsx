@@ -71,10 +71,12 @@ const ProfilePage = () => {
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
           const userData = snapshot.val();
+          console.log("Fetched user data:", userData); // Debug log
           updateProfileData(userData);
 
           if (userData.createdEvents) {
             const createdEvents = await fetchEvents(userData.createdEvents);
+            console.log("Fetched created events:", createdEvents); // Debug log
             setCreatedEventCardsData(createdEvents);
             setTotalCreatedPages(
               Math.ceil(createdEvents.length / itemsPerPage)
@@ -82,6 +84,7 @@ const ProfilePage = () => {
           }
           if (userData.registeredEvents) {
             const joinedEvents = await fetchEvents(userData.registeredEvents);
+            console.log("Fetched joined events:", joinedEvents); // Debug log
             setJoinedEventCardsData(joinedEvents);
             setTotalJoinedPages(Math.ceil(joinedEvents.length / itemsPerPage));
           }
@@ -133,9 +136,15 @@ const ProfilePage = () => {
       headline.innerText = userData.headline || "Developer";
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
-      instagram.href = userData.instagram || "#";
-      twitter.href = userData.twitter || "#";
-      facebook.href = userData.facebook || "#";
+      instagram.href = userData.instagram || "";
+      instagram.style.opacity = userData.instagram ? "1.0" : "0.4";
+      instagram.style.pointerEvents = userData.instagram ? "auto" : "none";
+      twitter.href = userData.twitter || "";
+      twitter.style.opacity = userData.twitter ? "1.0" : "0.4";
+      twitter.style.pointerEvents = userData.twitter ? "auto" : "none";
+      facebook.href = userData.facebook || "";
+      facebook.style.opacity = userData.facebook ? "1.0" : "0.4";
+      facebook.style.pointerEvents = userData.facebook ? "auto" : "none";
       profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.pic || default_user;
 
@@ -234,7 +243,7 @@ const ProfilePage = () => {
                     <div className="social-media-item">
                       <a
                         id="instagram"
-                        href="#"
+                        href=""
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -245,7 +254,7 @@ const ProfilePage = () => {
                     <div className="social-media-item">
                       <a
                         id="twitter"
-                        href="#"
+                        href=""
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -256,7 +265,7 @@ const ProfilePage = () => {
                     <div className="social-media-item">
                       <a
                         id="facebook"
-                        href="#"
+                        href=""
                         target="_blank"
                         rel="noopener noreferrer"
                       >
