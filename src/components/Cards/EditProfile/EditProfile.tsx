@@ -38,7 +38,7 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      setTags(userData.tags || "");
+      // setTags(userData.tags || "");
       setWebsite(userData.website || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
