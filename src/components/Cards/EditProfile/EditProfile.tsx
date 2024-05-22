@@ -121,20 +121,18 @@ const EditProfile = () => {
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
-      const updatedUserDetails = {
-        ...currentUserDetails,
-        banner: bannerImageUrl,
-        email: user.email || currentUserDetails.email,
-        name: name || currentUserDetails.name,
-        headline: headline || currentUserDetails.headline,
-        tags: tags || currentUserDetails.tags,
-        website: website || currentUserDetails.website,
-        instagram: instagram || currentUserDetails.instagram,
-        twitter: twitter || currentUserDetails.twitter,
-        facebook: facebook || currentUserDetails.facebook,
-        pic: profileImageUrl,
-        uid: uid,
-      };
+      const updatedUserDetails = { ...currentUserDetails };
+
+      if (name) updatedUserDetails.name = name;
+      if (headline) updatedUserDetails.headline = headline;
+      if (tags) updatedUserDetails.tags = tags;
+      if (website) updatedUserDetails.website = website;
+      if (instagram) updatedUserDetails.instagram = instagram;
+      if (twitter) updatedUserDetails.twitter = twitter;
+      if (facebook) updatedUserDetails.facebook = facebook;
+
+      updatedUserDetails.banner = bannerImageUrl;
+      updatedUserDetails.pic = profileImageUrl;
 
       await set(userDetailsRef, updatedUserDetails);
       toast.success("User details have been successfully updated");
