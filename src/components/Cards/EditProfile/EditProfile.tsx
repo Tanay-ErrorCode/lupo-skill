@@ -205,25 +205,34 @@ const EditProfile = () => {
               </Form.Label>
               <Form.Control
                 type="text"
-                value={instagram}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setInstagram(e.target.value)
-                }
+                value={instagram.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setInstagram(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
+
             <Form.Group>
               <Form.Label>
-                <Twitter />
-                Twitter URL
+                <Twitter /> Twitter URL
               </Form.Label>
               <Form.Control
                 type="text"
-                value={twitter}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setTwitter(e.target.value)
-                }
+                value={twitter.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setTwitter(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
+
             <Form.Group>
               <Form.Label>
                 <Facebook />
@@ -231,12 +240,17 @@ const EditProfile = () => {
               </Form.Label>
               <Form.Control
                 type="text"
-                value={facebook}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFacebook(e.target.value)
-                }
+                value={facebook.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setFacebook(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
+
             <Form.Group>
               <Form.Label>Banner Image</Form.Label>
               <Form.Control
