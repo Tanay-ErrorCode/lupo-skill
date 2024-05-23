@@ -11,12 +11,16 @@ import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageCropper from "../../../utils/ImageCropper"; // Import the ImageCropper component
 import "./EditProfile.css";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
   const [tags, setTags] = useState("");
+  const [popTags, setPopTags] = useState("");
+  const [listTags, setListTags] = useState<string[]>([]);
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -37,7 +41,7 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      setTags(userData.tags || "");
+      // setTags(userData.tags || "");
       setWebsite(userData.website || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -76,13 +80,24 @@ const EditProfile = () => {
     }
   };
 
-  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tagsArray = e.target.value.split(",");
-    if (tagsArray.length <= 5) {
-      setTags(e.target.value);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const newTag = popTags.trim();
+    const tagsArray = tags.split(", ").length;
+    if (e.key === "Enter" && newTag !== "" && tagsArray < 5) {
+      setTags((prevTags) => (prevTags ? `${prevTags}, ${newTag}` : newTag));
+      setListTags((prev) => [...prev, newTag]);
+      setPopTags("");
     }
   };
 
+  const handleDelete = (tag: string) => {
+    setListTags(listTags.filter((ele) => ele !== tag));
+    setTags((prevTags) =>
+      prevTags
+        .split(", ")
+        .filter((ele) => ele !== tag)
+        .join(", ")
+    )}
   const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
     setCroppedImageUrl(croppedImageUrl);
     setShowCropperModal(false); // Close the cropper modal after saving
@@ -197,9 +212,23 @@ const EditProfile = () => {
               <Form.Label>Tags (max 5)</Form.Label>
               <Form.Control
                 type="text"
-                value={tags}
-                onChange={handleTagChange}
+                onChange={(e) => setPopTags(e.target.value)}
+                onKeyDown={handleKeyDown}
+                value={popTags}
               />
+              <Stack direction="row" className="mt-2" spacing={1}>
+                {listTags.map((ele, index) => {
+                  return (
+                    <Chip
+                      key={index}
+                      label={ele}
+                      onDelete={() => handleDelete(ele)}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                })}
+              </Stack>
             </Form.Group>
 
             <Form.Group>
