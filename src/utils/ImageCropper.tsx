@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
+import React, { useState, useCallback } from "react";
+import Cropper from "react-easy-crop";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
+import { Area } from "react-easy-crop/types"; // Import the necessary types
 
 interface ImageCropperProps {
   src: string;
@@ -9,35 +10,81 @@ interface ImageCropperProps {
   aspectRatio: number;
 }
 
-type CropperElement = HTMLImageElement & {
-  cropper: Cropper;
-};
-
 const ImageCropper: React.FC<ImageCropperProps> = ({
   src,
   setCroppedImageUrl,
   aspectRatio,
 }) => {
-  const cropperRef = useRef<CropperElement>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null); // Define type for croppedAreaPixels
 
-  const handleCrop = () => {
-    const cropper = cropperRef.current?.cropper;
-    if (cropper) {
-      const croppedCanvas = cropper.getCroppedCanvas();
-      const croppedImageUrl = croppedCanvas ? croppedCanvas.toDataURL() : null;
+  const onCropComplete = useCallback(
+    (croppedArea: Area, croppedAreaPixels: Area) => {
+      // Define types for parameters
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    []
+  );
+
+  const handleCrop = async () => {
+    if (croppedAreaPixels) {
+      const croppedImageUrl = await getCroppedImg(src, croppedAreaPixels);
       setCroppedImageUrl(croppedImageUrl);
     }
   };
 
+  const getCroppedImg = (
+    imageSrc: string,
+    crop: Area
+  ): Promise<string | null> => {
+    const image = new Image();
+    image.src = imageSrc;
+    return new Promise((resolve, reject) => {
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          const scaleX = image.naturalWidth / image.width;
+          const scaleY = image.naturalHeight / image.height;
+          canvas.width = crop.width;
+          canvas.height = crop.height;
+          ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height
+          );
+          resolve(canvas.toDataURL("image/jpeg"));
+        } else {
+          reject(null);
+        }
+      };
+      image.onerror = () => {
+        reject(null);
+      };
+    });
+  };
+
   return (
     <div>
-      <Cropper
-        src={src}
-        style={{ height: 400, width: "100%" }}
-        aspectRatio={aspectRatio}
-        guides={false}
-        ref={cropperRef}
-      />
+      <div style={{ position: "relative", width: "100%", height: 400 }}>
+        <Cropper
+          image={src}
+          crop={crop}
+          zoom={zoom}
+          aspect={aspectRatio}
+          onCropChange={setCrop}
+          onCropComplete={onCropComplete}
+          onZoomChange={setZoom}
+        />
+      </div>
       <Button
         className="mt-5 text-center items-center"
         variant="primary"
