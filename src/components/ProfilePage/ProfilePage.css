@@ -3,6 +3,7 @@
   width: 100px;
   height: 100px;
   object-fit: cover;
+  pointer-events: none;
 }
 .social-media-list {
   display: flex;
@@ -22,7 +23,7 @@
   color: #e4405f;
 }
 
-.twitter-icon {
+.x-icon {
   font-size: 24px;
   color: rgb(29, 161, 242);
 }
