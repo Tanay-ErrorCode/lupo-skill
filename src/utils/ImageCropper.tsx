@@ -74,7 +74,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
   return (
     <div>
-      <div style={{ position: "relative", width: "100%", height: 400 }}>
+      <div style={{ position: "relative", width: "100%", height: 450 }}>
         <Cropper
           image={src}
           crop={crop}

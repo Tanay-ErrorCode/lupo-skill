@@ -18,6 +18,8 @@ import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
+import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import { X } from "@mui/icons-material";
 
 interface Event {
   banner: string;
@@ -107,13 +109,17 @@ const ProfilePage = () => {
       const events = await Promise.all(eventPromises);
       return events.filter((event): event is Event => event !== null);
     };
-
     const updateProfileData = (userData: any) => {
       const headline = document.getElementById(
         "headline"
       ) as HTMLParagraphElement;
       const tags = document.getElementById("tags") as HTMLElement;
       const website = document.getElementById("website") as HTMLSpanElement;
+      const instagram = document.getElementById(
+        "instagram"
+      ) as HTMLAnchorElement;
+      const twitter = document.getElementById("twitter") as HTMLAnchorElement;
+      const facebook = document.getElementById("facebook") as HTMLAnchorElement;
       const userName = document.getElementById(
         "user-name"
       ) as HTMLHeadingElement;
@@ -127,6 +133,53 @@ const ProfilePage = () => {
       headline.innerText = userData.headline || "Developer";
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
+
+      const isValidUrl = (url: string) => {
+        return url.startsWith("https://");
+      };
+
+      if (
+        userData.instagram &&
+        isValidUrl(userData.instagram.trim()) &&
+        userData.instagram != "https://" &&
+        userData.instagram != ""
+      ) {
+        instagram.href = userData.instagram;
+        instagram.style.opacity = "1.0";
+        instagram.style.pointerEvents = "auto";
+      } else {
+        instagram.style.opacity = "0.5";
+        instagram.style.pointerEvents = "none";
+      }
+
+      if (
+        userData.twitter &&
+        isValidUrl(userData.twitter.trim()) &&
+        userData.twitter != "https://" &&
+        userData.twitter != ""
+      ) {
+        twitter.href = userData.twitter;
+        twitter.style.opacity = "1.0";
+        twitter.style.pointerEvents = "auto";
+      } else {
+        twitter.style.opacity = "0.5";
+        twitter.style.pointerEvents = "none";
+      }
+
+      if (
+        userData.facebook &&
+        isValidUrl(userData.facebook.trim()) &&
+        userData.facebook != "https://" &&
+        userData.facebook != ""
+      ) {
+        facebook.href = userData.facebook;
+        facebook.style.opacity = "1.0";
+        facebook.style.pointerEvents = "auto";
+      } else {
+        facebook.style.opacity = "0.5";
+        facebook.style.pointerEvents = "none";
+      }
+
       profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.pic || default_user;
 
@@ -163,6 +216,7 @@ const ProfilePage = () => {
                   className="profile-banner"
                   fluid
                   id="profile-banner"
+                  style={{ pointerEvents: "none", borderRadius: "16px" }}
                 />
                 <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
                   <Image
@@ -221,6 +275,41 @@ const ProfilePage = () => {
                   <span className="text-secondary" id="website">
                     NAN
                   </span>
+                  <div className="social-media-list d-flex justify-content-center align-items-center flex-wrap">
+                    <div className="social-media-item">
+                      <a
+                        id="instagram"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Instagram className="instagram-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="twitter"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <X className="x-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="facebook"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Facebook className="facebook-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                  </div>
                 </li>
               </ul>
             </Card.Body>
