@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
   ref as storageRef,
@@ -9,7 +9,7 @@ import { ref as dbRef, get, set } from "firebase/database";
 import { storage, database, auth } from "../../../firebaseConf";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ImageCropper from "../../../utils/ImageCropper"; // Import the ImageCropper component
+import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
 
 const EditProfile = () => {
@@ -23,6 +23,8 @@ const EditProfile = () => {
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showCropperModal, setShowCropperModal] = useState(false);
+  const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
+  const [isBannerImage, setIsBannerImage] = useState(false);
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -57,6 +59,9 @@ const EditProfile = () => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
       setBannerImage(file);
+      setCropperAspectRatio(16 / 9);
+      setIsBannerImage(true);
+      setShowCropperModal(true);
     } else {
       toast.error("Please select a valid image file (JPEG/PNG)", {
         transition: Zoom,
@@ -68,7 +73,9 @@ const EditProfile = () => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
       setProfileImage(file);
-      setShowCropperModal(true); // Show the cropper modal
+      setCropperAspectRatio(1);
+      setIsBannerImage(false);
+      setShowCropperModal(true);
     } else {
       toast.error("Please select a valid image file (JPEG/PNG)", {
         transition: Zoom,
@@ -83,21 +90,93 @@ const EditProfile = () => {
     }
   };
 
-  const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
-    setCroppedImageUrl(croppedImageUrl);
-    setShowCropperModal(false); // Close the cropper modal after saving
+  const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
+    if (croppedImageUrl) {
+      try {
+        const maxFileSize = isBannerImage ? 200000 : 100000;
+        const compressedBlob = await compressAndResizeImage(
+          croppedImageUrl,
+          maxFileSize
+        );
+        const compressedFile = new File([compressedBlob], "croppedImage.jpg", {
+          type: "image/jpeg",
+        });
+
+        if (isBannerImage) {
+          setBannerImage(compressedFile);
+        } else {
+          setProfileImage(compressedFile);
+        }
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        toast.error("An error occurred while compressing the image");
+      }
+    }
+    setShowCropperModal(false);
   };
 
-  const dataURLtoBlob = (dataurl: string) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)?.[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
+  const compressAndResizeImage = (
+    imageUrl: string,
+    maxFileSize: number
+  ): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const maxWidthOrHeight = 1024;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidthOrHeight) {
+            height *= maxWidthOrHeight / width;
+            width = maxWidthOrHeight;
+          }
+        } else {
+          if (height > maxWidthOrHeight) {
+            width *= maxWidthOrHeight / height;
+            height = maxWidthOrHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+
+        const adjustQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size > maxFileSize && quality > 0.1) {
+                quality -= 0.05;
+                ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                ctx?.drawImage(img, 0, 0, width, height);
+                adjustQuality();
+              } else {
+                if (blob) {
+                  resolve(blob);
+                } else {
+                  reject(new Error("Failed to compress image"));
+                }
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+
+        adjustQuality();
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+    });
   };
 
   const handleSubmit = async () => {
@@ -126,13 +205,12 @@ const EditProfile = () => {
 
       let profileImageUrl = currentUserDetails.pic || "";
 
-      if (croppedImageUrl) {
-        const croppedImageBlob = dataURLtoBlob(croppedImageUrl);
+      if (profileImage) {
         const profileImageRef = storageRef(
           storage,
           `user-profile-pics/user-profile-pic-${uid}`
         );
-        await uploadBytes(profileImageRef, croppedImageBlob);
+        await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
@@ -247,10 +325,18 @@ const EditProfile = () => {
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {profileImage && (
+          {profileImage && !isBannerImage && (
             <ImageCropper
               setCroppedImageUrl={handleSaveCroppedImage}
               src={URL.createObjectURL(profileImage)}
+              aspectRatio={cropperAspectRatio}
+            />
+          )}
+          {bannerImage && isBannerImage && (
+            <ImageCropper
+              setCroppedImageUrl={handleSaveCroppedImage}
+              src={URL.createObjectURL(bannerImage)}
+              aspectRatio={cropperAspectRatio}
             />
           )}
         </Modal.Body>

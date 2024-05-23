@@ -5,10 +5,10 @@ import { Button } from "react-bootstrap";
 
 interface ImageCropperProps {
   src: string;
-  setCroppedImageUrl: (url: string | null) => void; // Allow null for unset value
+  setCroppedImageUrl: (url: string | null) => void;
+  aspectRatio: number;
 }
 
-// Define a type for the Cropper instance
 type CropperElement = HTMLImageElement & {
   cropper: Cropper;
 };
@@ -16,14 +16,15 @@ type CropperElement = HTMLImageElement & {
 const ImageCropper: React.FC<ImageCropperProps> = ({
   src,
   setCroppedImageUrl,
+  aspectRatio,
 }) => {
-  const cropperRef = useRef<CropperElement>(null); // Use ref to access Cropper instance
+  const cropperRef = useRef<CropperElement>(null);
 
   const handleCrop = () => {
-    const cropper = cropperRef.current?.cropper; // Access cropper instance
+    const cropper = cropperRef.current?.cropper;
     if (cropper) {
       const croppedCanvas = cropper.getCroppedCanvas();
-      const croppedImageUrl = croppedCanvas ? croppedCanvas.toDataURL() : null; // Handle case when croppedCanvas is null
+      const croppedImageUrl = croppedCanvas ? croppedCanvas.toDataURL() : null;
       setCroppedImageUrl(croppedImageUrl);
     }
   };
@@ -33,10 +34,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       <Cropper
         src={src}
         style={{ height: 400, width: "100%" }}
-        initialAspectRatio={1}
-        aspectRatio={1}
+        aspectRatio={aspectRatio}
         guides={false}
-        ref={cropperRef} // Use ref to access the cropper instance
+        ref={cropperRef}
       />
       <Button
         className="mt-5 text-center items-center"
