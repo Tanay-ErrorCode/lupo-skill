@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
   ref as storageRef,
@@ -9,6 +9,7 @@ import { ref as dbRef, get, set } from "firebase/database";
 import { storage, database, auth } from "../../../firebaseConf";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ImageCropper from "../../../utils/ImageCropper"; // Import the ImageCropper component
 import "./EditProfile.css";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
@@ -23,7 +24,9 @@ const EditProfile = () => {
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCropperModal, setShowCropperModal] = useState(false);
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -54,25 +57,26 @@ const EditProfile = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleImageUpload = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    setImage: React.Dispatch<React.SetStateAction<File | null>>
-  ) => {
+  const handleBannerImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Check if the file type is an image
-      if (file.type && file.type.startsWith("image/")) {
-        setImage(file);
-      } else {
-        // Display error for non-image file types
-        setImage(null);
-        toast.error("Please select a valid image file (JPEG/PNG)", {
-          transition: Zoom,
-        });
+    if (file && file.type.startsWith("image/")) {
+      setBannerImage(file);
+    } else {
+      toast.error("Please select a valid image file (JPEG/PNG)", {
+        transition: Zoom,
+      });
+    }
+  };
 
-        // Reset the file input element to clear the selected file
-        e.target.value = "";
-      }
+  const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setProfileImage(file);
+      setShowCropperModal(true); // Show the cropper modal
+    } else {
+      toast.error("Please select a valid image file (JPEG/PNG)", {
+        transition: Zoom,
+      });
     }
   };
 
@@ -93,7 +97,22 @@ const EditProfile = () => {
         .split(", ")
         .filter((ele) => ele !== tag)
         .join(", ")
-    );
+    )}
+  const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
+    setCroppedImageUrl(croppedImageUrl);
+    setShowCropperModal(false); // Close the cropper modal after saving
+  };
+
+  const dataURLtoBlob = (dataurl: string) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)?.[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   };
 
   const handleSubmit = async () => {
@@ -109,7 +128,7 @@ const EditProfile = () => {
       const snapshot = await get(userDetailsRef);
       const currentUserDetails = snapshot.exists() ? snapshot.val() : {};
 
-      let bannerImageUrl = currentUserDetails.banner || ""; // Initialize with current banner URL
+      let bannerImageUrl = currentUserDetails.banner || "";
 
       if (bannerImage) {
         const bannerImageRef = storageRef(
@@ -120,14 +139,15 @@ const EditProfile = () => {
         bannerImageUrl = await getDownloadURL(bannerImageRef);
       }
 
-      let profileImageUrl = currentUserDetails.pic || ""; // Initialize with current profile pic URL
+      let profileImageUrl = currentUserDetails.pic || "";
 
-      if (profileImage) {
+      if (croppedImageUrl) {
+        const croppedImageBlob = dataURLtoBlob(croppedImageUrl);
         const profileImageRef = storageRef(
           storage,
           `user-profile-pics/user-profile-pic-${uid}`
         );
-        await uploadBytes(profileImageRef, profileImage);
+        await uploadBytes(profileImageRef, croppedImageBlob);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
@@ -227,9 +247,7 @@ const EditProfile = () => {
               <Form.Control
                 type="file"
                 accept="image/*"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleImageUpload(e, setBannerImage)
-                }
+                onChange={handleBannerImageUpload}
               />
             </Form.Group>
 
@@ -238,9 +256,7 @@ const EditProfile = () => {
               <Form.Control
                 type="file"
                 accept="image/*"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleImageUpload(e, setProfileImage)
-                }
+                onChange={handleProfileImageUpload}
               />
             </Form.Group>
           </Form>
@@ -253,6 +269,20 @@ const EditProfile = () => {
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Crop Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {profileImage && (
+            <ImageCropper
+              setCroppedImageUrl={handleSaveCroppedImage}
+              src={URL.createObjectURL(profileImage)}
+            />
+          )}
+        </Modal.Body>
       </Modal>
       <ToastContainer />
     </>
