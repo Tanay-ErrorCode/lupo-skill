@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Spinner, Pagination } from "react-bootstrap";
 import Signup from "../Signup/Signup";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./DashBoard.css";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination } from "react-bootstrap";
 
 import {
   auth,
@@ -43,11 +42,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [totalPages, setTotalPages] = useState(1);
-
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -60,12 +55,11 @@ const Dashboard = () => {
       const usersRef = ref(database, "users");
       const userUid = localStorage.getItem("userUid");
 
-      if (userUid === null) {
+      if (!userUid) {
         console.error("User is not logged In.");
         return;
       }
 
-      // userRef is the reference to the user's data in the database
       const userRef = child(usersRef, userUid);
       const snapshot = await get(userRef);
 
@@ -85,27 +79,25 @@ const Dashboard = () => {
             }
           });
         }
-        eventList.forEach((eventId: string) => {
-          const trimmedEventId = eventId.trim();
-          const eventsRef = ref(database, "events");
-
-          const eventRef = child(eventsRef, trimmedEventId);
-          get(eventRef).then((snapshot) => {
-            if (snapshot.exists()) {
-              const event = snapshot.val();
-              // setEventCardsData((prev: any[]) => [...prev, event]);
-              let data = eventCardsData;
-              data.push(event);
-              data.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
-              setEventCardsData(data);
-              console.log(data);
-              setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-              setIsLoading(false);
+        const fetchedEvents: Event[] = [];
+        await Promise.all(
+          eventList.map(async (eventId: string) => {
+            const trimmedEventId = eventId.trim();
+            const eventsRef = ref(database, "events");
+            const eventRef = child(eventsRef, trimmedEventId);
+            const eventSnapshot = await get(eventRef);
+            if (eventSnapshot.exists()) {
+              const event = eventSnapshot.val();
+              fetchedEvents.push(event);
             } else {
-              console.log("No data available");
+              console.log("No data available for event ID:", trimmedEventId);
             }
-          });
-        });
+          })
+        );
+
+        fetchedEvents.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+        setEventCardsData(fetchedEvents);
+        setTotalPages(Math.ceil(fetchedEvents.length / itemsPerPage));
         setIsLoading(false);
       } else {
         console.log("No data available");
@@ -115,6 +107,12 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -127,7 +125,6 @@ const Dashboard = () => {
             style={{
               textAlign: "center",
               marginBottom: "2em",
-              marginTop: "1em",
             }}
           >
             Created Events
@@ -168,18 +165,11 @@ const Dashboard = () => {
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
-              {[...Array(totalPages)].map((e, i) => (
+              {[...Array(totalPages)].map((_, i) => (
                 <Pagination.Item
                   key={i + 1}
                   active={i + 1 === currentPage}
-                  onClick={() => {
-                    handlePageChange(i + 1);
-                    window.scrollTo({
-                      top: 0,
-                      left: 0,
-                      behavior: "smooth",
-                    });
-                  }}
+                  onClick={() => handlePageChange(i + 1)}
                 >
                   {i + 1}
                 </Pagination.Item>

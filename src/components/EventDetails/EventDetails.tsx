@@ -72,11 +72,7 @@ const EventDetails = () => {
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
-          console.log(
-            !eventData.registrants.split(",").includes(userUid) ||
-              (userUid == null && userUid !== eventData.host),
-            eventData.host
-          );
+
           if (
             (!eventData.registrants.split(",").includes(userUid) ||
               userUid == null) &&
