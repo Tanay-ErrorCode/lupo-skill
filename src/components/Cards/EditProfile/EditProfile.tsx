@@ -15,7 +15,7 @@ import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 
-        const EditProfile = () => {
+const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
@@ -104,7 +104,8 @@ import Stack from "@mui/material/Stack";
         .split(", ")
         .filter((ele) => ele !== tag)
         .join(", ")
-    )}
+    );
+  };
   const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
     setCroppedImageUrl(croppedImageUrl);
     setShowCropperModal(false); // Close the cropper modal after saving

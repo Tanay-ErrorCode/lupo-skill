@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
 import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import { X } from "@mui/icons-material";
-
+const currentUserUid = localStorage.getItem("userUid");
 interface Event {
   banner: string;
   createdAt: number;
@@ -245,7 +245,7 @@ const ProfilePage = () => {
               </div>
 
               <div className="d-flex justify-content-center mt-2">
-                <EditProfile />
+                {currentUserUid === id && <EditProfile />}
               </div>
             </div>
           </div>
