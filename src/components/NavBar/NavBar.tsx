@@ -68,22 +68,15 @@ const NavBar = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="m-auto align-items-center">
             <Nav.Link href="#/" onClick={handleClose}>
-             
-              {/* Close the navbar when Home is clicked */}
               Home
             </Nav.Link>
             <Nav.Link href="#/dashboard" onClick={handleDashboard}>
-              
-              {/* Close the navbar when Dashboard is clicked */}
               Dashboard
             </Nav.Link>
             <Nav.Link href="#/events" onClick={handleClose}>
-             
-              {/* Close the navbar when Events is clicked */}
               Events
             </Nav.Link>
             <CreateEvent onNavLinkClick={handleClose} />
-            {/* Pass handleClose to CreateEvent */}
           </Nav>
           <Nav className="align-items-center">
             {!is_signup ? (
@@ -106,7 +99,7 @@ const NavBar = () => {
                   <NavDropdown.Item
                     href={"#/profile/" + (userUid ? userUid : "")}
                     className="text-success  nav-profile-dropdown"
-                    onClick={handleClose} // Close the navbar when View Profile is clicked
+                    onClick={handleClose}
                   >
                     View Profile
                   </NavDropdown.Item>
@@ -115,7 +108,7 @@ const NavBar = () => {
                     className="text-danger  nav-profile-dropdown"
                     onClick={() => {
                       signOutUser();
-                      handleClose(); // Close the navbar when Logout is clicked
+                      handleClose(); 
                     }}
                   >
                     Logout
