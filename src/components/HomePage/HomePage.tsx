@@ -301,6 +301,10 @@ const HomePage = () => {
                 >
                   Give us a star! ⭐
                 </Typography>
+                <Link
+                  to={"https://github.com/Tanay-ErrorCode/lupo-skill"}
+                  style={{ textDecoration: "none" }}
+                >
                 <CustomButton
                   icon={<GitHubIcon />}
                   text="Star on GitHub"
@@ -309,6 +313,7 @@ const HomePage = () => {
                   onClick={() => console.log("Get Started")}
                   borderColor={theme.colors.secondaryLight}
                 />
+                </Link>
               </Grid>
               <Grid
                 item
