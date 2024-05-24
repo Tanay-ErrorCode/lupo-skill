@@ -306,7 +306,7 @@ const HomePage = () => {
                   text="Star on GitHub"
                   backgroundColor={theme.colors.primary}
                   textColor={theme.colors.brightBackground}
-                  onClick={() => console.log("Get Started")}
+                  onClick={() => window.location.href = "https://github.com/Tanay-ErrorCode/lupo-skill"}
                   borderColor={theme.colors.secondaryLight}
                 />
               </Grid>
