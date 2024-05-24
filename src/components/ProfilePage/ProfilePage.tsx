@@ -18,7 +18,7 @@ import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
-
+const currentUserUid = localStorage.getItem("userUid");
 interface Event {
   banner: string;
   createdAt: number;
@@ -191,7 +191,7 @@ const ProfilePage = () => {
               </div>
 
               <div className="d-flex justify-content-center mt-2">
-                <EditProfile />
+                {currentUserUid === id && <EditProfile />}
               </div>
             </div>
           </div>
