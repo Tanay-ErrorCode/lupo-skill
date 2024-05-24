@@ -58,7 +58,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     else setIsSignupModelOpen(!isSignupModelOpen);
 
     if (onNavLinkClick) {
-      onNavLinkClick(); // Close the navbar when Create Event is clicked
+      onNavLinkClick(); 
     }
   };
 
