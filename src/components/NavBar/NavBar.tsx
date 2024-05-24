@@ -25,7 +25,7 @@ const NavBar = () => {
   };
 
   const handleClose = () => {
-    setExpanded(false); // This will close the navbar
+    setExpanded(false); 
   };
 
   const userPic = localStorage.getItem("userPic");
@@ -34,7 +34,7 @@ const NavBar = () => {
 
   const handleDashboard = () => {
     if (!is_signup) setShow(!show);
-    handleClose(); // Close the navbar when Dashboard is clicked
+    handleClose(); 
   };
 
   return (
@@ -68,21 +68,21 @@ const NavBar = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="m-auto align-items-center">
             <Nav.Link href="#/" onClick={handleClose}>
-              {" "}
+             
               {/* Close the navbar when Home is clicked */}
               Home
             </Nav.Link>
             <Nav.Link href="#/dashboard" onClick={handleDashboard}>
-              {" "}
+              
               {/* Close the navbar when Dashboard is clicked */}
               Dashboard
             </Nav.Link>
             <Nav.Link href="#/events" onClick={handleClose}>
-              {" "}
+             
               {/* Close the navbar when Events is clicked */}
               Events
             </Nav.Link>
-            <CreateEvent onNavLinkClick={handleClose} />{" "}
+            <CreateEvent onNavLinkClick={handleClose} />
             {/* Pass handleClose to CreateEvent */}
           </Nav>
           <Nav className="align-items-center">
