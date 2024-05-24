@@ -50,7 +50,7 @@ function generateUUID() {
   });
 }
 
-const CreateEvent = ({ props }: any) => {
+const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [show, setShow] = useState(false);
   const is_signup = localStorage.getItem("userUid") ? true : false;
   const [isSignupModelOpen, setIsSignupModelOpen] = useState(false);
@@ -63,6 +63,10 @@ const CreateEvent = ({ props }: any) => {
   const handleShow = () => {
     if (is_signup) setShow(true);
     else setIsSignupModelOpen(!isSignupModelOpen);
+
+    if (onNavLinkClick) {
+      onNavLinkClick();
+    }
   };
 
   const [title, setTitle] = useState("");
