@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import { useMediaQuery, useTheme } from '@mui/material';
 
 const TestimonialCard = ({ image, name, text }) => {
@@ -23,13 +24,14 @@ const TestimonialCard = ({ image, name, text }) => {
     }}>
       <CardContent sx={{ flexGrow: 1 }}>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-between" height="100%">
-          <Box display="flex" alignItems="center"flexWrap="wrap" justifyContent="center" gap="20px">
+          <Box display="flex" alignItems="center" flexWrap="wrap" justifyContent="center" gap="20px">
             <Avatar alt={name} src={image} sx={{ width: 56, height: 56, border: "1.5px solid #AE8892" }} />
             <Typography variant="h5" fontSize={isSmallScreen ? "20px" : "24px"} fontWeight="700" whiteSpace="nowrap">
               {name}
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary" textAlign="center" mt={2}>
+          <Divider sx={{ width: '100%', borderTop: '2px solid #16aeff', my: 1}} />
+          <Typography variant="body2" color="text.secondary" textAlign="center">
             {text}
           </Typography>
         </Box>
