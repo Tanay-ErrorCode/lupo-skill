@@ -1,4 +1,4 @@
-import { Container, Typography, Grid } from "@mui/material";
+import { Container, Typography, Grid, Box } from "@mui/material";
 import { GitHub as GitHubIcon } from "@mui/icons-material";
 import CustomButton from "../Button/Button";
 import back from "../image_assets/back-v.png";
@@ -8,7 +8,7 @@ import { Check } from "@mui/icons-material";
 import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-
+import "../testimonial/testimonial.css";
 import {
   ref as storageRef,
   uploadBytes,
@@ -18,6 +18,7 @@ import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import { Link } from "react-router-dom";
+import TestimonialsCarousel from "../testimonial/TestimonialsCarousel";
 
 const HomePage = () => {
   const loggedIn = localStorage.getItem("userUid");
@@ -187,7 +188,11 @@ const HomePage = () => {
             xs={12}
             style={{ padding: "20px", marginTop: "4rem", marginBottom: "4rem" }}
           >
-            <Grid container alignItems="center">
+            <Grid
+              container
+              alignItems="center"
+              style={{ marginBottom: "6rem" }}
+            >
               <Grid item xs={12} sm={6}>
                 <Typography
                   fontWeight={"bold"}
@@ -278,6 +283,11 @@ const HomePage = () => {
                 </div>
               </Grid>
             </Grid>
+            {/* testimonial */}
+            <Box>
+              <h1 className="happy">Happy Users</h1>
+              <TestimonialsCarousel />
+            </Box>
             {/* buttons */}
             <Grid
               container

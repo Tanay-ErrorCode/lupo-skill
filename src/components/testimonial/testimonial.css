@@ -1,0 +1,26 @@
+.happy {
+  text-align: center;
+  color: white;
+  margin: 50px 0px;
+}
+.carousel-item {
+  padding: 20px 0;
+}
+
+.carousel-indicators {
+  transform: translateY(4rem);
+}
+.carousel-indicators button {
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50%;
+}
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  display: none;
+}
+@media (max-width: 800) {
+  .happy {
+    margin: 60px 0px;
+  }
+}
