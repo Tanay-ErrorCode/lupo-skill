@@ -28,6 +28,8 @@ import {
 } from "firebase/storage";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import ImageCropper from "../../../utils/ImageCropper";
+
 function generateUUID() {
   var d = new Date().getTime();
   var d2 =
@@ -48,14 +50,23 @@ function generateUUID() {
   });
 }
 
-const CreateEvent = ({ props }: any) => {
+const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [show, setShow] = useState(false);
   const is_signup = localStorage.getItem("userUid") ? true : false;
   const [isSignupModelOpen, setIsSignupModelOpen] = useState(false);
+
+  const [showCropperModal, setShowCropperModal] = useState(false);
+  const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
+
   const handleClose = () => setShow(false);
+
   const handleShow = () => {
     if (is_signup) setShow(true);
     else setIsSignupModelOpen(!isSignupModelOpen);
+
+    if (onNavLinkClick) {
+      onNavLinkClick();
+    }
   };
 
   const [title, setTitle] = useState("");
@@ -70,24 +81,103 @@ const CreateEvent = ({ props }: any) => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Check if the file type is an image
-      if (file.type && file.type.startsWith("image/")) {
-        setImage(file);
-      } else {
-        // Display error for non-image file types
-        setImage(null);
-        toast.error("Please select a valid image file (JPEG/PNG)", {
-          transition: Zoom,
-        });
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+      setCropperAspectRatio(16 / 9);
 
-        // Reset the file input element to clear the selected file
-        e.target.value = "";
-      }
+      setShowCropperModal(true);
+    } else {
+      toast.error("Please select a valid image file (JPEG/PNG)", {
+        transition: Zoom,
+      });
     }
   };
+  const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
+    if (croppedImageUrl) {
+      try {
+        const maxFileSize = 200000;
+        const compressedBlob = await compressAndResizeImage(
+          croppedImageUrl,
+          maxFileSize
+        );
+        const compressedFile = new File([compressedBlob], "croppedImage.jpg", {
+          type: "image/jpeg",
+        });
 
-  const createEventDb = () => {
+        setImage(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        toast.error("An error occurred while compressing the image");
+      }
+    }
+    setShowCropperModal(false);
+  };
+
+  const compressAndResizeImage = (
+    imageUrl: string,
+    maxFileSize: number
+  ): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const maxWidthOrHeight = 1024;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidthOrHeight) {
+            height *= maxWidthOrHeight / width;
+            width = maxWidthOrHeight;
+          }
+        } else {
+          if (height > maxWidthOrHeight) {
+            width *= maxWidthOrHeight / height;
+            height = maxWidthOrHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+
+        const adjustQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size > maxFileSize && quality > 0.1) {
+                quality -= 0.05;
+                ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                ctx?.drawImage(img, 0, 0, width, height);
+                adjustQuality();
+              } else {
+                if (blob) {
+                  resolve(blob);
+                } else {
+                  reject(new Error("Failed to compress image"));
+                }
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+
+        adjustQuality();
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+    });
+  };
+
+  const createEventDb = async () => {
     const userUid = localStorage.getItem("userUid");
     if (
       image &&
@@ -119,6 +209,7 @@ const CreateEvent = ({ props }: any) => {
           console.error(error);
         });
 
+      let ImageUrl = "";
       const eventRefChild = child(eventRef, newEventId);
       get(eventRefChild)
         .then((snapshot) => {
@@ -289,6 +380,20 @@ const CreateEvent = ({ props }: any) => {
             Create
           </Button>
         </Modal.Footer>
+      </Modal>
+      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Crop Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {image && (
+            <ImageCropper
+              setCroppedImageUrl={handleSaveCroppedImage}
+              src={URL.createObjectURL(image)}
+              aspectRatio={cropperAspectRatio}
+            />
+          )}
+        </Modal.Body>
       </Modal>
     </>
   );

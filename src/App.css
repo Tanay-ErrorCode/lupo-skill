@@ -3,3 +3,9 @@ body {
   background-color: rgb(244, 255, 248) !important;
   padding-top: 3.5em;
 }
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}

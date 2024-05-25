@@ -27,11 +27,13 @@
     width: 90%;
   }
 }
+
 .main-button {
   background-color: #d4adfc !important;
   border-color: #d4adfc !important;
   border-radius: 100px;
 }
+
 .main-button2 {
   background-color: inherit !important;
   border-color: inherit !important;
@@ -39,14 +41,21 @@
   border: none;
   color: inherit !important;
 }
+
 .modal_back {
   background-color: rgb(244, 249, 255) !important;
 }
+
 .btn-create {
   background-color: rgb(0, 161, 0) !important;
   border-color: green !important;
 }
+
 .btn-create:hover {
   background-color: rgb(0, 190, 0) !important;
   border-color: green !important;
+}
+
+.modal_back .modal-title {
+  color: black !important;
 }
