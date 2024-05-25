@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spinner } from "react-bootstrap";
-import Signup from '../Signup/Signup';
+import { Button, Spinner, Pagination } from "react-bootstrap";
+import Signup from "../Signup/Signup";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./DashBoard.css";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination } from "react-bootstrap";
 
 import {
   auth,
@@ -23,45 +22,45 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  tags: string;
+import { reload } from "firebase/auth";
+
+interface Event {
   banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
   host: string;
-};
+  hostName: string;
+  id: string;
+  registrants: string;
+  tags: string;
+  time: string;
+  title: string;
+}
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [totalPages, setTotalPages] = useState(1);
-
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (localStorage.getItem("userEmailId") == null) {
+    if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
       toast.warn("You are not signed in", { transition: Zoom });
     }
 
     const fetchData = async () => {
       const usersRef = ref(database, "users");
-      const userEmailId = localStorage.getItem("userEmailId");
+      const userUid = localStorage.getItem("userUid");
 
-      if (userEmailId === null) {
-        console.error("User email ID is null");
+      if (!userUid) {
+        console.error("User is not logged In.");
         return;
       }
 
-      // userRef is the reference to the user's data in the database
-      const userRef = child(usersRef, userEmailId);
+      const userRef = child(usersRef, userUid);
       const snapshot = await get(userRef);
 
       if (snapshot.exists()) {
@@ -80,22 +79,25 @@ const Dashboard = () => {
             }
           });
         }
-        eventList.forEach((eventId: string) => {
-          const trimmedEventId = eventId.trim();
-          const eventsRef = ref(database, "events");
-
-          const eventRef = child(eventsRef, trimmedEventId);
-          get(eventRef).then((snapshot) => {
-            if (snapshot.exists()) {
-              const event = snapshot.val();
-              setEventCardsData((prev: any[]) => [...prev, event]);
-              setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-              setIsLoading(false);
+        const fetchedEvents: Event[] = [];
+        await Promise.all(
+          eventList.map(async (eventId: string) => {
+            const trimmedEventId = eventId.trim();
+            const eventsRef = ref(database, "events");
+            const eventRef = child(eventsRef, trimmedEventId);
+            const eventSnapshot = await get(eventRef);
+            if (eventSnapshot.exists()) {
+              const event = eventSnapshot.val();
+              fetchedEvents.push(event);
             } else {
-              console.log("No data available");
+              console.log("No data available for event ID:", trimmedEventId);
             }
-          });
-        });
+          })
+        );
+
+        fetchedEvents.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+        setEventCardsData(fetchedEvents);
+        setTotalPages(Math.ceil(fetchedEvents.length / itemsPerPage));
         setIsLoading(false);
       } else {
         console.log("No data available");
@@ -105,10 +107,16 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div className="mt-5 pt-3">
+    <div>
       {isLoading ? (
-        <div className="spinner-container d-flex justify-content-center align-items-center">
+        <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
@@ -117,7 +125,6 @@ const Dashboard = () => {
             style={{
               textAlign: "center",
               marginBottom: "2em",
-              marginTop: "1em",
             }}
           >
             Created Events
@@ -136,6 +143,7 @@ const Dashboard = () => {
                   tags: string;
                   banner: string;
                   host: string;
+                  hostName: string;
                 },
                 index
               ) => (
@@ -148,26 +156,20 @@ const Dashboard = () => {
                   date={card.date}
                   time={card.time}
                   tags={card.tags}
-                  host={card.host.split("%40")[0]}
+                  host={card.host}
                   isDashboard={true}
                   image={card.banner}
+                  hostName={card.hostName}
                 />
               )
             )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
-              {[...Array(totalPages)].map((e, i) => (
+              {[...Array(totalPages)].map((_, i) => (
                 <Pagination.Item
                   key={i + 1}
                   active={i + 1 === currentPage}
-                  onClick={() => {
-                    handlePageChange(i + 1);
-                    window.scrollTo({
-                      top: 0,
-                      left: 0,
-                      behavior: "smooth",
-                    });
-                  }}
+                  onClick={() => handlePageChange(i + 1)}
                 >
                   {i + 1}
                 </Pagination.Item>

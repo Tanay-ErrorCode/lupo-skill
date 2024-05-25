@@ -1,12 +1,18 @@
 .navbar {
-  background: radial-gradient(circle at 48.7% 44.3%, rgb(30, 144, 231) 0%, rgb(56, 113, 209) 22.9%, rgb(38, 76, 140) 76.7%, rgb(31, 63, 116) 100.2%);
+  background: radial-gradient(
+    circle at 48.7% 44.3%,
+    rgb(30, 144, 231) 0%,
+    rgb(56, 113, 209) 22.9%,
+    rgb(38, 76, 140) 76.7%,
+    rgb(31, 63, 116) 100.2%
+  );
   backdrop-filter: blur(8px) !important;
 }
 
 .nav-profile-round {
   border-radius: 5px !important;
-  width: 40px !important;
-  height: 40px !important;
+  width: 32px !important;
+  height: 32px !important;
   object-fit: cover !important;
   /* Add additional properties here to further reduce the size */
   pointer-events: none;

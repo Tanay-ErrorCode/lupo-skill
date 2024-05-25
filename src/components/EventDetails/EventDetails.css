@@ -3,8 +3,8 @@
   position: relative;
 }
 .card-image {
-  pointer-events:none;
-  border-radius: 10px 10px 10px 10px;   
+  pointer-events: none;
+  border-radius: 10px 10px 10px 10px;
   /* height: 450px; */
   object-fit: cover;
 }
@@ -15,7 +15,7 @@
 }
 @media (min-width: 768px) {
   .card_image {
-    height: 200px
+    height: 200px;
   }
 }
 

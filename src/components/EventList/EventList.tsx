@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination, Spinner } from "react-bootstrap";
+import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
+import "./EventList.css";
 import {
   auth,
   firestore,
@@ -17,18 +18,61 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-import "./EventList.css";
+
+interface Event {
+  banner: string;
+  createdAt: number;
+  date: string;
+  description: string;
+  host: string;
+  hostName: string;
+  id: string;
+  registrants: string[];
+  tags: string;
+  time: string;
+  title: string;
+}
 
 const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
-  const [eventCardsData, setEventCardsData] = useState([]);
-
+  const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
+  const [sortOption, setSortOption] = useState<
+    "All" | "Ongoing" | "Past" | "Upcoming"
+  >("All");
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const sortEvents = (
+    events: Event[],
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ): Event[] => {
+    const now = new Date();
+    switch (option) {
+      case "Ongoing":
+        return events.filter((event) => {
+          const eventDate = new Date(`${event.date} ${event.time}`);
+          const eventEndDate = new Date(eventDate);
+          eventEndDate.setHours(eventDate.getHours() + 2); // Assuming events last 2 hours
+          return eventDate <= now && now <= eventEndDate;
+        });
+      case "Past":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) < now
+        );
+      case "Upcoming":
+        return events.filter(
+          (event) => new Date(`${event.date} ${event.time}`) > now
+        );
+      case "All":
+      default:
+        return events;
+    }
   };
 
   useEffect(() => {
@@ -36,11 +80,16 @@ const EventList = () => {
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
-        // setEventCardsData(Object.values(snapshot.val()));
-        // eventCardsData.push(Object.values(snapshot.val()));
-        setEventCardsData(Object.values(snapshot.val()));
-        setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
-        setIsLoading(false);
+        const snapshotValue = snapshot.val();
+        if (snapshotValue !== null && typeof snapshotValue === "object") {
+          const res: Event[] = Object.values(snapshotValue) as Event[];
+          res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
+          setEventCardsData(res);
+          const filteredEvents = sortEvents(res, sortOption);
+          setSortedEvents(filteredEvents);
+          setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+          setIsLoading(false);
+        }
       } else {
         console.log("No data available");
         setIsLoading(false);
@@ -49,66 +98,100 @@ const EventList = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filteredEvents = sortEvents(eventCardsData, sortOption);
+    setSortedEvents(filteredEvents);
+    setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+  }, [eventCardsData, sortOption]);
+
+  const renderNoEventsMessage = (
+    option: "All" | "Ongoing" | "Past" | "Upcoming"
+  ) => {
+    switch (option) {
+      case "Upcoming":
+        return "No upcoming events found";
+      case "Past":
+        return "No past events found";
+      case "Ongoing":
+        return "No ongoing events found";
+      case "All":
+      default:
+        return "No events found";
+    }
+  };
+
   return (
-    <div className="mt-5 pt-3">
+    <div>
       {isLoading ? (
-        <div className="spinner-container">
+        <div className=" d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
         <>
-          <h1
-            style={{
-              textAlign: "center",
-              marginBottom: "2em",
-              marginTop: "1em",
-            }}
-          >
+          <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
             All Events
           </h1>
-          {eventCardsData
-            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-            .map(
-              (
-                card: {
-                  id: string;
-                  title: string;
-                  description: string;
-                  date: string;
-                  time: string;
-                  tags: string;
-                  banner: string;
-                  host: string;
-                  registrants: string[];
-                },
-                index
-              ) => {
-                const user_email = localStorage.getItem("userEmailId");
-                let isRegistered = false;
-                if (card.registrants.includes(user_email!)) {
-                  isRegistered = true;
-                }
+          <div className="d-flex justify-content-center">
+            <DropdownButton
+              id="dropdown-basic-button"
+              title={`Sort by: ${sortOption}`}
+              variant="dark"
+              onSelect={(e: any) => {
+                setSortOption(e);
+                setCurrentPage(1); // Reset to first page when sort option changes
+              }}
+              style={{ marginBottom: "1em", textAlign: "center" }}
+            >
+              <Dropdown.Item eventKey="All">All Events</Dropdown.Item>
+              <Dropdown.Item eventKey="Upcoming">Upcoming</Dropdown.Item>
+              <Dropdown.Item eventKey="Ongoing">Ongoing</Dropdown.Item>
+              <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
+            </DropdownButton>
+          </div>
+          {sortedEvents.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "5em",
+                fontSize: "20px",
+              }}
+            >
+              {renderNoEventsMessage(sortOption)}
+            </div>
+          ) : (
+            sortedEvents
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map((card: Event, index) => {
+                const user_uid = localStorage.getItem("userUid");
+                const isRegistered = card.registrants.includes(user_uid!);
                 return (
-                  <EventCard
-                    isValid={true}
-                    id={card.id}
-                    key={index}
-                    title={card.title}
-                    description={card.description}
-                    date={card.date}
-                    time={card.time}
-                    tags={card.tags}
-                    host={card.host.split("%40")[0]}
-                    isDashboard={false}
-                    image={card.banner}
-                    isRegistered={isRegistered}
-                  />
+                  <div className="event-card-wrapper" key={index}>
+                    <EventCard
+                      isValid={true}
+                      id={card.id}
+                      key={index}
+                      title={card.title}
+                      description={card.description}
+                      date={card.date}
+                      time={card.time}
+                      tags={card.tags}
+                      host={card.host}
+                      isDashboard={false}
+                      image={card.banner}
+                      isRegistered={isRegistered}
+                      hostName={card.hostName}
+                    />
+                  </div>
                 );
-              }
-            )}
+              })
+          )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
-              {[...Array(totalPages)].map((e, i) => (
+              {[...Array(totalPages)].map((_, i) => (
                 <Pagination.Item
                   key={i + 1}
                   active={i + 1 === currentPage}

@@ -10,11 +10,12 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import EventDetails from "./components/EventDetails/EventDetails";
 import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
+import ErrorPage from "./components/ErrorPage/404ErrorPage";
 
 function App() {
   return (
     <div className="App">
-      <NavBar/>
+      <NavBar />
       <NotificationsPannel />
       <HashRouter>
         <Routes>
@@ -23,6 +24,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </HashRouter>
     </div>

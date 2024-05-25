@@ -1,7 +1,34 @@
+.profile-round {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  pointer-events: none;
+}
+.social-media-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
-.profile-round{
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+.social-media-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.instagram-icon {
+  font-size: 24px;
+  color: #e4405f;
+}
+
+.x-icon {
+  font-size: 24px;
+  color: rgb(29, 161, 242);
+}
+
+.facebook-icon {
+  font-size: 24px;
+  color: rgb(24, 119, 242);
 }
