@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
   ref as storageRef,
@@ -9,28 +9,22 @@ import { ref as dbRef, get, set } from "firebase/database";
 import { storage, database, auth } from "../../../firebaseConf";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ImageCropper from "../../../utils/ImageCropper"; // Import the ImageCropper component
+import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
-import { Instagram, Twitter, Facebook } from "@mui/icons-material";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
   const [tags, setTags] = useState("");
-  const [popTags, setPopTags] = useState("");
-  const [listTags, setListTags] = useState<string[]>([]);
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [instagram, setInstagram] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
   const [showCropperModal, setShowCropperModal] = useState(false);
+  const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
+  const [isBannerImage, setIsBannerImage] = useState(false);
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -45,11 +39,8 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      // setTags(userData.tags || "");
+      setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      setInstagram(userData.instagram || "");
-      setTwitter(userData.twitter || "");
-      setFacebook(userData.facebook || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -68,6 +59,9 @@ const EditProfile = () => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
       setBannerImage(file);
+      setCropperAspectRatio(16 / 9);
+      setIsBannerImage(true);
+      setShowCropperModal(true);
     } else {
       toast.error("Please select a valid image file (JPEG/PNG)", {
         transition: Zoom,
@@ -79,7 +73,9 @@ const EditProfile = () => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
       setProfileImage(file);
-      setShowCropperModal(true); // Show the cropper modal
+      setCropperAspectRatio(1);
+      setIsBannerImage(false);
+      setShowCropperModal(true);
     } else {
       toast.error("Please select a valid image file (JPEG/PNG)", {
         transition: Zoom,
@@ -87,40 +83,100 @@ const EditProfile = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const newTag = popTags.trim();
-    const tagsArray = tags.split(", ").length;
-    if (e.key === "Enter" && newTag !== "" && tagsArray < 5) {
-      setTags((prevTags) => (prevTags ? `${prevTags}, ${newTag}` : newTag));
-      setListTags((prev) => [...prev, newTag]);
-      setPopTags("");
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsArray = e.target.value.split(",");
+    if (tagsArray.length <= 5) {
+      setTags(e.target.value);
     }
   };
 
-  const handleDelete = (tag: string) => {
-    setListTags(listTags.filter((ele) => ele !== tag));
-    setTags((prevTags) =>
-      prevTags
-        .split(", ")
-        .filter((ele) => ele !== tag)
-        .join(", ")
-    );
-  };
-  const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
-    setCroppedImageUrl(croppedImageUrl);
-    setShowCropperModal(false); // Close the cropper modal after saving
+  const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
+    if (croppedImageUrl) {
+      try {
+        const maxFileSize = isBannerImage ? 200000 : 100000;
+        const compressedBlob = await compressAndResizeImage(
+          croppedImageUrl,
+          maxFileSize
+        );
+        const compressedFile = new File([compressedBlob], "croppedImage.jpg", {
+          type: "image/jpeg",
+        });
+
+        if (isBannerImage) {
+          setBannerImage(compressedFile);
+        } else {
+          setProfileImage(compressedFile);
+        }
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        toast.error("An error occurred while compressing the image");
+      }
+    }
+    setShowCropperModal(false);
   };
 
-  const dataURLtoBlob = (dataurl: string) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)?.[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
+  const compressAndResizeImage = (
+    imageUrl: string,
+    maxFileSize: number
+  ): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const maxWidthOrHeight = 1024;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidthOrHeight) {
+            height *= maxWidthOrHeight / width;
+            width = maxWidthOrHeight;
+          }
+        } else {
+          if (height > maxWidthOrHeight) {
+            width *= maxWidthOrHeight / height;
+            height = maxWidthOrHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+
+        const adjustQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size > maxFileSize && quality > 0.1) {
+                quality -= 0.05;
+                ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                ctx?.drawImage(img, 0, 0, width, height);
+                adjustQuality();
+              } else {
+                if (blob) {
+                  resolve(blob);
+                } else {
+                  reject(new Error("Failed to compress image"));
+                }
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+
+        adjustQuality();
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+    });
   };
 
   const handleSubmit = async () => {
@@ -149,28 +205,26 @@ const EditProfile = () => {
 
       let profileImageUrl = currentUserDetails.pic || "";
 
-      if (croppedImageUrl) {
-        const croppedImageBlob = dataURLtoBlob(croppedImageUrl);
+      if (profileImage) {
         const profileImageRef = storageRef(
           storage,
           `user-profile-pics/user-profile-pic-${uid}`
         );
-        await uploadBytes(profileImageRef, croppedImageBlob);
+        await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
-      const updatedUserDetails = { ...currentUserDetails };
-
-      if (name) updatedUserDetails.name = name;
-      if (headline) updatedUserDetails.headline = headline;
-      if (tags) updatedUserDetails.tags = tags;
-      if (website) updatedUserDetails.website = website;
-      if (instagram) updatedUserDetails.instagram = instagram;
-      if (twitter) updatedUserDetails.twitter = twitter;
-      if (facebook) updatedUserDetails.facebook = facebook;
-
-      updatedUserDetails.banner = bannerImageUrl;
-      updatedUserDetails.pic = profileImageUrl;
+      const updatedUserDetails = {
+        ...currentUserDetails,
+        banner: bannerImageUrl,
+        email: user.email || currentUserDetails.email,
+        name: name || currentUserDetails.name,
+        headline: headline || currentUserDetails.headline,
+        tags: tags || currentUserDetails.tags,
+        website: website || currentUserDetails.website,
+        pic: profileImageUrl,
+        uid: uid,
+      };
 
       await set(userDetailsRef, updatedUserDetails);
       toast.success("User details have been successfully updated");
@@ -221,23 +275,9 @@ const EditProfile = () => {
               <Form.Label>Tags (max 5)</Form.Label>
               <Form.Control
                 type="text"
-                onChange={(e) => setPopTags(e.target.value)}
-                onKeyDown={handleKeyDown}
-                value={popTags}
+                value={tags}
+                onChange={handleTagChange}
               />
-              <Stack direction="row" className="mt-2" spacing={1}>
-                {listTags.map((ele, index) => {
-                  return (
-                    <Chip
-                      key={index}
-                      label={ele}
-                      onDelete={() => handleDelete(ele)}
-                      color="success"
-                      variant="outlined"
-                    />
-                  );
-                })}
-              </Stack>
             </Form.Group>
 
             <Form.Group>
@@ -248,58 +288,6 @@ const EditProfile = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setWebsite(e.target.value)
                 }
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>
-                <Instagram />
-                Instagram URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={instagram.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setInstagram(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Twitter /> Twitter URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={twitter.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setTwitter(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Facebook />
-                Facebook URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={facebook.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setFacebook(`https://${updatedValue}`);
-                }}
               />
             </Form.Group>
 
@@ -337,10 +325,18 @@ const EditProfile = () => {
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {profileImage && (
+          {profileImage && !isBannerImage && (
             <ImageCropper
               setCroppedImageUrl={handleSaveCroppedImage}
               src={URL.createObjectURL(profileImage)}
+              aspectRatio={cropperAspectRatio}
+            />
+          )}
+          {bannerImage && isBannerImage && (
+            <ImageCropper
+              setCroppedImageUrl={handleSaveCroppedImage}
+              src={URL.createObjectURL(bannerImage)}
+              aspectRatio={cropperAspectRatio}
             />
           )}
         </Modal.Body>

@@ -25,7 +25,7 @@ const NavBar = () => {
   };
 
   const handleClose = () => {
-    setExpanded(false); 
+    setExpanded(false);
   };
 
   const userPic = localStorage.getItem("userPic");
@@ -34,7 +34,7 @@ const NavBar = () => {
 
   const handleDashboard = () => {
     if (!is_signup) setShow(!show);
-    handleClose(); 
+    handleClose();
   };
 
   return (
@@ -108,7 +108,7 @@ const NavBar = () => {
                     className="text-danger  nav-profile-dropdown"
                     onClick={() => {
                       signOutUser();
-                      handleClose(); 
+                      handleClose();
                     }}
                   >
                     Logout
