@@ -116,7 +116,7 @@ const Dashboard = () => {
   return (
     <div>
       {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center">
+        <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
