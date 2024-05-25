@@ -20,6 +20,7 @@ import bannerImage3 from "../image_assets/bannerImage3.png";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
+  const loggedIn = localStorage.getItem("userUid");
   const logGoogleUser = async () => {
     const response = await signInWithGooglePopup();
     const email = response.user.email;
@@ -151,15 +152,17 @@ const HomePage = () => {
                   >
                     Ready to share skills ? 🧠
                   </Typography>
-                  <CustomButton
-                    icon={<Google />}
-                    text="Continue with Google"
-                    backgroundColor="#FFC0D9"
-                    textColor={theme.colors.darkBackground}
-                    onClick={() => logGoogleUser()}
-                    colorChange={true}
-                    borderColor="#FF90BC"
-                  />
+                  {!loggedIn && (
+                    <CustomButton
+                      icon={<Google />}
+                      text="Continue with Google"
+                      backgroundColor="#FFC0D9"
+                      textColor={theme.colors.darkBackground}
+                      onClick={() => logGoogleUser()}
+                      colorChange={true}
+                      borderColor="#FF90BC"
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
