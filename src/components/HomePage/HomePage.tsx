@@ -25,6 +25,7 @@ const HomePage = () => {
     const email = response.user.email;
     const uid = response.user.uid;
     const username = response.user.displayName;
+    
     const pic = response.user.photoURL;
 
     const usersRef = ref(database, "users");
