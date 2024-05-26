@@ -8,6 +8,8 @@ import {
   Pagination,
   Spinner,
 } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ProfilePage.css";
 import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
@@ -134,48 +136,44 @@ const ProfilePage = () => {
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
 
-      const isValidUrl = (url: string) => {
-        return url.startsWith("https://");
-      };
-
       if (
         userData.instagram &&
-        isValidUrl(userData.instagram.trim()) &&
-        userData.instagram != "https://" &&
-        userData.instagram != ""
+        userData.instagram !== "https://" &&
+        userData.instagram !== ""
       ) {
         instagram.href = userData.instagram;
         instagram.style.opacity = "1.0";
         instagram.style.pointerEvents = "auto";
       } else {
+        instagram.href = "#";
         instagram.style.opacity = "0.5";
         instagram.style.pointerEvents = "none";
       }
 
       if (
         userData.twitter &&
-        isValidUrl(userData.twitter.trim()) &&
-        userData.twitter != "https://" &&
-        userData.twitter != ""
+        userData.twitter !== "https://" &&
+        userData.twitter !== ""
       ) {
         twitter.href = userData.twitter;
         twitter.style.opacity = "1.0";
         twitter.style.pointerEvents = "auto";
       } else {
+        twitter.href = "#";
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
 
       if (
         userData.facebook &&
-        isValidUrl(userData.facebook.trim()) &&
-        userData.facebook != "https://" &&
-        userData.facebook != ""
+        userData.facebook !== "https://" &&
+        userData.facebook !== ""
       ) {
         facebook.href = userData.facebook;
         facebook.style.opacity = "1.0";
         facebook.style.pointerEvents = "auto";
       } else {
+        facebook.href = "#";
         facebook.style.opacity = "0.5";
         facebook.style.pointerEvents = "none";
       }
@@ -460,6 +458,8 @@ const ProfilePage = () => {
           </Card>
         </Col>
       </Row>
+
+      <ToastContainer />
     </Container>
   );
 };

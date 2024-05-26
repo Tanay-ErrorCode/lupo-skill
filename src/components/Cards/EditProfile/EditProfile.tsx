@@ -20,6 +20,9 @@ const EditProfile = () => {
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [facebook, setFacebook] = useState("");
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showCropperModal, setShowCropperModal] = useState(false);
@@ -41,6 +44,9 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       setTags(userData.tags || "");
       setWebsite(userData.website || "");
+      setInstagram(userData.instagram || "");
+      setTwitter(userData.twitter || "");
+      setFacebook(userData.facebook || "");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -178,6 +184,22 @@ const EditProfile = () => {
       };
     });
   };
+  const isValidUrl = (url: string, platform: string): boolean => {
+    const urlPattern = /^https:\/\/(www\.)?/;
+    if (!urlPattern.test(url)) {
+      return false;
+    }
+    type domaintype = {
+      [keys: string]: RegExp;
+    };
+    const domainPattern: domaintype = {
+      instagram: /^https:\/\/(www\.)?instagram\.com\//,
+      twitter: /^https:\/\/(www\.)?x\.com\//,
+      facebook: /^https:\/\/(www\.)?facebook\.com\//,
+    };
+
+    return domainPattern[platform].test(url);
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -213,6 +235,13 @@ const EditProfile = () => {
         await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
+      let insta = isValidUrl(instagram, "instagram") ? instagram : "";
+      let tweet = isValidUrl(twitter, "twitter") ? twitter : "";
+      let face = isValidUrl(facebook, "facebook") ? facebook : "";
+      if (instagram && !insta)
+        toast.error("Please enter a valid instagram url");
+      if (twitter && !tweet) toast.error("Please enter a valid twitter url");
+      if (facebook && !face) toast.error("Please enter a valid facebook url");
 
       const updatedUserDetails = {
         ...currentUserDetails,
@@ -222,6 +251,28 @@ const EditProfile = () => {
         headline: headline || currentUserDetails.headline,
         tags: tags || currentUserDetails.tags,
         website: website || currentUserDetails.website,
+        instagram:
+          insta === ""
+            ? ""
+            : instagram ||
+              (currentUserDetails.instagram === undefined
+                ? ""
+                : currentUserDetails.instagram),
+
+        twitter:
+          tweet === ""
+            ? ""
+            : twitter ||
+              (currentUserDetails.twitter === undefined
+                ? ""
+                : currentUserDetails.twitter),
+        facebook:
+          face === ""
+            ? ""
+            : facebook ||
+              (currentUserDetails.facebook === undefined
+                ? ""
+                : currentUserDetails.facebook),
         pic: profileImageUrl,
         uid: uid,
       };
@@ -230,7 +281,10 @@ const EditProfile = () => {
       toast.success("User details have been successfully updated");
       setIsLoading(false);
       handleClose();
-      window.location.reload();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     } catch (error) {
       toast.error("An error occurred while updating user details");
       setIsLoading(false);
@@ -287,6 +341,39 @@ const EditProfile = () => {
                 value={website}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setWebsite(e.target.value)
+                }
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Instagram</Form.Label>
+              <Form.Control
+                type="text"
+                value={instagram}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setInstagram(e.target.value)
+                }
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Twitter</Form.Label>
+              <Form.Control
+                type="text"
+                value={twitter}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTwitter(e.target.value)
+                }
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Facebook</Form.Label>
+              <Form.Control
+                type="text"
+                value={facebook}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFacebook(e.target.value)
                 }
               />
             </Form.Group>

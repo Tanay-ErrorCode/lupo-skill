@@ -15,6 +15,13 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase configuration
+  apiKey: "AIzaSyCllE96Ei6Z9ziivPhEl0J3gKepntcIqL0",
+  authDomain: "spring-duality-399020.firebaseapp.com",
+  projectId: "spring-duality-399020",
+  storageBucket: "spring-duality-399020.appspot.com",
+  messagingSenderId: "966579721189",
+  appId: "1:966579721189:web:829e4d8fdb6c0e87b7d50c",
+  measurementId: "G-B7M66BPK1Z",
 };
 
 const app = firebase.initializeApp(firebaseConfig);
