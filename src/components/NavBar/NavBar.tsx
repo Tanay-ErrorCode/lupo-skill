@@ -85,7 +85,20 @@ const NavBar = () => {
 
   const mobileMenuItems = (
     <>
-      <MenuItem component={Link} to="/" onClick={handleMobileMenuClose}>
+      <MenuItem
+        component={Link}
+        to="/"
+        onClick={handleMobileMenuClose}
+        sx={{
+          fontWeight: 700,
+          color: "white",
+
+          "&:hover": {
+            backgroundColor: "#A0DEFF",
+            color: "black",
+          },
+        }}
+      >
         Home
       </MenuItem>
       <MenuItem
@@ -95,10 +108,32 @@ const NavBar = () => {
           handleMobileMenuClose();
           handleDashboard();
         }}
+        sx={{
+          fontWeight: 700,
+          color: "white",
+
+          "&:hover": {
+            backgroundColor: "#A0DEFF",
+            color: "black",
+          },
+        }}
       >
         Dashboard
       </MenuItem>
-      <MenuItem component={Link} to="/events" onClick={handleMobileMenuClose}>
+      <MenuItem
+        component={Link}
+        to="/events"
+        onClick={handleMobileMenuClose}
+        sx={{
+          fontWeight: 700,
+          color: "white",
+
+          "&:hover": {
+            backgroundColor: "#A0DEFF",
+            color: "black",
+          },
+        }}
+      >
         Events
       </MenuItem>
     </>
@@ -273,11 +308,21 @@ const NavBar = () => {
                   display: { xs: "flex", md: "none" },
                   flexDirection: "column",
                   position: "fixed",
-                  top: "16px",
+                  top: "14px",
                   left: "-16px",
+                  zIndex: 1,
+                }}
+                MenuListProps={{
+                  sx: {
+                    padding: 0, // Remove padding from MenuList
+                    backgroundColor: "#0F0F0F",
+                  },
                 }}
               >
-                {mobileMenuItems}
+                {" "}
+                <Box sx={{ backgroundColor: "#0F0F0F", width: "100%" }}>
+                  {mobileMenuItems}
+                </Box>
                 <CreateEvent
                   onNavLinkClick={handleMobileMenuClose}
                   props="other"

@@ -287,7 +287,20 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
       {props === "other" ? (
-        <MenuItem onClick={handleShow}>Create Event</MenuItem>
+        <MenuItem
+          onClick={handleShow}
+          sx={{
+            color: "white",
+            fontWeight: 700,
+            backgroundColor: "#0F0F0F",
+            "&:hover": {
+              backgroundColor: "#A0DEFF",
+              color: "black",
+            },
+          }}
+        >
+          Create Event
+        </MenuItem>
       ) : (
         <Button
           variant="contained"
