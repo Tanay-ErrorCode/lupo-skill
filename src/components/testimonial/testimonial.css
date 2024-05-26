@@ -2,6 +2,7 @@
   text-align: center;
   color: white;
   margin: 50px 0px;
+  font-weight: bold;
 }
 .carousel-item {
   padding: 20px 0;
@@ -9,6 +10,9 @@
 
 .carousel-indicators {
   transform: translateY(4rem);
+  gap: 1rem;
+  margin: 0px 0px 0px 0px !important;
+  width: 100% !important;
 }
 .carousel-indicators button {
   width: 15px !important;
