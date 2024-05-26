@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  InputGroup,
-  FormControl,
-  Nav,
-} from "react-bootstrap";
+import { Modal, Form, InputGroup, FormControl, Nav } from "react-bootstrap";
+import { useLocation, Link } from "react-router-dom";
+
+import Button from "@mui/material/Button";
+
 import "./CreateEvent.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
 import Signup from "../../Signup/Signup";
 import {
   auth,
@@ -28,6 +26,8 @@ import {
 } from "firebase/storage";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import MenuItem from "@mui/material/MenuItem";
+
 import ImageCropper from "../../../utils/ImageCropper";
 
 function generateUUID() {
@@ -287,11 +287,23 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
       {props === "other" ? (
-        <Button variant="primary" onClick={handleShow} className="main-button">
+        <MenuItem onClick={handleShow}>Create Event</MenuItem>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={handleShow}
+          sx={{
+            my: 2,
+            display: "block",
+            fontWeight: 700,
+            color: "white",
+            backgroundColor: "transparent",
+            borderRadius: 50,
+            textTransform: "none",
+          }}
+        >
           Create Event
         </Button>
-      ) : (
-        <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
       <Modal show={show} onHide={handleClose}>
@@ -373,10 +385,14 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="modal_back">
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="contained" onClick={handleClose}>
             Close
           </Button>
-          <Button className="btn-create" onClick={createEventDb}>
+          <Button
+            variant="contained"
+            className="btn-create"
+            onClick={createEventDb}
+          >
             Create
           </Button>
         </Modal.Footer>

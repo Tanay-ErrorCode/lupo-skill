@@ -15,9 +15,9 @@ import ErrorPage from "./components/ErrorPage/404ErrorPage";
 function App() {
   return (
     <div className="App">
-      <NavBar />
-      <NotificationsPannel />
       <HashRouter>
+        <NavBar />
+        <NotificationsPannel />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/events" element={<EventList />} />
