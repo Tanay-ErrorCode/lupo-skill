@@ -227,6 +227,7 @@ const EditProfile = () => {
       };
 
       await set(userDetailsRef, updatedUserDetails);
+      localStorage.setItem("userPic", profileImageUrl);
       toast.success("User details have been successfully updated");
       setIsLoading(false);
       handleClose();
