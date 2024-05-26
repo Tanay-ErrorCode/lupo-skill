@@ -133,6 +133,19 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("User does not exist", { transition: Zoom });
     }
   };
+  const date = new Date(props.date);
+  const year = date.getFullYear();
+  const month = date.getMonth(); // Note: months are zero-indexed
+  const day = date.getDate();
+
+  // Extract time components
+  const timeString = props.time;
+  const [time, timeZone] = timeString.split(" ");
+  const [hours, minutes, seconds] = time.split(":").map(Number);
+
+  // Create a new Date object combining the date and time components
+  const eventDateTime = new Date(year, month, day, hours, minutes, seconds);
+
   return (
     <Container>
       {!props.isDashboard ? (
@@ -166,7 +179,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     </span>
                   ))}
                 </Card.Text>
-                {new Date(props.date) > new Date() ? (
+                {eventDateTime > new Date() ? (
                   <Button
                     className={`${
                       (props.isValid && props.isRegistered) || register_data
@@ -234,7 +247,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     ))}
                   </Card.Text>
                   {!props.isDashboard ? (
-                    new Date(props.date) > new Date() ? (
+                    eventDateTime > new Date() ? (
                       <Button
                         className="btn-c position-absolute bottom-0 end-0 m-3"
                         onClick={registerForEventX}
