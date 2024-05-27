@@ -3,6 +3,7 @@ import Carousel from "react-bootstrap/Carousel";
 import Grid from "@mui/material/Grid";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TestimonialCard from "./TestimonialCard";
+import "./testimonial.css"; // Import custom CSS
 
 interface Testimonial {
   name: string;
@@ -83,7 +84,12 @@ const TestimonialsCarousel: React.FC = () => {
   );
 
   return (
-    <Carousel>
+    <Carousel
+      slide={true}
+      interval={3000} // Adjust the interval as needed
+      controls={true}
+      indicators={true}
+    >
       {groupedTestimonials.map((group, index) => (
         <Carousel.Item key={index}>
           <Grid container spacing={4} justifyContent="center">

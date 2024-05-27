@@ -5,6 +5,7 @@
   font-weight: bold;
 }
 .carousel-item {
+  transition: transform 1.5s ease, opacity 1.5s ease !important;
   padding: 20px 0;
 }
 
