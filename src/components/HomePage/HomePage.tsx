@@ -8,7 +8,7 @@ import { Check } from "@mui/icons-material";
 import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import { motion } from "framer-motion";
+
 import {
   ref as storageRef,
   uploadBytes,
@@ -124,93 +124,45 @@ const HomePage = () => {
           >
             <Grid container direction="column" spacing={2}>
               <Grid item container>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
-                  }}
-                >
-                  <Typography variant="h3" fontWeight="bold">
-                    Discover, Learn, Grow:{" "}
-                    <span style={{ fontWeight: "normal" }}>
-                      Find Live Skill-Sharing Events!
-                    </span>
-                  </Typography>
-                </motion.div>
+                <Typography variant="h3" fontWeight="bold">
+                  Discover, Learn, Grow:{" "}
+                  <span style={{ fontWeight: "normal" }}>
+                    Find Live Skill-Sharing Events!
+                  </span>
+                </Typography>
 
-                <motion.div
-                  initial={{ opacity: 0, x: -150 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 1,
-                  }}
+                <Typography
+                  fontSize={"1.4rem"}
+                  style={{ marginTop: "2rem", marginBottom: "4rem" }}
                 >
-                  <Typography
-                    fontSize={"1.4rem"}
-                    style={{ marginTop: "2rem", marginBottom: "4rem" }}
-                  >
-                    A dynamic open-source platform revolutionizing how we learn
-                    and share skills! Whether you're an expert or an enthusiast,
-                    everyone has something valuable to teach. Join events, share
-                    resources, and connect with others to explore and expand
-                    your knowledge. Dive in and experience the future of skill
-                    sharing today!
-                  </Typography>
-                </motion.div>
+                  A dynamic open-source platform revolutionizing how we learn
+                  and share skills! Whether you're an expert or an enthusiast,
+                  everyone has something valuable to teach. Join events, share
+                  resources, and connect with others to explore and expand your
+                  knowledge. Dive in and experience the future of skill sharing
+                  today!
+                </Typography>
               </Grid>
               <Grid item container spacing={2}>
                 <Grid item xs={12} style={{ marginTop: "3rem" }}>
-                  <motion.div
-                    initial={{ opacity: 0, y: -150 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      type: "spring",
-                      stiffness: 100,
-                      delay: 1.5,
-                    }}
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    style={{ marginBottom: "1rem", marginLeft: ".3rem" }}
                   >
-                    <Typography
-                      variant="h5"
-                      fontWeight={600}
-                      style={{ marginBottom: "1rem", marginLeft: ".3rem" }}
-                    >
-                      Ready to share skills ? 🧠
-                    </Typography>
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, x: -150 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      type: "spring",
-                      stiffness: 100,
-                      delay: 1.5,
-                    }}
-                  >
-                    {!loggedIn && (
-                      <CustomButton
-                        icon={<Google />}
-                        text="Continue with Google"
-                        backgroundColor="#FFC0D9"
-                        textColor={theme.colors.darkBackground}
-                        onClick={() => logGoogleUser()}
-                        colorChange={true}
-                        borderColor="#FF90BC"
-                      />
-                    )}
-                  </motion.div>
+                    Ready to share skills ? 🧠
+                  </Typography>
+                  {!loggedIn && (
+                    <CustomButton
+                      icon={<Google />}
+                      text="Continue with Google"
+                      backgroundColor="#FFC0D9"
+                      textColor={theme.colors.darkBackground}
+                      onClick={() => logGoogleUser()}
+                      colorChange={true}
+                      borderColor="#FF90BC"
+                    />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -237,25 +189,13 @@ const HomePage = () => {
           >
             <Grid container alignItems="center">
               <Grid item xs={12} sm={6}>
-                <motion.div
-                  initial={{ opacity: 0, x: -150 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
-                  }}
+                <Typography
+                  fontWeight={"bold"}
+                  variant="h3"
+                  style={{ color: "#ffffff" }}
                 >
-                  <Typography
-                    fontWeight={"bold"}
-                    variant="h3"
-                    style={{ color: "#ffffff" }}
-                  >
-                    Explore Learning Opportunities
-                  </Typography>
-                </motion.div>
+                  Explore Learning Opportunities
+                </Typography>
               </Grid>
               <Grid
                 item
@@ -268,18 +208,7 @@ const HomePage = () => {
                   marginTop: "1rem",
                 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Check
                     style={{
                       color: theme.colors.primary,
@@ -295,19 +224,8 @@ const HomePage = () => {
                     Join Online Events: Learn from Industry Experts and Expand
                     Your Skillset.
                   </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.8,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Check
                     style={{
                       color: theme.colors.primary,
@@ -323,19 +241,8 @@ const HomePage = () => {
                     Share Resources: Contribute to the Learning Community by
                     Sharing Your Knowledge.
                   </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 1.1,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Check
                     style={{
                       color: theme.colors.primary,
@@ -351,19 +258,8 @@ const HomePage = () => {
                     Host Online Events: Share Your Expertise and Connect with
                     Learners Worldwide.
                   </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 1.4,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Check
                     style={{
                       color: theme.colors.primary,
@@ -379,7 +275,7 @@ const HomePage = () => {
                     Read Articles: Access Valuable Resources and Stay Updated on
                     Latest Trends.
                   </span>
-                </motion.div>
+                </div>
               </Grid>
             </Grid>
             {/* buttons */}
@@ -397,42 +293,30 @@ const HomePage = () => {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <motion.div
-                  initial={{ opacity: 0, x: -150 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
+                <Typography
+                  variant="h6"
+                  fontWeight={300}
+                  style={{
+                    marginBottom: "1rem",
+                    marginLeft: ".3rem",
+                    color: theme.colors.brightBackground,
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    fontWeight={300}
-                    style={{
-                      marginBottom: "1rem",
-                      marginLeft: ".3rem",
-                      color: theme.colors.brightBackground,
-                    }}
-                  >
-                    Give us a star! ⭐
-                  </Typography>
-                  <Link
-                    to="https://github.com/Tanay-ErrorCode/lupo-skill"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <CustomButton
-                      icon={<GitHubIcon />}
-                      text="Star on GitHub"
-                      backgroundColor={theme.colors.primary}
-                      textColor={theme.colors.brightBackground}
-                      onClick={() => console.log("Get Started")}
-                      borderColor={theme.colors.secondaryLight}
-                    />
-                  </Link>
-                </motion.div>
+                  Give us a star! ⭐
+                </Typography>
+                <Link
+                  to="https://github.com/Tanay-ErrorCode/lupo-skill"
+                  style={{ textDecoration: "none" }}
+                >
+                  <CustomButton
+                    icon={<GitHubIcon />}
+                    text="Star on GitHub"
+                    backgroundColor={theme.colors.primary}
+                    textColor={theme.colors.brightBackground}
+                    onClick={() => console.log("Get Started")}
+                    borderColor={theme.colors.secondaryLight}
+                  />
+                </Link>
               </Grid>
               <Grid
                 item
@@ -443,42 +327,30 @@ const HomePage = () => {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <motion.div
-                  initial={{ opacity: 0, x: 150 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
+                <Typography
+                  variant="h6"
+                  fontWeight={300}
+                  style={{
+                    marginBottom: "1rem",
+                    marginLeft: ".3rem",
+                    color: theme.colors.brightBackground,
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    fontWeight={300}
-                    style={{
-                      marginBottom: "1rem",
-                      marginLeft: ".3rem",
-                      color: theme.colors.brightBackground,
-                    }}
-                  >
-                    Make your mark! 🎯
-                  </Typography>
-                  <Link
-                    to={"https://github.com/Tanay-ErrorCode/lupo-skill"}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <CustomButton
-                      icon={<GitHubIcon />}
-                      text="Contribute Now"
-                      backgroundColor={theme.colors.primary}
-                      textColor={theme.colors.brightBackground}
-                      onClick={() => console.log("Get Started")}
-                      borderColor={theme.colors.secondaryLight}
-                    />
-                  </Link>
-                </motion.div>
+                  Make your mark! 🎯
+                </Typography>
+                <Link
+                  to={"https://github.com/Tanay-ErrorCode/lupo-skill"}
+                  style={{ textDecoration: "none" }}
+                >
+                  <CustomButton
+                    icon={<GitHubIcon />}
+                    text="Contribute Now"
+                    backgroundColor={theme.colors.primary}
+                    textColor={theme.colors.brightBackground}
+                    onClick={() => console.log("Get Started")}
+                    borderColor={theme.colors.secondaryLight}
+                  />
+                </Link>
               </Grid>
             </Grid>
           </Grid>
