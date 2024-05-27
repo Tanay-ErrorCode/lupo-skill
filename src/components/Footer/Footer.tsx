@@ -30,7 +30,7 @@ const GitHubIcon: React.FC = () => (
 const Footer: React.FC = () => {
   return (
     <Box component="footer" className="footer">
-      <Box className="strip" /> {/* Light blue strip */}
+      <Box className="strip" />
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
