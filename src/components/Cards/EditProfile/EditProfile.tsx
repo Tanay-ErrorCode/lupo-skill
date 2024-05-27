@@ -7,16 +7,21 @@ import {
 } from "firebase/storage";
 import { ref as dbRef, get, set } from "firebase/database";
 import { storage, database, auth } from "../../../firebaseConf";
-import { ToastContainer, toast, Zoom } from "react-toastify";
+import { toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
+import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
   const [tags, setTags] = useState("");
+  const [popTags, setPopTags] = useState("");
+  const [listTags, setListTags] = useState<string[]>([]);
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -25,6 +30,9 @@ const EditProfile = () => {
   const [facebook, setFacebook] = useState("");
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [facebook, setFacebook] = useState("");
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
@@ -42,7 +50,7 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      setTags(userData.tags || "");
+      // setTags(userData.tags || "");
       setWebsite(userData.website || "");
       setInstagram(userData.instagram || "");
       setTwitter(userData.twitter || "");
@@ -89,11 +97,42 @@ const EditProfile = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const newTag = popTags.trim();
+    const tagsArray = tags.split(", ").length;
+    if (e.key === "Enter" && newTag !== "" && tagsArray < 5) {
+      setTags((prevTags) => (prevTags ? `${prevTags}, ${newTag}` : newTag));
+      setListTags((prev) => [...prev, newTag]);
+      setPopTags("");
+    }
+  };
+
+  const handleDelete = (tag: string) => {
+    setListTags(listTags.filter((ele) => ele !== tag));
+    setTags((prevTags) =>
+      prevTags
+        .split(", ")
+        .filter((ele) => ele !== tag)
+        .join(", ")
+    );
+  };
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsArray = e.target.value.split(",");
     if (tagsArray.length <= 5) {
       setTags(e.target.value);
     }
+  };
+
+  const dataURLtoBlob = (dataurl: string) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)?.[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   };
 
   const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
@@ -235,49 +274,22 @@ const EditProfile = () => {
         await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
-      let insta = isValidUrl(instagram, "instagram") ? instagram : "";
-      let tweet = isValidUrl(twitter, "twitter") ? twitter : "";
-      let face = isValidUrl(facebook, "facebook") ? facebook : "";
-      if (instagram && !insta)
-        toast.error("Please enter a valid instagram url");
-      if (twitter && !tweet) toast.error("Please enter a valid twitter url");
-      if (facebook && !face) toast.error("Please enter a valid facebook url");
 
-      const updatedUserDetails = {
-        ...currentUserDetails,
-        banner: bannerImageUrl,
-        email: user.email || currentUserDetails.email,
-        name: name || currentUserDetails.name,
-        headline: headline || currentUserDetails.headline,
-        tags: tags || currentUserDetails.tags,
-        website: website || currentUserDetails.website,
-        instagram:
-          insta === ""
-            ? ""
-            : instagram ||
-              (currentUserDetails.instagram === undefined
-                ? ""
-                : currentUserDetails.instagram),
+      const updatedUserDetails = { ...currentUserDetails };
 
-        twitter:
-          tweet === ""
-            ? ""
-            : twitter ||
-              (currentUserDetails.twitter === undefined
-                ? ""
-                : currentUserDetails.twitter),
-        facebook:
-          face === ""
-            ? ""
-            : facebook ||
-              (currentUserDetails.facebook === undefined
-                ? ""
-                : currentUserDetails.facebook),
-        pic: profileImageUrl,
-        uid: uid,
-      };
+      if (name) updatedUserDetails.name = name;
+      if (headline) updatedUserDetails.headline = headline;
+      if (tags) updatedUserDetails.tags = tags;
+      if (website) updatedUserDetails.website = website;
+      if (instagram) updatedUserDetails.instagram = instagram;
+      if (twitter) updatedUserDetails.twitter = twitter;
+      if (facebook) updatedUserDetails.facebook = facebook;
+
+      updatedUserDetails.banner = bannerImageUrl;
+      updatedUserDetails.pic = profileImageUrl;
 
       await set(userDetailsRef, updatedUserDetails);
+      localStorage.setItem("userPic", profileImageUrl);
       toast.success("User details have been successfully updated");
       setIsLoading(false);
       handleClose();
@@ -329,9 +341,23 @@ const EditProfile = () => {
               <Form.Label>Tags (max 5)</Form.Label>
               <Form.Control
                 type="text"
-                value={tags}
-                onChange={handleTagChange}
+                onChange={(e) => setPopTags(e.target.value)}
+                onKeyDown={handleKeyDown}
+                value={popTags}
               />
+              <Stack direction="row" className="mt-2" spacing={1}>
+                {listTags.map((ele, index) => {
+                  return (
+                    <Chip
+                      key={index}
+                      label={ele}
+                      onDelete={() => handleDelete(ele)}
+                      color="success"
+                      variant="outlined"
+                    />
+                  );
+                })}
+              </Stack>
             </Form.Group>
 
             <Form.Group>
@@ -346,35 +372,55 @@ const EditProfile = () => {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Instagram</Form.Label>
+              <Form.Label>
+                <Instagram />
+                Instagram URL
+              </Form.Label>
               <Form.Control
                 type="text"
-                value={instagram}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setInstagram(e.target.value)
-                }
+                value={instagram.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setInstagram(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Twitter</Form.Label>
+              <Form.Label>
+                <Twitter /> Twitter URL
+              </Form.Label>
               <Form.Control
                 type="text"
-                value={twitter}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setTwitter(e.target.value)
-                }
+                value={twitter.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setTwitter(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Facebook</Form.Label>
+              <Form.Label>
+                <Facebook />
+                Facebook URL
+              </Form.Label>
               <Form.Control
                 type="text"
-                value={facebook}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFacebook(e.target.value)
-                }
+                value={facebook.substring(8)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const inputValue = e.target.value;
+                  const updatedValue = inputValue.startsWith("https://")
+                    ? inputValue.substring(8)
+                    : inputValue;
+                  setFacebook(`https://${updatedValue}`);
+                }}
               />
             </Form.Group>
 
@@ -428,7 +474,6 @@ const EditProfile = () => {
           )}
         </Modal.Body>
       </Modal>
-      <ToastContainer />
     </>
   );
 };
