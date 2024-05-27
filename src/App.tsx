@@ -11,6 +11,7 @@ import EventDetails from "./components/EventDetails/EventDetails";
 import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </HashRouter>
+      <Footer />
     </div>
   );
 }
