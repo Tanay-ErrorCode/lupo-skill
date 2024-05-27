@@ -3,28 +3,32 @@ import { Container, Typography, Link, IconButton, Grid, Box } from '@mui/materia
 import { LinkedIn, GitHub } from '@mui/icons-material';
 import './Footer.css'; 
 
-const LinkedInIcon: React.FC = () => (
-  <IconButton
-    component="a"
-    href="https://www.linkedin.com/in/errorcode/"
+const LinkedInLink: React.FC<{ url: string; name: string }> = ({ url, name }) => (
+  <Link
+    href={url}
     target="_blank"
     rel="noopener noreferrer"
-    aria-label="LinkedIn"
+    className="footer-link"
   >
-    <LinkedIn />
-  </IconButton>
+    <IconButton aria-label="LinkedIn" className="icon-button">
+      <LinkedIn />
+    </IconButton>
+    {name}
+  </Link>
 );
 
-const GitHubIcon: React.FC = () => (
-  <IconButton
-    component="a"
-    href="https://github.com/Tanay-ErrorCode/lupo-skill.git"
+const GitHubLink: React.FC<{ url: string; name: string }> = ({ url, name }) => (
+  <Link
+    href={url}
     target="_blank"
     rel="noopener noreferrer"
-    aria-label="GitHub"
+    className="footer-link"
   >
-    <GitHub />
-  </IconButton>
+    <IconButton aria-label="GitHub" className="icon-button">
+      <GitHub />
+    </IconButton>
+    {name}
+  </Link>
 );
 
 const Footer: React.FC = () => {
@@ -34,7 +38,7 @@ const Footer: React.FC = () => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom className="footer-text">
+            <Typography variant="h6" gutterBottom className="footer-text" style={{ fontWeight: 'bold' }}>
               About Us
             </Typography>
             <Typography variant="body1" className="footer-text">
@@ -42,25 +46,22 @@ const Footer: React.FC = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Typography variant="h6" gutterBottom className="footer-text">
+            <Typography variant="h6" gutterBottom className="footer-text" style={{ fontWeight: 'bold' }}>
               Our Team
             </Typography>
             <Box className="footer-text">
-              <LinkedInIcon />
-                Tanay
+              <LinkedInLink url="https://www.linkedin.com/in/errorcode/" name="Tanay" />
             </Box>
             <Box className="footer-text">
-              <LinkedInIcon />
-                Neyati
+              <LinkedInLink url="https://www.linkedin.com/in/neyati/" name="Neyati" />
             </Box>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Typography variant="h6" gutterBottom className="footer-text">
+            <Typography variant="h6" gutterBottom className="footer-text" style={{ fontWeight: 'bold' }}>
               Contribute
             </Typography>
             <Box className="footer-text">
-              <GitHubIcon />
-                GitHub Repo
+              <GitHubLink url="https://github.com/Tanay-ErrorCode/lupo-skill.git" name="GitHub Repo" />
             </Box>
           </Grid>
         </Grid>
