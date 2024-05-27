@@ -15,6 +15,13 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase configuration
+  apiKey: "AIzaSyAZITzycCq10dVwObt2wma44xem5TG63us",
+  authDomain: "lupo-skill-97a98.firebaseapp.com",
+  projectId: "lupo-skill-97a98",
+  storageBucket: "lupo-skill-97a98.appspot.com",
+  messagingSenderId: "879357575644",
+  appId: "1:879357575644:web:2402bb0f2925a175274f19",
+  measurementId: "G-TFRNHRMGDW"
 };
 
 const app = firebase.initializeApp(firebaseConfig);
