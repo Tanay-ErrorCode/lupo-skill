@@ -19,6 +19,8 @@
   /* Padding */
   --padding-default: 1rem;
   --padding-small: 0.5rem;
+  --padding-large: 3rem;
+  --padding-extra-large: 6rem;
 
   /* Font Sizes */
   --font-size-text-body: 1.125rem;
@@ -27,6 +29,9 @@
   --font-size-medium-font: 1.5rem;
   --font-size-normal-font: 1.125rem;
   --font-size-small-font: 0.875rem;
+
+  /* Margin */
+  --margin-small: 0.5rem;
 }
 
 body {
