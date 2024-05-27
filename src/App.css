@@ -1,0 +1,42 @@
+:root {
+  /* Colors */
+  --color-light-background: #fcfcfc;
+  --color-dark-background: #0f0f0f;
+  --color-primary: #5ab2ff;
+  --color-secondary-dark: #a0deff;
+  --color-secondary-light: #caf4ff;
+  --color-accent: #ffdd00;
+  --color-white-card-outline: #9abac2;
+  --color-bright-background: #ffffff;
+  --color-textbox-outline: #bcc8cb;
+
+  /* Border Radius */
+  --border-radius-large: 1.25rem;
+  --border-radius-medium: 1rem;
+  --border-radius-small: 0.5rem;
+  --border-radius-extra-small: 0.25rem;
+
+  /* Padding */
+  --padding-default: 1rem;
+  --padding-small: 0.5rem;
+
+  /* Font Sizes */
+  --font-size-text-body: 1.125rem;
+  --font-size-heading: 2.1875rem;
+  --font-size-subheading: 1.875rem;
+  --font-size-medium-font: 1.5rem;
+  --font-size-normal-font: 1.125rem;
+  --font-size-small-font: 0.875rem;
+}
+
+body {
+  background-color: rgb(244, 255, 248) !important;
+  padding-top: 3.5em;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
