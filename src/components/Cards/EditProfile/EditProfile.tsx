@@ -25,9 +25,6 @@ const EditProfile = () => {
   const [website, setWebsite] = useState("");
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [instagram, setInstagram] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [instagram, setInstagram] = useState("");
@@ -276,6 +273,14 @@ const EditProfile = () => {
       }
 
       const updatedUserDetails = { ...currentUserDetails };
+
+      let insta = isValidUrl(instagram, "instagram") ? instagram : "";
+      let tweet = isValidUrl(twitter, "twitter") ? twitter : "";
+      let face = isValidUrl(facebook, "facebook") ? facebook : "";
+      if (instagram && !insta)
+        toast.error("Please enter a valid instagram url");
+      if (twitter && !tweet) toast.error("Please enter a valid twitter url");
+      if (facebook && !face) toast.error("Please enter a valid facebook url");
 
       if (name) updatedUserDetails.name = name;
       if (headline) updatedUserDetails.headline = headline;

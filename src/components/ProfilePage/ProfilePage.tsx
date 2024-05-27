@@ -135,8 +135,25 @@ const ProfilePage = () => {
       headline.innerText = userData.headline || "Developer";
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
+      const isValidUrl = (url: string, platform: string): boolean => {
+        const urlPattern = /^https:\/\/(www\.)?/;
+        if (!urlPattern.test(url)) {
+          return false;
+        }
+        type domaintype = {
+          [keys: string]: RegExp;
+        };
+        const domainPattern: domaintype = {
+          instagram: /^https:\/\/(www\.)?instagram\.com\//,
+          twitter: /^https:\/\/(www\.)?x\.com\//,
+          facebook: /^https:\/\/(www\.)?facebook\.com\//,
+        };
+
+        return domainPattern[platform].test(url);
+      };
 
       if (
+        isValidUrl(userData.instagram, "instagram") &&
         userData.instagram &&
         userData.instagram !== "https://" &&
         userData.instagram !== ""
@@ -151,6 +168,7 @@ const ProfilePage = () => {
       }
 
       if (
+        isValidUrl(userData.twitter, "twitter") &&
         userData.twitter &&
         userData.twitter !== "https://" &&
         userData.twitter !== ""
@@ -165,6 +183,7 @@ const ProfilePage = () => {
       }
 
       if (
+        isValidUrl(userData.facebook, "facebook") &&
         userData.facebook &&
         userData.facebook !== "https://" &&
         userData.facebook !== ""
