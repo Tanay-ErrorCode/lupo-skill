@@ -4,7 +4,6 @@ import CustomButton from "../Button/Button";
 import back from "../image_assets/back-v.png";
 import theme from "../../theme";
 import { Google } from "@mui/icons-material";
-import { Check } from "@mui/icons-material";
 import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
@@ -268,25 +267,33 @@ const HomePage = () => {
                   marginTop: "1rem",
                 }}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.5,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Check
-                    style={{
-                      color: theme.colors.primary,
-                      marginRight: "1rem",
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="30"
+                    height="30"
+                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
+                  >
+                    <motion.path
+                      d="M7 10 L12 15 L22 5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      initial={{ pathLength: 0 }}
+                      whileInView={{ pathLength: 1 }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                    />
+                  </svg>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      stiffness: 100,
+                      delay: 0.5,
                     }}
-                  />
-                  <span
                     style={{
                       color: "#ffffff",
                       fontSize: theme.fontSize.textBody,
@@ -294,27 +301,35 @@ const HomePage = () => {
                   >
                     Join Online Events: Learn from Industry Experts and Expand
                     Your Skillset.
-                  </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 0.8,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Check
-                    style={{
-                      color: theme.colors.primary,
-                      marginRight: "1rem",
+                  </motion.span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="30"
+                    height="30"
+                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
+                  >
+                    <motion.path
+                      d="M7 10 L12 15 L22 5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      initial={{ pathLength: 0 }}
+                      whileInView={{ pathLength: 1 }}
+                      transition={{ duration: 1, delay: 1.5 }}
+                    />
+                  </svg>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      stiffness: 100,
+                      delay: 1.5,
                     }}
-                  />
-                  <span
                     style={{
                       color: "#ffffff",
                       fontSize: theme.fontSize.textBody,
@@ -322,27 +337,35 @@ const HomePage = () => {
                   >
                     Share Resources: Contribute to the Learning Community by
                     Sharing Your Knowledge.
-                  </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 1.1,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Check
-                    style={{
-                      color: theme.colors.primary,
-                      marginRight: "1rem",
+                  </motion.span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="30"
+                    height="30"
+                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
+                  >
+                    <motion.path
+                      d="M7 10 L12 15 L22 5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      initial={{ pathLength: 0 }}
+                      whileInView={{ pathLength: 1 }}
+                      transition={{ duration: 1, delay: 2.5 }}
+                    />
+                  </svg>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      stiffness: 100,
+                      delay: 2.5,
                     }}
-                  />
-                  <span
                     style={{
                       color: "#ffffff",
                       fontSize: theme.fontSize.textBody,
@@ -350,27 +373,35 @@ const HomePage = () => {
                   >
                     Host Online Events: Share Your Expertise and Connect with
                     Learners Worldwide.
-                  </span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: -150 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 1,
-                    type: "spring",
-                    stiffness: 100,
-                    delay: 1.4,
-                  }}
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <Check
-                    style={{
-                      color: theme.colors.primary,
-                      marginRight: "1rem",
+                  </motion.span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="30"
+                    height="30"
+                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
+                  >
+                    <motion.path
+                      d="M7 10 L12 15 L22 5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      initial={{ pathLength: 0 }}
+                      whileInView={{ pathLength: 1 }}
+                      transition={{ duration: 1, delay: 3.5 }}
+                    />
+                  </svg>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      stiffness: 100,
+                      delay: 3.5,
                     }}
-                  />
-                  <span
                     style={{
                       color: "#ffffff",
                       fontSize: theme.fontSize.textBody,
@@ -378,8 +409,8 @@ const HomePage = () => {
                   >
                     Read Articles: Access Valuable Resources and Stay Updated on
                     Latest Trends.
-                  </span>
-                </motion.div>
+                  </motion.span>
+                </div>
               </Grid>
             </Grid>
             {/* buttons */}
