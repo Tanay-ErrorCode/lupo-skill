@@ -1,7 +1,7 @@
 .navbar {
   background: radial-gradient(
     circle at 48.7% 44.3%,
-    rgb(30, 144, 231) 0%,
+    #1e90e7 0%,
     rgb(56, 113, 209) 22.9%,
     rgb(38, 76, 140) 76.7%,
     rgb(31, 63, 116) 100.2%
@@ -16,9 +16,38 @@
   object-fit: cover !important;
   /* Add additional properties here to further reduce the size */
   pointer-events: none;
+  border-radius: 50%;
 }
 .nav-profile-dropdown {
   z-index: 100 !important;
+  display: flex;
+  align-items: center;
 
   /* TODO:I have to fix this card is on the top*/
+}
+/* NavBar.css */
+
+.nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 70px; /* Adjust the size as needed */
+  height: 70px; /* Adjust the size as needed */
+  transition: transform 0.3s ease-in-out;
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.5);
+}
+
+.nav-text {
+  position: absolute;
+  bottom: -10px; /* Adjust this value to control the space between text and image */
+  font-size: 12px; /* Adjust font size as needed */
+  color: white; /* Adjust text color as needed */
+  white-space: nowrap;
 }
