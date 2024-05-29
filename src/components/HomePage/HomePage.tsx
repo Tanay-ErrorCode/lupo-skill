@@ -232,10 +232,10 @@ const HomePage = () => {
           <Grid
             item
             xs={12}
-            style={{ padding: "20px", marginTop: "4rem", marginBottom: "4rem" }}
+            style={{ padding: "2rem", marginTop: "4rem", marginBottom: "4rem" }}
           >
             <Grid container alignItems="center">
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} textAlign={"center"}>
                 <motion.div
                   initial={{ opacity: 0, x: -150 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -267,150 +267,198 @@ const HomePage = () => {
                   marginTop: "1rem",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="30"
-                    height="30"
-                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
-                  >
-                    <motion.path
-                      d="M7 10 L12 15 L22 5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      whileInView={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: 0.5 }}
-                    />
-                  </svg>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      stiffness: 100,
-                      delay: 0.5,
-                    }}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 2,
+                    type: "spring",
+                    stiffness: 50,
+                    delay: 1,
+                  }}
+                >
+                  <div
                     style={{
-                      color: "#ffffff",
-                      fontSize: theme.fontSize.textBody,
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
                     }}
                   >
-                    Join Online Events: Learn from Industry Experts and Expand
-                    Your Skillset.
-                  </motion.span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="30"
-                    height="30"
-                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
-                  >
-                    <motion.path
-                      d="M7 10 L12 15 L22 5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      whileInView={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: 1.5 }}
-                    />
-                  </svg>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      stiffness: 100,
-                      delay: 1.5,
-                    }}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 0.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 0.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Join Online Events: Learn from Industry Experts and Expand
+                      Your Skillset.
+                    </motion.span>
+                  </div>
+                  <div
                     style={{
-                      color: "#ffffff",
-                      fontSize: theme.fontSize.textBody,
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
                     }}
                   >
-                    Share Resources: Contribute to the Learning Community by
-                    Sharing Your Knowledge.
-                  </motion.span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="30"
-                    height="30"
-                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
-                  >
-                    <motion.path
-                      d="M7 10 L12 15 L22 5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      whileInView={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: 2.5 }}
-                    />
-                  </svg>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      stiffness: 100,
-                      delay: 2.5,
-                    }}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 1.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 1.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Share Resources: Contribute to the Learning Community by
+                      Sharing Your Knowledge.
+                    </motion.span>
+                  </div>
+                  <div
                     style={{
-                      color: "#ffffff",
-                      fontSize: theme.fontSize.textBody,
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
                     }}
                   >
-                    Host Online Events: Share Your Expertise and Connect with
-                    Learners Worldwide.
-                  </motion.span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="30"
-                    height="30"
-                    style={{ color: theme.colors.primary, marginRight: "1rem" }}
-                  >
-                    <motion.path
-                      d="M7 10 L12 15 L22 5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      initial={{ pathLength: 0 }}
-                      whileInView={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: 3.5 }}
-                    />
-                  </svg>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      stiffness: 100,
-                      delay: 3.5,
-                    }}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 2.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 2.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Host Online Events: Share Your Expertise and Connect with
+                      Learners Worldwide.
+                    </motion.span>
+                  </div>
+                  <div
                     style={{
-                      color: "#ffffff",
-                      fontSize: theme.fontSize.textBody,
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
                     }}
                   >
-                    Read Articles: Access Valuable Resources and Stay Updated on
-                    Latest Trends.
-                  </motion.span>
-                </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 3.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 3.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Read Articles: Access Valuable Resources and Stay Updated
+                      on Latest Trends.
+                    </motion.span>
+                  </div>
+                </motion.div>
               </Grid>
             </Grid>
             {/* buttons */}
