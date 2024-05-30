@@ -23,12 +23,11 @@ const theme = {
     small: 8,
   },
   fontSize: {
-    textBody: '1.125rem',
-    heading: '2.1875rem',
-    subheading: '1.875rem',
-    mediumFont: '1.5rem',
+    textBody: "1.125rem",
+    heading: "2.1875rem",
+    subheading: "1.875rem",
+    mediumFont: "1.5rem",
   },
-
 };
 
 export default theme;
