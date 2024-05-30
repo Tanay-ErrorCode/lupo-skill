@@ -14,12 +14,7 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
+  // firebase configuration
 };
 
 const app = firebase.initializeApp(firebaseConfig);
