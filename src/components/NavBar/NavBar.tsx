@@ -239,6 +239,7 @@ const NavBar = () => {
               <Button
                 href="#/"
                 sx={{
+                  boxSizing: "border-box",
                   fontWeight: 700,
                   fontSize: mdFontSize,
                   color: isHome
@@ -257,7 +258,7 @@ const NavBar = () => {
                     : "transparent",
                   display: "block",
                   borderRadius: theme.borderRadius.large,
-                  border: isHome ? "2px solid white" : "none",
+                  border: isHome ? "2px solid transparent" : "none",
 
                   paddingX: 2,
                   textTransform: "none",
@@ -276,6 +277,7 @@ const NavBar = () => {
                 href="#/dashboard"
                 onClick={handleDashboard}
                 sx={{
+                  boxSizing: "border-box",
                   display: "block",
                   fontWeight: 600,
                   gap: "10px",
@@ -297,6 +299,7 @@ const NavBar = () => {
                     : "transparent",
                   borderRadius: theme.borderRadius.large,
                   textTransform: "none",
+                  border: isHome ? "2px solid transparent" : "none",
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -331,6 +334,8 @@ const NavBar = () => {
                     : isActive("/events")
                     ? theme.colors.secondaryDark
                     : "transparent",
+                  border: isHome ? "2px solid transparent" : "none",
+
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -357,6 +362,8 @@ const NavBar = () => {
                     : "transparent",
                   borderRadius: theme.borderRadius.large,
                   textTransform: "none",
+                  border: isHome ? "2px solid transparent" : "none",
+
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
