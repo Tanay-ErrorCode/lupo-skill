@@ -23,10 +23,10 @@ const theme = {
     small: 8,
   },
   fontSize: {
-    textBody: 18,
-    heading: 35,
-    subheading: 30,
-    mediumFont: 24,
+    textBody: "1.125rem",
+    heading: "2.1875rem",
+    subheading: "1.875rem",
+    mediumFont: "1.5rem",
   },
 };
 
