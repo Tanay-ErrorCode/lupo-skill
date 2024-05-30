@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
     <Box component="footer" className="footer">
       <Box className="strip" />
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
+        <Grid container spacing={24}>
           <Grid item xs={12} md={6}>
             <Typography variant="h6" gutterBottom className="footer-text" style={{ fontWeight: 'bold' }}>
               About Us
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
               <LinkedInLink url="https://www.linkedin.com/in/errorcode/" name="Tanay" />
             </Box>
             <Box className="footer-text">
-              <LinkedInLink url="https://www.linkedin.com/in/neyati/" name="Neyati" />
+              <LinkedInLink url="https://www.linkedin.com/in/neyati-iiit/" name="Neyati" />
             </Box>
           </Grid>
           <Grid item xs={12} md={3}>
