@@ -1,3 +1,4 @@
+// testimonialCarousel.tsx
 import React from "react";
 import Carousel from "react-bootstrap/Carousel";
 import Grid from "@mui/material/Grid";
@@ -12,6 +13,7 @@ interface Testimonial {
 }
 
 const testimonials: Testimonial[] = [
+  // ... (testimonials data)
   {
     name: "Elena Rodriguez",
     text: "I can't express enough how much I appreciate this platform. The live events are incredibly engaging, and the articles provide valuable insights. I've learned so much, and it's all thanks to this website!",
@@ -67,15 +69,13 @@ const groupTestimonials = (
 
 const TestimonialsCarousel: React.FC = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const isTablet = useMediaQuery("(max-width:960px)");
+  const isTablet = useMediaQuery("(max-width:900px)");
 
   let itemsPerGroup = 4;
   if (isMobile) {
     itemsPerGroup = 1;
   } else if (isTablet) {
     itemsPerGroup = 2;
-  } else {
-    itemsPerGroup = 4;
   }
 
   const groupedTestimonials: Testimonial[][] = groupTestimonials(
@@ -92,7 +92,9 @@ const TestimonialsCarousel: React.FC = () => {
     >
       {groupedTestimonials.map((group, index) => (
         <Carousel.Item key={index}>
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={2} justifyContent="center" className="grid">
+            {" "}
+            {/* Adjusted spacing */}
             {group.map((testimonial, idx) => (
               <Grid item xs={12} sm={6} md={3} key={idx}>
                 <TestimonialCard {...testimonial} />

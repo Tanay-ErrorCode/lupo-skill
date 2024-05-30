@@ -1,3 +1,4 @@
+// TestimonialCard.tsx
 import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -24,9 +25,8 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
   return (
     <Card
+      className="testimonial-card"
       sx={{
-        maxWidth: isSmallScreen ? "100%" : 323,
-        height: isSmallScreen ? 400 : "100%",
         padding: "6px",
         border: "2.5px solid #9ABAC2",
         display: "flex",
@@ -45,7 +45,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
           <Box
             display="flex"
             alignItems="center"
-            flexWrap="wrap"
             justifyContent="center"
             gap="20px"
           >
@@ -54,19 +53,18 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
               src={image}
               sx={{ width: 56, height: 56, border: "1.5px solid #AE8892" }}
             />
-            <Typography
-              variant="h5"
-              fontSize={"1.5rem"}
-              fontWeight="700"
-              textAlign="center"
-            >
+            <Typography variant="h5" fontSize={"1.1rem"} fontWeight="700">
               {name}
             </Typography>
           </Box>
           <Divider
             sx={{ width: "100%", borderTop: "2px solid #16aeff", my: 1 }}
           />
-          <Typography variant="body2" color="text.secondary" textAlign="center">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            style={{ textAlign: "center" }}
+          >
             {text}
           </Typography>
         </Box>

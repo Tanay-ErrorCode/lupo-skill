@@ -6,7 +6,7 @@
 }
 .carousel-item {
   transition: transform 1.5s ease, opacity 1.5s ease !important;
-  padding: 20px 0;
+  padding: 20px;
 }
 
 .carousel-indicators {
@@ -27,5 +27,43 @@
 @media (max-width: 800) {
   .happy {
     margin: 60px 0px;
+  }
+}
+/* testimonial.css */
+.testimonial-card {
+  max-width: 323;
+  margin-bottom: 20px;
+  height: 300px; /* Ensure all cards have the same height */
+}
+
+@media (max-width: 1240px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 1060px) {
+  .testimonial-card {
+    height: 440px;
+  }
+}
+@media (max-width: 900px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 678px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+
+@media (max-width: 598px) {
+  .testimonial-card {
+    height: 250px;
+  }
+}
+@media (max-width: 450px) {
+  .testimonial-card {
+    height: 400px;
   }
 }
