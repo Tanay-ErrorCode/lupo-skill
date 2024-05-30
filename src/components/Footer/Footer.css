@@ -1,0 +1,46 @@
+.footer {
+    background-color: var(--color-light-background);
+    padding: var(--padding-extra-large) var(--padding-large); 
+    position: relative;
+}
+
+.strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: var(--padding-extra-large);
+    width: 100%;
+    height: var(--border-radius-extra-small);
+    background-color: var(--color-primary);
+}
+
+.footer-text {
+    color: var(--color-dark-background);
+}
+
+.footer-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-dark-background);
+    text-decoration: none;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.footer-link:hover {
+    transform: scale(1.1);
+    color: var(--color-primary); 
+}
+
+.footer-link .MuiIconButton-root {
+    margin-right: var(--margin-small); 
+    color: var(--color-dark-background);
+    transition: color 0.3s ease-in-out; 
+}
+
+.footer-link:hover .MuiIconButton-root {
+    color: var(--color-primary); 
+}
+
+.footer-text a {
+    text-decoration: none; 
+}
