@@ -168,7 +168,8 @@ const NavBar = () => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: theme.colors.darkBackground,
+        background: isHome ? "transparent" : theme.colors.darkBackground,
+        backdropFilter: isHome ? "blur(12px)" : "none",
         zIndex: 1,
         paddingY: "20px",
       }}
@@ -201,7 +202,7 @@ const NavBar = () => {
                 sx={{
                   mr: "16px",
                   display: { md: "flex" },
-                  fontFamily: "Inter",
+                  // fontFamily: "Inter",
                   fontWeight: 700,
                   color: "inherit",
                   textDecoration: "none",
@@ -418,9 +419,20 @@ const NavBar = () => {
                 </IconButton>
               ) : (
                 <div>
-                  <Button onClick={handleMenuOpen} sx={{ p: 0 }}>
+                  <IconButton
+                    onClick={handleMenuOpen}
+                    sx={{
+                      border: isHome ? "1px solid" : "none",
+                      borderColor: theme.colors.lightBackground,
+                      borderRadius: "32px",
+                      alignItems: "center",
+                      backgroundColor: isHome
+                        ? "rgba(255, 255, 255, 0.17)"
+                        : "transparent",
+                    }}
+                  >
                     <Avatar alt="User Avatar" src={userPic || default_user} />
-                  </Button>
+                  </IconButton>
                   <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
