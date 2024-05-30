@@ -1,14 +1,20 @@
-import React, { useState } from "react";
-import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import {
+  Navbar,
+  Nav,
+  NavDropdown,
+  Container,
+  Offcanvas,
+  Button,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
+import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import Signup from "../Signup/Signup";
+import { toast } from "react-toastify";
 import { signOutUser } from "../../firebaseConf";
 import logo from "../image_assets/logo.png";
-import Home from "./Images/Home.png";
-import Dashboard from "./Images/Dashboard.png";
-import Events from "./Images/Events.png";
-import Create_event from "./Images/Create_event.png";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -62,36 +68,19 @@ const NavBar = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="m-auto align-items-center">
             <Nav.Link href="#/" onClick={handleClose}>
-              <div className="nav-item">
-                <img src={Home} alt="Home" className="nav-icon" />
-                <span className="nav-text">Home</span>
-              </div>
+              Home
             </Nav.Link>
             <Nav.Link href="#/dashboard" onClick={handleDashboard}>
-              <div className="nav-item">
-                <img src={Dashboard} alt="Dashboard" className="nav-icon" />
-                <span className="nav-text">Dashboard</span>
-              </div>
+              Dashboard
             </Nav.Link>
             <Nav.Link href="#/events" onClick={handleClose}>
-              <div className="nav-item">
-                <img src={Events} alt="Events" className="nav-icon" />
-                <span className="nav-text">Events</span>
-              </div>
+              Events
             </Nav.Link>
-            <Nav.Link onClick={handleClose}>
-              <div className="nav-item">
-                <img
-                  src={Create_event}
-                  alt="Create Event"
-                  className="nav-icon"
-                />
-                <span className="nav-text">+Event</span>
-              </div>
-            </Nav.Link>
+            <CreateEvent onNavLinkClick={handleClose} />
           </Nav>
           <Nav className="align-items-center">
             {!is_signup ? (
+              // <Signup />
               <Button variant="success" onClick={handleDashboard}>
                 Login
               </Button>
@@ -109,14 +98,14 @@ const NavBar = () => {
                 <div>
                   <NavDropdown.Item
                     href={"#/profile/" + (userUid ? userUid : "")}
-                    className="text-success nav-profile-dropdown"
+                    className="text-success  nav-profile-dropdown"
                     onClick={handleClose}
                   >
                     View Profile
                   </NavDropdown.Item>
 
                   <NavDropdown.Item
-                    className="text-danger nav-profile-dropdown"
+                    className="text-danger  nav-profile-dropdown"
                     onClick={() => {
                       signOutUser();
                       handleClose();
