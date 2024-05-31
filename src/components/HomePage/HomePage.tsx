@@ -464,10 +464,57 @@ const HomePage = () => {
               </Grid>
             </Grid>
             {/* testimonial */}
-            <Box>
-              <h1 className="happy">Happy Users</h1>
-              <TestimonialsCarousel />
-            </Box>
+            <Container maxWidth="xl">
+              <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                marginTop="180px"
+              >
+                <Grid item xs={12} textAlign={"center"}>
+                  <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      type: "spring",
+                      stiffness: 100,
+                      delay: 0.5,
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      fontWeight="Bold"
+                      style={{
+                        marginBottom: "1rem",
+                        marginLeft: ".3rem",
+                        color: "#ffffff",
+                      }}
+                    >
+                      Happy Users
+                    </Typography>
+                  </motion.div>
+                </Grid>
+                <Grid item xs={12}>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 1,
+                      type: "spring",
+                      stiffness: 100,
+                      delay: 1,
+                    }}
+                  >
+                    <Box mt={4} mb={8}>
+                      <TestimonialsCarousel />
+                    </Box>
+                  </motion.div>
+                </Grid>
+              </Grid>
+            </Container>
             {/* buttons */}
             <Grid
               container
