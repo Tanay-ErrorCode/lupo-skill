@@ -1,7 +1,7 @@
 body {
   /* background-color: rgb(255, 244, 244) !important; */
   background-color: rgb(244, 255, 248) !important;
-  padding-top: 3.5em;
+  /* padding-top: 3.5em; */
 }
 .spinner-container {
   display: flex;

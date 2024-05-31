@@ -102,7 +102,11 @@ const EventDetails = () => {
     toast.success("Google Meet link added successfully", { transition: Zoom });
   };
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "3.5em",
+      }}
+    >
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center">
           <Spinner animation="border" />

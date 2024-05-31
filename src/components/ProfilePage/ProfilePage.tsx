@@ -204,7 +204,12 @@ const ProfilePage = () => {
   };
 
   return (
-    <Container className="mt-5">
+    <Container
+      className="mt-5"
+      style={{
+        paddingTop: "3.5em",
+      }}
+    >
       <Row className="gutters-sm">
         <Col md={4} className="mb-3">
           <div className="card">

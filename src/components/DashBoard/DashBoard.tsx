@@ -114,7 +114,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "3.5em",
+      }}
+    >
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
