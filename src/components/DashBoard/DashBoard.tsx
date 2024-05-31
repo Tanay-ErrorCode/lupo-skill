@@ -23,6 +23,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { reload } from "firebase/auth";
+import PageTitle from "../../utils/PageTitle";
 
 interface Event {
   banner: string;
