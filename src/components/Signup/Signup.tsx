@@ -97,10 +97,10 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Sign Up</Modal.Title>
+          <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body className="d-flex justify-content-center align-items-center m-5">
-          <GoogleButton type="light" onClick={logGoogleUser} />
+          <GoogleButton type="light" onClick={logGoogleUser} label="Login with Google"/>
         </Modal.Body>
       </Modal>
     </>
