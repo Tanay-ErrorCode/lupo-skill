@@ -124,7 +124,7 @@ const EventList = () => {
   return (
     <div
       style={{
-        paddingTop: "3.5em",
+        paddingTop: "6.5em",
       }}
     >
       {isLoading ? (

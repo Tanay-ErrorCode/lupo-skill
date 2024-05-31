@@ -207,7 +207,7 @@ const ProfilePage = () => {
     <Container
       className="mt-5"
       style={{
-        paddingTop: "3.5em",
+        paddingTop: "6.5em",
       }}
     >
       <Row className="gutters-sm">
