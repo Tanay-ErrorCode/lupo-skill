@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import "./EventCard.css";
 // import props.image from "../../image_assets/props.image.png";
@@ -18,6 +18,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import PageTitle from "../../../utils/PageTitle";
 interface EventCardProps {
   title: string;
   description: string;
@@ -31,6 +32,7 @@ interface EventCardProps {
   isRegistered?: boolean;
   isValid: boolean;
   hostName: string;
+  onBackToDashboard?: () => void;
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
@@ -147,79 +149,16 @@ const EventCard: React.FC<EventCardProps> = (props) => {
   const eventDateTime = new Date(year, month, day, hours, minutes, seconds);
 
   return (
-    <Container>
-      {!props.isDashboard ? (
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={8} lg={6}>
-            <Card className="mb-3 shadow card card-background">
-              <Card.Img
-                src={props.image}
-                alt="Card Image"
-                className="card_image"
-              />
-              <Card.Body>
-                <Card.Title>{props.title}</Card.Title>
-                <Card.Text>
-                  <div className="d-flex align-items-center mb-2">
-                    <i className="bi bi-calendar"></i>{" "}
-                    <span className="ms-2">{props.date}</span>
-                    <i className="bi bi-clock ms-2"></i>{" "}
-                    <span className="ms-2">{props.time}</span>
-                  </div>
-                  Host:{" "}
-                  <a href={"#/profile/" + props.host} className="link-primary">
-                    {props.hostName}
-                  </a>
-                  <br />
-                  {props.description}
-                  <br />
-                  {props.tags.split(",").map((tag, index) => (
-                    <span key={index} className="tag badge me-2">
-                      {tag}
-                    </span>
-                  ))}
-                </Card.Text>
-                {eventDateTime > new Date() ? (
-                  <Button
-                    className={`${
-                      (props.isValid && props.isRegistered) || register_data
-                        ? "registration_color"
-                        : "btn-c"
-                    } position-absolute bottom-0 end-0 m-3 `}
-                    onClick={registerForEventX}
-                    disabled={
-                      (props.isValid && props.isRegistered) || register_data
-                    }
-                  >
-                    {(props.isValid && props.isRegistered) || register_data
-                      ? "Registered"
-                      : "Register"}
-                  </Button>
-                ) : (
-                  <Button className="btn-d position-absolute bottom-0 end-0 m-3">
-                    Expired
-                  </Button>
-                )}
-                {/* <Button
-                  className="btn-c position-absolute bottom-0 end-0 m-3"
-                  onClick={registerForEventX}
-                >
-                  Register
-                </Button> */}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      ) : (
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={8} lg={6}>
-            <Link href={"#/eventDetails/" + props.id} className="link-nothing">
-              <Card className="mt-2 mb-2 shadow card card-background">
+    <>
+      <Container>
+        {!props.isDashboard ? (
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={8} lg={6}>
+              <Card className="mb-3 shadow card card-background">
                 <Card.Img
                   src={props.image}
                   alt="Card Image"
                   className="card_image"
-                  referrerPolicy="no-referrer"
                 />
                 <Card.Body>
                   <Card.Title>{props.title}</Card.Title>
@@ -246,30 +185,101 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       </span>
                     ))}
                   </Card.Text>
-                  {!props.isDashboard ? (
-                    eventDateTime > new Date() ? (
-                      <Button
-                        className="btn-c position-absolute bottom-0 end-0 m-3"
-                        onClick={registerForEventX}
-                      >
-                        Register
-                      </Button>
-                    ) : (
-                      <Button
-                        className="btn-c position-absolute bottom-0 end-0 m-3"
-                        variant="danger"
-                      >
-                        Expired
-                      </Button>
-                    )
-                  ) : null}
+                  {eventDateTime > new Date() ? (
+                    <Button
+                      className={`${
+                        (props.isValid && props.isRegistered) || register_data
+                          ? "registration_color"
+                          : "btn-c"
+                      } position-absolute bottom-0 end-0 m-3 `}
+                      onClick={registerForEventX}
+                      disabled={
+                        (props.isValid && props.isRegistered) || register_data
+                      }
+                    >
+                      {(props.isValid && props.isRegistered) || register_data
+                        ? "Registered"
+                        : "Register"}
+                    </Button>
+                  ) : (
+                    <Button className="btn-d position-absolute bottom-0 end-0 m-3">
+                      Expired
+                    </Button>
+                  )}
+                  {/* <Button
+                  className="btn-c position-absolute bottom-0 end-0 m-3"
+                  onClick={registerForEventX}
+                >
+                  Register
+                </Button> */}
                 </Card.Body>
               </Card>
-            </Link>
-          </Col>
-        </Row>
-      )}
-    </Container>
+            </Col>
+          </Row>
+        ) : (
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={8} lg={6}>
+              <Link
+                href={"#/eventDetails/" + props.id}
+                className="link-nothing"
+              >
+                <Card className="mt-2 mb-2 shadow card card-background">
+                  <Card.Img
+                    src={props.image}
+                    alt="Card Image"
+                    className="card_image"
+                    referrerPolicy="no-referrer"
+                  />
+                  <Card.Body>
+                    <Card.Title>{props.title}</Card.Title>
+                    <Card.Text>
+                      <div className="d-flex align-items-center mb-2">
+                        <i className="bi bi-calendar"></i>{" "}
+                        <span className="ms-2">{props.date}</span>
+                        <i className="bi bi-clock ms-2"></i>{" "}
+                        <span className="ms-2">{props.time}</span>
+                      </div>
+                      Host:{" "}
+                      <a
+                        href={"#/profile/" + props.host}
+                        className="link-primary"
+                      >
+                        {props.hostName}
+                      </a>
+                      <br />
+                      {props.description}
+                      <br />
+                      {props.tags.split(",").map((tag, index) => (
+                        <span key={index} className="tag badge me-2">
+                          {tag}
+                        </span>
+                      ))}
+                    </Card.Text>
+                    {!props.isDashboard ? (
+                      eventDateTime > new Date() ? (
+                        <Button
+                          className="btn-c position-absolute bottom-0 end-0 m-3"
+                          onClick={registerForEventX}
+                        >
+                          Register
+                        </Button>
+                      ) : (
+                        <Button
+                          className="btn-c position-absolute bottom-0 end-0 m-3"
+                          variant="danger"
+                        >
+                          Expired
+                        </Button>
+                      )
+                    ) : null}
+                  </Card.Body>
+                </Card>
+              </Link>
+            </Col>
+          </Row>
+        )}
+      </Container>
+    </>
   );
 };
 

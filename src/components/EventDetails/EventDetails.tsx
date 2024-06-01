@@ -29,6 +29,7 @@ import {
   storage,
   signInWithGooglePopup,
 } from "../../firebaseConf";
+import PageTitle from "../../utils/PageTitle";
 const EventDetails = () => {
   const { id } = useParams();
   const userUid = localStorage.getItem("userUid");
@@ -102,107 +103,117 @@ const EventDetails = () => {
     toast.success("Google Meet link added successfully", { transition: Zoom });
   };
   return (
-    <div>
-      {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center">
-          <Spinner animation="border" />
-        </div>
-      ) : (
-        <Container>
-          <Row>
-            <Col>
-              <Card className="p-3 shadow mt-2">
-                <Card.Img
-                  variant="top"
-                  src={banner_Image}
-                  alt="Event Header"
-                  className="card-image"
-                />
-                <Card.Body>
-                  <Card.Title>{title}</Card.Title>
-                  <Container>
-                    <Row className="align-items-center mb-2">
-                      <Col xs="auto">
-                        <i className="bi bi-calendar"></i>
-                      </Col>
-                      <Col xs="auto">{date}</Col>
-                      <Col xs="auto">
-                        <i className="bi bi-clock"></i>
-                      </Col>
-                      <Col xs="auto">{time}</Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        Host:{" "}
-                        <a href={"#/profile/" + host} className="link-primary">
-                          {hostName}
-                        </a>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>{description}</Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        {tags.map((tag, index) => (
-                          <span key={index} className="tag badge me-2">
-                            {tag}
-                          </span>
-                        ))}
-                      </Col>
-                    </Row>
-                  </Container>
-                </Card.Body>
-              </Card>
-              <Card className="p-1 mt-2 shadow">
-                <Card.Body>
-                  <div>
-                    {isHost ? (
-                      <>
-                        {" "}
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text>Google Meet link :</InputGroup.Text>
-                          <FormControl
-                            type="text"
-                            value={googleMeetLink}
-                            onChange={(e) => setGoogleMeetLink(e.target.value)}
-                          />
-                          <Button
-                            onClick={() => {
-                              addMeetingLink();
-                            }}
-                            variant="primary"
+    <>
+      <PageTitle title={`${title} | Lupo Skill`} />
+      <div>
+        {isLoading ? (
+          <div className="d-flex justify-content-center align-items-center">
+            <Spinner animation="border" />
+          </div>
+        ) : (
+          <Container>
+            <Row>
+              <Col>
+                <Card className="p-3 shadow mt-2">
+                  <Card.Img
+                    variant="top"
+                    src={banner_Image}
+                    alt="Event Header"
+                    className="card-image"
+                  />
+                  <Card.Body>
+                    <Card.Title>{title}</Card.Title>
+                    <Container>
+                      <Row className="align-items-center mb-2">
+                        <Col xs="auto">
+                          <i className="bi bi-calendar"></i>
+                        </Col>
+                        <Col xs="auto">{date}</Col>
+                        <Col xs="auto">
+                          <i className="bi bi-clock"></i>
+                        </Col>
+                        <Col xs="auto">{time}</Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          Host:{" "}
+                          <a
+                            href={"#/profile/" + host}
+                            className="link-primary"
                           >
-                            Add Link
-                          </Button>
-                        </InputGroup>
-                      </>
-                    ) : (
-                      <>
-                        Google Meet link :{" "}
-                        {googleMeetLink ===
-                        "Nothing yet, ask the host to add one" ? (
-                          "Nothing yet, ask the host to add one"
-                        ) : (
-                          <a href={googleMeetLink} className="link-primary">
-                            {googleMeetLink}
+                            {hostName}
                           </a>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </Card.Body>
-              </Card>
-              <Card className="p-1 mt-2 shadow">
-                <Card.Body>
-                  Number of registerents : {registeredUsers.length}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      )}
-    </div>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>{description}</Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          {tags.map((tag, index) => (
+                            <span key={index} className="tag badge me-2">
+                              {tag}
+                            </span>
+                          ))}
+                        </Col>
+                      </Row>
+                    </Container>
+                  </Card.Body>
+                </Card>
+                <Card className="p-1 mt-2 shadow">
+                  <Card.Body>
+                    <div>
+                      {isHost ? (
+                        <>
+                          {" "}
+                          <InputGroup className="mb-3">
+                            <InputGroup.Text>
+                              Google Meet link :
+                            </InputGroup.Text>
+                            <FormControl
+                              type="text"
+                              value={googleMeetLink}
+                              onChange={(e) =>
+                                setGoogleMeetLink(e.target.value)
+                              }
+                            />
+                            <Button
+                              onClick={() => {
+                                addMeetingLink();
+                              }}
+                              variant="primary"
+                            >
+                              Add Link
+                            </Button>
+                          </InputGroup>
+                        </>
+                      ) : (
+                        <>
+                          Google Meet link :{" "}
+                          {googleMeetLink ===
+                          "Nothing yet, ask the host to add one" ? (
+                            "Nothing yet, ask the host to add one"
+                          ) : (
+                            <a href={googleMeetLink} className="link-primary">
+                              {googleMeetLink}
+                            </a>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </Card.Body>
+                </Card>
+                <Card className="p-1 mt-2 shadow">
+                  <Card.Body>
+                    Number of registerents : {registeredUsers.length}
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Container>
+        )}
+      </div>
+    </>
   );
 };
 

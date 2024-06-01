@@ -45,6 +45,7 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         localStorage.setItem("userUid", uid);
+        localStorage.setItem("username", `${username}`);
         localStorage.setItem("userPic", userData.pic || "");
         window.location.reload();
         toast.success("Logged in successfully", { transition: Zoom });
@@ -100,7 +101,11 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
           <Modal.Title>SignUp or LogIn</Modal.Title>
         </Modal.Header>
         <Modal.Body className="d-flex justify-content-center align-items-center m-5">
-          <GoogleButton type="light" onClick={logGoogleUser} label="Continue with Google"/>
+          <GoogleButton
+            type="light"
+            onClick={logGoogleUser}
+            label="Continue with Google"
+          />
         </Modal.Body>
       </Modal>
     </>
