@@ -276,6 +276,11 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                           {tag}
                         </span>
                       ))}
+                      {props.lastEdited && (
+                        <div className="text-muted mt-2">
+                          Edited {moment(props.lastEdited).fromNow()}
+                        </div>
+                      )}
                     </Card.Text>
                     {!props.isDashboard ? (
                       eventDateTime > new Date() ? (

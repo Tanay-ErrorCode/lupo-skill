@@ -37,6 +37,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const Dashboard = () => {
@@ -145,6 +146,7 @@ const Dashboard = () => {
                   banner: string;
                   host: string;
                   hostName: string;
+                  lastEdited?: number;
                 },
                 index
               ) => (
@@ -161,6 +163,7 @@ const Dashboard = () => {
                   isDashboard={true}
                   image={card.banner}
                   hostName={card.hostName}
+                  lastEdited={card.lastEdited}
                 />
               )
             )}
