@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { ref, update } from "firebase/database";
-import { database, storage } from "../../firebaseConf";
+import { storage, database } from "../../firebaseConf";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
 import ImageCropper from "../../utils/ImageCropper";
 import { Zoom, toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 
 interface EditEventModalProps {
   show: boolean;
@@ -46,7 +46,8 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
     if (event) {
       setFormData(event);
       const eventDate = new Date(event.date);
-      const eventTime = new Date(event.time);
+      const [timeString, timezone] = event.time.split(" ");
+      const eventTime = new Date(`1970-01-01T${timeString}Z`);
       setStartDate(eventDate);
       setStartTime(eventTime);
     }
@@ -68,13 +69,86 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
     if (croppedImageUrl) {
       try {
-        // Here you can add your image compression logic if needed
+        const maxFileSize = 200000;
+        const compressedBlob = await compressAndResizeImage(
+          croppedImageUrl,
+          maxFileSize
+        );
+        const compressedFile = new File([compressedBlob], "croppedImage.jpg", {
+          type: "image/jpeg",
+        });
+
+        setImage(compressedFile);
       } catch (error) {
         console.error("Error compressing image:", error);
         toast.error("An error occurred while compressing the image");
       }
     }
     setShowCropperModal(false);
+  };
+
+  const compressAndResizeImage = (
+    imageUrl: string,
+    maxFileSize: number
+  ): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const maxWidthOrHeight = 1024;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidthOrHeight) {
+            height *= maxWidthOrHeight / width;
+            width = maxWidthOrHeight;
+          }
+        } else {
+          if (height > maxWidthOrHeight) {
+            width *= maxWidthOrHeight / height;
+            height = maxWidthOrHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+
+        const adjustQuality = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size > maxFileSize && quality > 0.1) {
+                quality -= 0.05;
+                ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                ctx?.drawImage(img, 0, 0, width, height);
+                adjustQuality();
+              } else {
+                if (blob) {
+                  resolve(blob);
+                } else {
+                  reject(new Error("Failed to compress image"));
+                }
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+
+        adjustQuality();
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+    });
   };
 
   const handleChange = (
@@ -89,21 +163,57 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (event && formData && startDate && startTime) {
+      // Ensure startDate and startTime are valid
+      if (isNaN(startDate.getTime()) || isNaN(startTime.getTime())) {
+        toast.error("Invalid date or time", {
+          transition: Zoom,
+        });
+        return;
+      }
+
       const formattedDate = startDate.toDateString();
-      const formattedTime = startTime.toTimeString();
+      const formattedTime = startTime.toTimeString().split(" ")[0];
+      const timezoneOffset =
+        startTime.toTimeString().match(/\((.*)\)/)?.[1] || "";
+
+      const formattedTimeWithTimezone = `${formattedTime} GMT+0530 (${timezoneOffset})`;
+
+      // Upload image if a new one is provided
+      let bannerUrl = formData.banner;
+      if (image) {
+        const imageRef = storageRef(storage, `banners/${event.id}.jpg`);
+        try {
+          const snapshot = await uploadBytes(imageRef, image);
+          bannerUrl = await getDownloadURL(snapshot.ref);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          toast.error("An error occurred while uploading the image", {
+            transition: Zoom,
+          });
+          return;
+        }
+      }
 
       const eventRef = ref(database, `events/${event.id}`);
       try {
         await update(eventRef, {
           ...formData,
-          date: formattedDate,
-          time: formattedTime,
+          date: formattedDate, // e.g., "Tue Jun 04 2024"
+          time: formattedTimeWithTimezone, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
+          banner: bannerUrl,
         });
         handleClose();
         refreshEvents();
       } catch (error) {
         console.error("Error updating event:", error);
+        toast.error("An error occurred while updating the event", {
+          transition: Zoom,
+        });
       }
+    } else {
+      toast.error("Please ensure all fields are correctly filled", {
+        transition: Zoom,
+      });
     }
   };
 
@@ -153,7 +263,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
                 showTimeSelectOnly
                 timeIntervals={15}
                 timeCaption="Time"
-                dateFormat="h:mm aa"
+                dateFormat="HH:mm:ss"
               />
             </Form.Group>
             <Form.Group controlId="formImageUpload">
