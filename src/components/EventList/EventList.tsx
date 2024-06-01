@@ -183,7 +183,11 @@ const EventList = () => {
                       lg={3}
                       justifyContent="center"
                       key={index}
-                      style={{ maxWidth: 384 }}
+                      style={{
+                        maxWidth: 384,
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
                     >
                       <EventCard
                         isValid={true}

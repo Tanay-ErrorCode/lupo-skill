@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Container, Grid, Box } from "@mui/material";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 import {
   auth,
@@ -157,7 +159,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       }}
     >
       {!props.isDashboard ? (
-        <Card className="" style={{ boxShadow: "none" }}>
+        <Card className="" style={{ boxShadow: "none", height: "100%" }}>
           <CardMedia
             component="img"
             image={props.image}
@@ -189,56 +191,63 @@ const EventCard: React.FC<EventCardProps> = (props) => {
               <a href={"#/profile/" + props.host}>{props.hostName}</a>
             </div>
             <p className="card-description"> {props.description}</p>
-            <div className="d-flex align-items-center ">
-              <EventAvailableIcon
-                style={{ fontSize: "26px", color: theme.colors.primary }}
-              />
-              <span className="card-time">
-                <span className="ms-2">{props.date}</span>
-                <span className="ms-2">
-                  {props.time.replace(/\s\(Indian Standard Time\)/, "")}
+            <div className="d-flex align-items-center justify-between mt-4">
+              <div className="d-flex align-items-center ">
+                <EventAvailableIcon
+                  style={{
+                    fontSize: theme.fontSize.subheading,
+                    color: theme.colors.primary,
+                  }}
+                />
+                <span className="card-time ">
+                  <span className="ms-2">{props.date}</span>
+                  <span className="ms-2">
+                    {props.time.replace(/\s\(India Standard Time\)/, "")}
+                  </span>
                 </span>
-              </span>
-              {new Date(props.date) > new Date() ? (
-                <Button
-                  style={{
-                    color: "black",
-                    textTransform: "none",
-                    fontSize: "16px",
-                    fontWeight: "700",
-                    padding: "8px 16px",
-                    backgroundColor: "rgba(63, 196, 0, 0.5)",
-                    borderRadius: "8px",
-                  }}
-                  className={`${
-                    (props.isValid && props.isRegistered) || register_data
-                      ? "registration_color"
-                      : "btn-e"
-                  }   m-3 `}
-                  onClick={registerForEventX}
-                  disabled={
-                    (props.isValid && props.isRegistered) || register_data
-                  }
-                >
-                  {(props.isValid && props.isRegistered) || register_data
-                    ? "Registered"
-                    : "Register"}
-                </Button>
-              ) : (
-                <Button
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: "8px",
-                    color: "black",
-                    textTransform: "none",
-                    fontWeight: 700,
-                    fontSize: "16px",
-                  }}
-                  className="btn-d  m-2"
-                >
-                  Expired
-                </Button>
-              )}
+              </div>
+              <div>
+                {new Date(props.date) > new Date() ? (
+                  <Button
+                    style={{
+                      color: "black",
+                      textTransform: "none",
+                      fontSize: theme.fontSize.textBody,
+                      fontWeight: "700",
+                      padding: "6px 12px",
+                      backgroundColor: "rgba(63, 196, 0, 0.5)",
+                      borderRadius: "8px",
+                    }}
+                    className={`${
+                      (props.isValid && props.isRegistered) || register_data
+                        ? "registration_color"
+                        : "btn-e"
+                    }    `}
+                    onClick={registerForEventX}
+                    disabled={
+                      (props.isValid && props.isRegistered) || register_data
+                    }
+                  >
+                    {(props.isValid && props.isRegistered) || register_data
+                      ? "Registered"
+                      : "Register"}
+                  </Button>
+                ) : (
+                  <Button
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      color: "black",
+                      textTransform: "none",
+                      fontWeight: 700,
+                      fontSize: theme.fontSize.textBody,
+                    }}
+                    className="btn-d "
+                  >
+                    Expired
+                  </Button>
+                )}
+              </div>
             </div>
             <hr
               style={{
@@ -345,23 +354,15 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 border: "1px solid",
               }}
             />
-
-            {props.tags.split(",").map((tag, index) => (
-              <span
-                style={{
-                  backgroundColor: theme.colors.secondaryLight,
-                  color: "black",
-                  fontWeight: 400,
-                  fontSize: "12px",
-                  padding: "4px 8px",
-                  borderRadius: "20px",
-                }}
-                key={index}
-                className="card-tag badge me-2"
-              >
-                {tag}
-              </span>
-            ))}
+            <Stack direction="row" spacing={1}>
+              {props.tags.split(",").map((tag, index) => (
+                <Chip
+                  label={tag}
+                  key={index}
+                  sx={{ backgroundColor: theme.colors.secondaryLight }}
+                />
+              ))}
+            </Stack>
           </CardContent>
         </Card>
         // </Link>
