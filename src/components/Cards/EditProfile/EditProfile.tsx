@@ -298,6 +298,7 @@ const EditProfile = () => {
               <Form.Control
                 type="text"
                 value={name}
+                disabled
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setName(e.target.value)
                 }
