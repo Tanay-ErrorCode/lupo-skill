@@ -258,7 +258,6 @@ const EditProfile = () => {
 
       const updatedUserDetails = { ...currentUserDetails };
 
-      if (name) updatedUserDetails.name = name;
       if (headline) updatedUserDetails.headline = headline;
       if (tags) updatedUserDetails.tags = tags;
       if (website) updatedUserDetails.website = website;
@@ -295,14 +294,7 @@ const EditProfile = () => {
           <Form>
             <Form.Group>
               <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={name}
-                disabled
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setName(e.target.value)
-                }
-              />
+              <Form.Control type="text" value={name} disabled />
             </Form.Group>
 
             <Form.Group>
