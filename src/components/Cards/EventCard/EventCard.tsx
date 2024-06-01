@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+// import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import "./EventCard.css";
 // import props.image from "../../image_assets/props.image.png";
 import { Link } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Container, Grid, Box } from "@mui/material";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+
 import {
   auth,
   firestore,
@@ -18,6 +27,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import theme from "../../../theme";
 interface EventCardProps {
   title: string;
   description: string;
@@ -134,127 +144,227 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     }
   };
   return (
-    <Container>
+    <Container
+      className="shadow"
+      style={{
+        padding: "8px",
+        borderRadius: theme.borderRadius.medium,
+        border: "2px solid ",
+        borderColor: theme.colors.secondaryLight,
+        position: "relative",
+        height: "auto",
+        marginBottom: "16px",
+      }}
+    >
       {!props.isDashboard ? (
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={8} lg={6}>
-            <Card className="mb-3 shadow card card-background">
-              <Card.Img
-                src={props.image}
-                alt="Card Image"
-                className="card_image"
+        <Card className="" style={{ boxShadow: "none" }}>
+          <CardMedia
+            component="img"
+            image={props.image}
+            alt="Card Image"
+            className="card_image"
+            style={{ height: "224px" }}
+          />
+          <CardContent
+            style={{
+              padding: "16px",
+            }}
+          >
+            <Typography
+              style={{
+                fontSize: theme.fontSize.subheading,
+                fontWeight: 800,
+              }}
+              component="div"
+            >
+              {props.title}
+            </Typography>
+            <div
+              className="link-primary"
+              style={{
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.lightBackground,
+              }}
+            >
+              <a href={"#/profile/" + props.host}>{props.hostName}</a>
+            </div>
+            <p className="card-description"> {props.description}</p>
+            <div className="d-flex align-items-center ">
+              <EventAvailableIcon
+                style={{ fontSize: "26px", color: theme.colors.primary }}
               />
-              <Card.Body>
-                <Card.Title>{props.title}</Card.Title>
-                <Card.Text>
-                  <div className="d-flex align-items-center mb-2">
-                    <i className="bi bi-calendar"></i>{" "}
-                    <span className="ms-2">{props.date}</span>
-                    <i className="bi bi-clock ms-2"></i>{" "}
-                    <span className="ms-2">{props.time}</span>
-                  </div>
-                  Host:{" "}
-                  <a href={"#/profile/" + props.host} className="link-primary">
-                    {props.hostName}
-                  </a>
-                  <br />
-                  {props.description}
-                  <br />
-                  {props.tags.split(",").map((tag, index) => (
-                    <span key={index} className="tag badge me-2">
-                      {tag}
-                    </span>
-                  ))}
-                </Card.Text>
-                {new Date(props.date) > new Date() ? (
-                  <Button
-                    className={`${
-                      (props.isValid && props.isRegistered) || register_data
-                        ? "registration_color"
-                        : "btn-c"
-                    } position-absolute bottom-0 end-0 m-3 `}
-                    onClick={registerForEventX}
-                    disabled={
-                      (props.isValid && props.isRegistered) || register_data
-                    }
-                  >
-                    {(props.isValid && props.isRegistered) || register_data
-                      ? "Registered"
-                      : "Register"}
-                  </Button>
-                ) : (
-                  <Button className="btn-d position-absolute bottom-0 end-0 m-3">
-                    Expired
-                  </Button>
-                )}
-                {/* <Button
+              <span className="card-time">
+                <span className="ms-2">{props.date}</span>
+                <span className="ms-2">
+                  {props.time.replace(/\s\(Indian Standard Time\)/, "")}
+                </span>
+              </span>
+              {new Date(props.date) > new Date() ? (
+                <Button
+                  style={{
+                    color: "black",
+                    textTransform: "none",
+                    fontSize: "16px",
+                    fontWeight: "700",
+                    padding: "8px 16px",
+                    backgroundColor: "rgba(63, 196, 0, 0.5)",
+                    borderRadius: "8px",
+                  }}
+                  className={`${
+                    (props.isValid && props.isRegistered) || register_data
+                      ? "registration_color"
+                      : "btn-e"
+                  }   m-3 `}
+                  onClick={registerForEventX}
+                  disabled={
+                    (props.isValid && props.isRegistered) || register_data
+                  }
+                >
+                  {(props.isValid && props.isRegistered) || register_data
+                    ? "Registered"
+                    : "Register"}
+                </Button>
+              ) : (
+                <Button
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    color: "black",
+                    textTransform: "none",
+                    fontWeight: 700,
+                    fontSize: "16px",
+                  }}
+                  className="btn-d  m-2"
+                >
+                  Expired
+                </Button>
+              )}
+            </div>
+            <hr
+              style={{
+                color: theme.colors.secondaryLight,
+                border: "1px solid",
+              }}
+            />
+
+            {props.tags.split(",").map((tag, index) => (
+              <span
+                style={{
+                  backgroundColor: theme.colors.secondaryLight,
+                  color: "black",
+                  fontWeight: 400,
+                  fontSize: "12px",
+                  padding: "4px 8px",
+                  borderRadius: "20px",
+                }}
+                key={index}
+                className="card-tag badge me-2"
+              >
+                {tag}
+              </span>
+            ))}
+          </CardContent>
+
+          {/* <Button
                   className="btn-c position-absolute bottom-0 end-0 m-3"
                   onClick={registerForEventX}
                 >
                   Register
                 </Button> */}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+        </Card>
       ) : (
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={8} lg={6}>
-            <Link href={"#/eventDetails/" + props.id} className="link-nothing">
-              <Card className="mt-2 mb-2 shadow card card-background">
-                <Card.Img
-                  src={props.image}
-                  alt="Card Image"
-                  className="card_image"
-                  referrerPolicy="no-referrer"
-                />
-                <Card.Body>
-                  <Card.Title>{props.title}</Card.Title>
-                  <Card.Text>
-                    <div className="d-flex align-items-center mb-2">
-                      <i className="bi bi-calendar"></i>{" "}
-                      <span className="ms-2">{props.date}</span>
-                      <i className="bi bi-clock ms-2"></i>{" "}
-                      <span className="ms-2">{props.time}</span>
-                    </div>
-                    Host:{" "}
-                    <a
-                      href={"#/profile/" + props.host}
-                      className="link-primary"
-                    >
-                      {props.hostName}
-                    </a>
-                    <br />
-                    {props.description}
-                    <br />
-                    {props.tags.split(",").map((tag, index) => (
-                      <span key={index} className="tag badge me-2">
-                        {tag}
-                      </span>
-                    ))}
-                  </Card.Text>
-                  {!props.isDashboard ? (
-                    new Date(props.date) > new Date() ? (
-                      <Button
-                        className="btn-c position-absolute bottom-0 end-0 m-3"
-                        onClick={registerForEventX}
-                      >
-                        Register
-                      </Button>
-                    ) : (
-                      <Button
-                        className="btn-c position-absolute bottom-0 end-0 m-3"
-                        variant="danger"
-                      >
-                        Expired
-                      </Button>
-                    )
-                  ) : null}
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
-        </Row>
+        // <Link href={"#/eventDetails/" + props.id} className="link-nothing">
+        <Card className="" style={{ boxShadow: "none" }}>
+          <CardMedia
+            component="img"
+            image={props.image}
+            alt="Card Image"
+            className="card_image"
+            style={{ height: "224px" }}
+          />
+
+          <CardContent
+            style={{
+              padding: "16px",
+            }}
+          >
+            <Typography
+              style={{
+                fontSize: theme.fontSize.subheading,
+                fontWeight: 800,
+              }}
+              component="div"
+            >
+              {props.title}
+            </Typography>
+            <div
+              className="link-primary"
+              style={{
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.lightBackground,
+              }}
+            >
+              <a href={"#/profile/" + props.host}>{props.hostName}</a>
+            </div>
+            <p className="card-description"> {props.description}</p>
+            <div className="d-flex align-items-center ">
+              <EventAvailableIcon
+                style={{ fontSize: "26px", color: theme.colors.primary }}
+              />
+              <span className="card-time">
+                <span className="ms-2">{props.date}</span>
+                <span className="ms-2">
+                  {props.time.replace(/\s\(Indian Standard Time\)/, "")}
+                </span>
+              </span>
+              {!props.isDashboard ? (
+                new Date(props.date) > new Date() ? (
+                  <Button className="btn-c  m-3" onClick={registerForEventX}>
+                    Register
+                  </Button>
+                ) : (
+                  <Button
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      color: "black",
+                      textTransform: "none",
+                      fontWeight: 700,
+                      fontSize: "16px",
+                    }}
+                    className="btn-d  m-2"
+                  >
+                    Expired
+                  </Button>
+                )
+              ) : null}
+            </div>
+            <hr
+              style={{
+                color: theme.colors.secondaryLight,
+                border: "1px solid",
+              }}
+            />
+
+            {props.tags.split(",").map((tag, index) => (
+              <span
+                style={{
+                  backgroundColor: theme.colors.secondaryLight,
+                  color: "black",
+                  fontWeight: 400,
+                  fontSize: "12px",
+                  padding: "4px 8px",
+                  borderRadius: "20px",
+                }}
+                key={index}
+                className="card-tag badge me-2"
+              >
+                {tag}
+              </span>
+            ))}
+          </CardContent>
+        </Card>
+        // </Link>
       )}
     </Container>
   );

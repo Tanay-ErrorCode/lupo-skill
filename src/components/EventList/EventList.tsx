@@ -18,6 +18,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { Grid } from "@mui/material";
 
 interface Event {
   banner: string;
@@ -122,7 +123,11 @@ const EventList = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "6.5em",
+      }}
+    >
       {isLoading ? (
         <div className=" d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
@@ -160,34 +165,45 @@ const EventList = () => {
               {renderNoEventsMessage(sortOption)}
             </div>
           ) : (
-            sortedEvents
-              .slice(
-                (currentPage - 1) * itemsPerPage,
-                currentPage * itemsPerPage
-              )
-              .map((card: Event, index) => {
-                const user_uid = localStorage.getItem("userUid");
-                const isRegistered = card.registrants.includes(user_uid!);
-                return (
-                  <div className="event-card-wrapper" key={index}>
-                    <EventCard
-                      isValid={true}
-                      id={card.id}
+            <Grid container spacing={2} justifyContent="center">
+              {sortedEvents
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )
+                .map((card: Event, index) => {
+                  const user_uid = localStorage.getItem("userUid");
+                  const isRegistered = card.registrants.includes(user_uid!);
+                  return (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
+                      justifyContent="center"
                       key={index}
-                      title={card.title}
-                      description={card.description}
-                      date={card.date}
-                      time={card.time}
-                      tags={card.tags}
-                      host={card.host}
-                      isDashboard={false}
-                      image={card.banner}
-                      isRegistered={isRegistered}
-                      hostName={card.hostName}
-                    />
-                  </div>
-                );
-              })
+                      style={{ maxWidth: 384 }}
+                    >
+                      <EventCard
+                        isValid={true}
+                        id={card.id}
+                        key={index}
+                        title={card.title}
+                        description={card.description}
+                        date={card.date}
+                        time={card.time}
+                        tags={card.tags}
+                        host={card.host}
+                        isDashboard={false}
+                        image={card.banner}
+                        isRegistered={isRegistered}
+                        hostName={card.hostName}
+                      />
+                    </Grid>
+                  );
+                })}
+            </Grid>
           )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
