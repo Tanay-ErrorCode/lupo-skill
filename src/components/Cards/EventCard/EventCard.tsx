@@ -18,7 +18,9 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import EditIcon from "@mui/icons-material/Edit";
 import PageTitle from "../../../utils/PageTitle";
+import moment from "moment";
 interface EventCardProps {
   title: string;
   description: string;
@@ -33,6 +35,9 @@ interface EventCardProps {
   isValid: boolean;
   hostName: string;
   onBackToDashboard?: () => void;
+  showEditIcon?: boolean; // Add this prop
+  onEditEvent?: () => void; // Add this prop for edit action
+  lastEdited?: number; // Add this prop for last edited timestamp
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
@@ -160,7 +165,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                   alt="Card Image"
                   className="card_image"
                 />
-                <Card.Body>
+                <Card.Body style={{ position: "relative" }}>
                   <Card.Title>{props.title}</Card.Title>
                   <Card.Text>
                     <div className="d-flex align-items-center mb-2">
@@ -205,6 +210,23 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     <Button className="btn-d position-absolute bottom-0 end-0 m-3">
                       Expired
                     </Button>
+                  )}
+                  {props.showEditIcon && (
+                    <EditIcon
+                      onClick={props.onEditEvent}
+                      style={{
+                        width: "18",
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: "15px",
+                        right: "30px",
+                      }}
+                    />
+                  )}
+                  {props.lastEdited && (
+                    <div className="text-muted mt-2">
+                      Edited {moment(props.lastEdited).fromNow()}
+                    </div>
                   )}
                   {/* <Button
                   className="btn-c position-absolute bottom-0 end-0 m-3"

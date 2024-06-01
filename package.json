@@ -20,6 +20,7 @@
     "firebase": "^10.12.0",
     "image-conversion": "^2.1.1",
     "install": "^0.13.0",
+    "moment": "^2.30.1",
     "npm": "^10.6.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",

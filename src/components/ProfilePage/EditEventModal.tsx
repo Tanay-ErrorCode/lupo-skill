@@ -27,6 +27,7 @@ interface Event {
   description: string;
   banner: string;
   title: string;
+
   // other properties...
 }
 
@@ -205,6 +206,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
           date: formattedDate, // e.g., "Tue Jun 04 2024"
           time: formattedTimeWithTimezone, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
           banner: bannerUrl,
+          lastEdited: Date.now(),
         });
         toast.success("EVENT DETAILS UPDATED SUCCESSFULLY");
         window.location.reload();

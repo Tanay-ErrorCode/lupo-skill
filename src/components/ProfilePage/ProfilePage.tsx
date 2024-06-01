@@ -35,6 +35,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const ProfilePage = () => {
@@ -369,13 +370,10 @@ const ProfilePage = () => {
                                 isDashboard={false}
                                 image={card.banner}
                                 hostName={card.hostName}
+                                showEditIcon={true} // Pass showEditIcon prop as true
+                                onEditEvent={() => openEditModal(card)}
+                                lastEdited={card.lastEdited} // Pass the last edited timestamp
                               />
-                              {currentUserUid === id && (
-                                <EditIcon
-                                  onClick={() => openEditModal(card)}
-                                  style={{ cursor: "pointer" }}
-                                />
-                              )}
                             </div>
                           );
                         })
