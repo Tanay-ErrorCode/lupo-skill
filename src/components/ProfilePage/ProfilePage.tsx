@@ -8,23 +8,20 @@ import {
   Pagination,
   Spinner,
 } from "react-bootstrap";
-import { Pencil } from "react-bootstrap-icons";
 import "./ProfilePage.css";
 import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
 import EditEventModal from "./EditEventModal";
-
-import { ref, get, update, child } from "firebase/database";
+import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
 import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import { X } from "@mui/icons-material";
-
 const currentUserUid = localStorage.getItem("userUid");
-
 interface Event {
   banner: string;
   createdAt: number;
@@ -46,7 +43,8 @@ const ProfilePage = () => {
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
   const [isJLoading, setIsJLoading] = useState(true);
-
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [joinedEventCardsData, setJoinedEventCardsData] = useState<Event[]>([]);
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
@@ -54,25 +52,13 @@ const ProfilePage = () => {
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
   const userUid = localStorage.getItem("userUid");
   if (userUid === null) {
     window.location.href = "#/";
   }
-
-  const fetchEvents = async (eventIds: string) => {
-    const eventsRef = ref(database, "events");
-    const eventList = eventIds.split(",");
-    const eventPromises = eventList.map(async (eventId: string) => {
-      const eventRef = child(eventsRef, eventId.trim());
-      const eventSnapshot = await get(eventRef);
-      return eventSnapshot.exists() ? eventSnapshot.val() : null;
-    });
-
-    const events = await Promise.all(eventPromises);
-    return events.filter((event): event is Event => event !== null);
+  const openEditModal = (event: Event) => {
+    setCurrentEvent(event);
+    setShowEditModal(true);
   };
 
   useEffect(() => {
@@ -92,6 +78,8 @@ const ProfilePage = () => {
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
           const userData = snapshot.val();
+          updateProfileData(userData);
+
           if (userData.createdEvents) {
             const createdEvents = await fetchEvents(userData.createdEvents);
             setCreatedEventCardsData(createdEvents);
@@ -115,6 +103,101 @@ const ProfilePage = () => {
       }
     };
 
+    const fetchEvents = async (eventIds: string) => {
+      const eventsRef = ref(database, "events");
+      const eventList = eventIds.split(",");
+      const eventPromises = eventList.map(async (eventId: string) => {
+        const eventRef = child(eventsRef, eventId.trim());
+        const eventSnapshot = await get(eventRef);
+        return eventSnapshot.exists() ? eventSnapshot.val() : null;
+      });
+
+      const events = await Promise.all(eventPromises);
+      return events.filter((event): event is Event => event !== null);
+    };
+    const updateProfileData = (userData: any) => {
+      const headline = document.getElementById(
+        "headline"
+      ) as HTMLParagraphElement;
+      const tags = document.getElementById("tags") as HTMLElement;
+      const website = document.getElementById("website") as HTMLSpanElement;
+      const instagram = document.getElementById(
+        "instagram"
+      ) as HTMLAnchorElement;
+      const twitter = document.getElementById("twitter") as HTMLAnchorElement;
+      const facebook = document.getElementById("facebook") as HTMLAnchorElement;
+      const userName = document.getElementById(
+        "user-name"
+      ) as HTMLHeadingElement;
+      const profileBanner = document.getElementById(
+        "profile-banner"
+      ) as HTMLImageElement;
+      const profileImage = document.getElementById(
+        "profile-image"
+      ) as HTMLImageElement;
+
+      headline.innerText = userData.headline || "Developer";
+      userName.innerText = userData.name || "Sample User";
+      website.innerText = userData.website || "NAN";
+
+      const isValidUrl = (url: string) => {
+        return url.startsWith("https://");
+      };
+
+      if (
+        userData.instagram &&
+        isValidUrl(userData.instagram.trim()) &&
+        userData.instagram != "https://" &&
+        userData.instagram != ""
+      ) {
+        instagram.href = userData.instagram;
+        instagram.style.opacity = "1.0";
+        instagram.style.pointerEvents = "auto";
+      } else {
+        instagram.style.opacity = "0.5";
+        instagram.style.pointerEvents = "none";
+      }
+
+      if (
+        userData.twitter &&
+        isValidUrl(userData.twitter.trim()) &&
+        userData.twitter != "https://" &&
+        userData.twitter != ""
+      ) {
+        twitter.href = userData.twitter;
+        twitter.style.opacity = "1.0";
+        twitter.style.pointerEvents = "auto";
+      } else {
+        twitter.style.opacity = "0.5";
+        twitter.style.pointerEvents = "none";
+      }
+
+      if (
+        userData.facebook &&
+        isValidUrl(userData.facebook.trim()) &&
+        userData.facebook != "https://" &&
+        userData.facebook != ""
+      ) {
+        facebook.href = userData.facebook;
+        facebook.style.opacity = "1.0";
+        facebook.style.pointerEvents = "auto";
+      } else {
+        facebook.style.opacity = "0.5";
+        facebook.style.pointerEvents = "none";
+      }
+
+      profileBanner.src = userData.banner || bannerImage;
+      profileImage.src = userData.pic || default_user;
+
+      const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
+      tags.innerHTML = tagsArray
+        .map(
+          (tag: string, index: number) =>
+            `<span key=${index} class="tag badge me-2">${tag}</span>`
+        )
+        .join("");
+    };
+
     fetchData();
   }, [userUid, id]);
 
@@ -124,39 +207,6 @@ const ProfilePage = () => {
 
   const handleJoinedPageChange = (page: number) => {
     setCurrentJoinedPage(page);
-  };
-
-  const handleEditClick = (event: Event) => {
-    setSelectedEvent(event);
-    setShowEditModal(true);
-  };
-
-  const handleCloseEditModal = () => setShowEditModal(false);
-
-  const refreshEvents = async () => {
-    const userRef = ref(database, `users/${id ? id : userUid}`);
-
-    try {
-      const snapshot = await get(userRef);
-      if (snapshot.exists()) {
-        const userData = snapshot.val();
-
-        if (userData.createdEvents) {
-          const createdEvents = await fetchEvents(userData.createdEvents);
-          setCreatedEventCardsData(createdEvents);
-          setTotalCreatedPages(Math.ceil(createdEvents.length / itemsPerPage));
-        }
-        if (userData.registeredEvents) {
-          const joinedEvents = await fetchEvents(userData.registeredEvents);
-          setJoinedEventCardsData(joinedEvents);
-          setTotalJoinedPages(Math.ceil(joinedEvents.length / itemsPerPage));
-        }
-      } else {
-        console.log("No user data available");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
   };
 
   return (
@@ -190,75 +240,167 @@ const ProfilePage = () => {
                   Developer
                 </p>
                 <div id="tags">
-                  <span className="tag badge me-2">None</span>
+                  {["dev", "designer", "react", "angular", "vue"].map(
+                    (tag, index) => (
+                      <span key={index} className="tag badge me-2">
+                        {tag}
+                      </span>
+                    )
+                  )}
                 </div>
+              </div>
+
+              <div className="d-flex justify-content-center mt-2">
+                {currentUserUid === id && <EditProfile />}
               </div>
             </div>
           </div>
-          <div className="card mt-3">
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                <h6 className="mb-0">
-                  <Instagram className="bi bi-instagram" />
-                </h6>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-secondary"
-                  id="instagram"
-                  style={{ opacity: "0.5", pointerEvents: "none" }}
-                >
-                  Instagram
-                </a>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                <h6 className="mb-0">
-                  <Twitter className="bi bi-twitter" />
-                </h6>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-secondary"
-                  id="twitter"
-                  style={{ opacity: "0.5", pointerEvents: "none" }}
-                >
-                  Twitter
-                </a>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                <h6 className="mb-0">
-                  <Facebook className="bi bi-facebook" />
-                </h6>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-secondary"
-                  id="facebook"
-                  style={{ opacity: "0.5", pointerEvents: "none" }}
-                >
-                  Facebook
-                </a>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                <h6 className="mb-0">
-                  <X className="bi bi-globe" />
-                </h6>
-                <span className="text-secondary" id="website">
-                  NAN
-                </span>
-              </li>
-            </ul>
-          </div>
-          {currentUserUid === id ? (
-            <div className="d-grid gap-2 mt-3">
-              <EditProfile />
-            </div>
-          ) : null}
+          <Card className="mt-3">
+            <Card.Body>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                  <h6 className="mb-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-globe mr-2 icon-inline"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path>
+                    </svg>
+                    Website
+                  </h6>
+                  <span className="text-secondary" id="website">
+                    NAN
+                  </span>
+                  <div className="social-media-list d-flex justify-content-center align-items-center flex-wrap">
+                    <div className="social-media-item">
+                      <a
+                        id="instagram"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Instagram className="instagram-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="twitter"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <X className="x-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                    <div className="social-media-item">
+                      <a
+                        id="facebook"
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Facebook className="facebook-icon" />
+                      </a>
+                      <span className="social-media-label" />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </Card.Body>
+          </Card>
         </Col>
         <Col md={8}>
+          <Card className="mb-3">
+            <Card.Body>
+              <Row>
+                <Col sm={3}>
+                  <h6 className="mb-0">Created Events</h6>
+                </Col>
+              </Row>
+              <hr />
+              {isCLoading ? (
+                <div className="d-flex justify-content-center align-items-center">
+                  <Spinner animation="border" />
+                </div>
+              ) : (
+                <div>
+                  {createdEventCardsData.length === 0 ? (
+                    <p className="text-center">No Events created</p>
+                  ) : (
+                    createdEventCardsData
+                      .slice(
+                        (currentCreatedPage - 1) * itemsPerPage,
+                        currentCreatedPage * itemsPerPage
+                      )
+                      .map((card: Event, index) => {
+                        const user_uid = localStorage.getItem("userUid");
+                        let isRegistered = false;
+                        if (card.registrants.includes(user_uid!)) {
+                          isRegistered = true;
+                        }
+                        return (
+                          <div style={{ display: "flex" }}>
+                            <EventCard
+                              isValid={true}
+                              isRegistered={isRegistered}
+                              id={card.id}
+                              key={index}
+                              title={card.title}
+                              description={card.description}
+                              date={card.date}
+                              time={card.time}
+                              tags={card.tags}
+                              host={card.host}
+                              isDashboard={false}
+                              image={card.banner}
+                              hostName={card.hostName}
+                            />
+                            {currentUserUid === id && (
+                              <EditIcon
+                                onClick={() => openEditModal(card)}
+                                style={{ cursor: "pointer" }}
+                              />
+                            )}
+                          </div>
+                        );
+                      })
+                  )}
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination>
+                  {[...Array(totalCreatedPages)].map((_, i) => (
+                    <Pagination.Item
+                      key={i + 1}
+                      active={i + 1 === currentCreatedPage}
+                      onClick={() => {
+                        handleCreatedPageChange(i + 1);
+                        window.scrollTo({
+                          top: 0,
+                          left: 0,
+                          behavior: "smooth",
+                        });
+                      }}
+                    >
+                      {i + 1}
+                    </Pagination.Item>
+                  ))}
+                </Pagination>
+              </div>
+            </Card.Body>
+          </Card>
           <Card className="mb-3">
             <Card.Body>
               <Row>
@@ -289,10 +431,10 @@ const ProfilePage = () => {
                         }
                         return (
                           <EventCard
-                            key={index}
                             isValid={true}
                             isRegistered={isRegistered}
                             id={card.id}
+                            key={index}
                             title={card.title}
                             description={card.description}
                             date={card.date}
@@ -315,7 +457,7 @@ const ProfilePage = () => {
                       key={i + 1}
                       active={i + 1 === currentJoinedPage}
                       onClick={() => {
-                        setCurrentJoinedPage(i + 1);
+                        handleJoinedPageChange(i + 1);
                         window.scrollTo({
                           top: 0,
                           left: 0,
@@ -330,93 +472,16 @@ const ProfilePage = () => {
               </div>
             </Card.Body>
           </Card>
-          <Card className="mb-3">
-            <Card.Body>
-              <Row>
-                <Col sm={3}>
-                  <h6 className="mb-0">Created Events</h6>
-                </Col>
-              </Row>
-              <hr />
-              {isCLoading ? (
-                <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
-              ) : (
-                <div>
-                  {createdEventCardsData.length === 0 ? (
-                    <p className="text-center">No Events created</p>
-                  ) : (
-                    createdEventCardsData
-                      .slice(
-                        (currentCreatedPage - 1) * itemsPerPage,
-                        currentCreatedPage * itemsPerPage
-                      )
-                      .map((card: Event, index) => {
-                        const user_uid = localStorage.getItem("userUid");
-                        let isRegistered = false;
-                        if (card.registrants.includes(user_uid!)) {
-                          isRegistered = true;
-                        }
-                        return (
-                          <div
-                            key={index}
-                            className="d-flex justify-content-between"
-                          >
-                            <EventCard
-                              isValid={true}
-                              isRegistered={isRegistered}
-                              id={card.id}
-                              title={card.title}
-                              description={card.description}
-                              date={card.date}
-                              time={card.time}
-                              tags={card.tags}
-                              host={card.host}
-                              isDashboard={false}
-                              image={card.banner}
-                              hostName={card.hostName}
-                            />
-                            <Pencil
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleEditClick(card)}
-                            />
-                          </div>
-                        );
-                      })
-                  )}
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination>
-                  {[...Array(totalCreatedPages)].map((_, i) => (
-                    <Pagination.Item
-                      key={i + 1}
-                      active={i + 1 === currentCreatedPage}
-                      onClick={() => {
-                        setCurrentCreatedPage(i + 1);
-                        window.scrollTo({
-                          top: 0,
-                          left: 0,
-                          behavior: "smooth",
-                        });
-                      }}
-                    >
-                      {i + 1}
-                    </Pagination.Item>
-                  ))}
-                </Pagination>
-              </div>
-            </Card.Body>
-          </Card>
-          <EditEventModal
-            show={showEditModal}
-            handleClose={handleCloseEditModal}
-            event={selectedEvent}
-            refreshEvents={refreshEvents}
-          />
         </Col>
       </Row>
+      <EditEventModal
+        show={showEditModal}
+        handleClose={() => setShowEditModal(false)}
+        event={currentEvent}
+        refreshEvents={() => {
+          // Function to refresh events after editing
+        }}
+      />
     </Container>
   );
 };

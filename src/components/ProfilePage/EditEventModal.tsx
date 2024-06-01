@@ -11,6 +11,7 @@ import ImageCropper from "../../utils/ImageCropper";
 import { Zoom, toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import differenceInMinutes from "date-fns/differenceInMinutes"; // Import from date-fns library
 
 interface EditEventModalProps {
   show: boolean;
@@ -181,7 +182,10 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
       // Upload image if a new one is provided
       let bannerUrl = formData.banner;
       if (image) {
-        const imageRef = storageRef(storage, `banners/${event.id}.jpg`);
+        const imageRef = storageRef(
+          storage,
+          `event-banners/banner-${event.id}`
+        );
         try {
           const snapshot = await uploadBytes(imageRef, image);
           bannerUrl = await getDownloadURL(snapshot.ref);
@@ -202,6 +206,8 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
           time: formattedTimeWithTimezone, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
           banner: bannerUrl,
         });
+        toast.success("EVENT DETAILS UPDATED SUCCESSFULLY");
+        window.location.reload();
         handleClose();
         refreshEvents();
       } catch (error) {
@@ -215,6 +221,20 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
         transition: Zoom,
       });
     }
+  };
+
+  const isEventStartTimeValid = (): boolean => {
+    if (!event || !startDate || !startTime) {
+      return false;
+    }
+
+    const eventStartDateTime = new Date(`${event.date} ${event.time}`);
+    const now = new Date();
+    const differenceInMinutes =
+      Math.abs(eventStartDateTime.getTime() - now.getTime()) / (1000 * 60);
+
+    // Return false if the difference in minutes is less than 60
+    return differenceInMinutes >= 60;
   };
 
   return (
@@ -251,6 +271,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
                 selected={startDate}
                 onChange={(date: Date) => setStartDate(date)}
                 dateFormat="yyyy-MM-dd"
+                disabled={!isEventStartTimeValid()} // Disable date picker if event starts in less than one hour
               />
             </Form.Group>
             <Form.Group controlId="formTime">
@@ -264,6 +285,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
                 timeIntervals={15}
                 timeCaption="Time"
                 dateFormat="HH:mm:ss"
+                disabled={!isEventStartTimeValid()} // Disable time picker if event starts in less than one hour
               />
             </Form.Group>
             <Form.Group controlId="formImageUpload">
