@@ -50,7 +50,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in", { transition: Zoom });
     }
 
     const fetchData = async () => {
