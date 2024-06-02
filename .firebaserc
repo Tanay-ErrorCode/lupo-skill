@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "lupo-skill"
-  }
+    "default": "lupo-skill",
+    "none": "opensource-e2177"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
