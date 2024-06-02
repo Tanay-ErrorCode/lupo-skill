@@ -13,7 +13,7 @@ import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
-import EditEventModal from "./EditEventModal";
+import EditEventModal from "../Cards/EditEventModal/EditEventModal";
 import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";

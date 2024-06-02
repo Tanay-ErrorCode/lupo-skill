@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { ref, update } from "firebase/database";
-import { storage, database } from "../../firebaseConf";
+import { storage, database } from "../../../firebaseConf";
 import {
   getDownloadURL,
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
-import ImageCropper from "../../utils/ImageCropper";
+import ImageCropper from "../../../utils/ImageCropper";
 import { Zoom, toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
