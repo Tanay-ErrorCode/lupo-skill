@@ -43,6 +43,7 @@ const EventList = () => {
   const [sortOption, setSortOption] = useState<
     "All" | "Ongoing" | "Past" | "Upcoming"
   >("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -75,6 +76,12 @@ const EventList = () => {
     }
   };
 
+  const filterEventsByTitle = (events: Event[], query: string): Event[] => {
+    return events.filter((event) =>
+      event.title.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, "events");
@@ -105,6 +112,12 @@ const EventList = () => {
     setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
   }, [eventCardsData, sortOption]);
 
+  useEffect(() => {
+    const filteredEvents = filterEventsByTitle(sortedEvents, searchQuery);
+    setSortedEvents(filteredEvents);
+    setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+  }, [searchQuery]);
+
   const renderNoEventsMessage = (
     option: "All" | "Ongoing" | "Past" | "Upcoming"
   ) => {
@@ -132,6 +145,14 @@ const EventList = () => {
           <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
             All Events
           </h1>
+          <div className="search-bar-container">
+            <input
+              type="text"
+              placeholder="Search by title..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <div className="d-flex justify-content-center">
             <DropdownButton
               id="dropdown-basic-button"
