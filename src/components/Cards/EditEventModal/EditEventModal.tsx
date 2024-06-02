@@ -241,7 +241,11 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Edit Event</Modal.Title>
         </Modal.Header>
@@ -304,7 +308,11 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+      <Modal
+        show={showCropperModal}
+        onHide={() => setShowCropperModal(false)}
+        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>

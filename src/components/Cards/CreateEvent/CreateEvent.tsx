@@ -294,7 +294,11 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
+      >
         <Modal.Header closeButton className="modal_back">
           <Modal.Title>Create Event</Modal.Title>
         </Modal.Header>
