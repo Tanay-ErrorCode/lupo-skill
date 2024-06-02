@@ -241,11 +241,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
 
   return (
     <>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
-      >
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Event</Modal.Title>
         </Modal.Header>

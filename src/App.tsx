@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage/HomePage";
 import Dashboard from "./components/DashBoard/DashBoard";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import EventDetails from "./components/EventDetails/EventDetails";
+
 import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";

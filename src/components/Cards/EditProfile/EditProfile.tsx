@@ -286,11 +286,7 @@ const EditProfile = () => {
         Edit Profile
       </Button>
 
-      <Modal
-        show={show}
-        onHide={handleClose}
-        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
-      >
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
@@ -431,7 +427,7 @@ const EditProfile = () => {
       <Modal
         show={showCropperModal}
         onHide={() => setShowCropperModal(false)}
-        className={`fade-modal ${show ? "fade-in" : "fade-out"}`}
+        animation={true}
       >
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
