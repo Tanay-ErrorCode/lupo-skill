@@ -6,6 +6,7 @@ import ProfilePage from "../ProfilePage/ProfilePage";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./DashBoard.css";
 import EventCard from "../Cards/EventCard/EventCard";
+import { Grid } from "@mui/material";
 
 import {
   auth,
@@ -129,40 +130,59 @@ const Dashboard = () => {
           >
             Created Events
           </h1>
-
-          {eventCardsData
-            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-            .map(
-              (
-                card: {
-                  id: string;
-                  title: string;
-                  description: string;
-                  date: string;
-                  time: string;
-                  tags: string;
-                  banner: string;
-                  host: string;
-                  hostName: string;
-                },
-                index
-              ) => (
-                <EventCard
-                  isValid={false}
-                  id={card.id}
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  date={card.date}
-                  time={card.time}
-                  tags={card.tags}
-                  host={card.host}
-                  isDashboard={true}
-                  image={card.banner}
-                  hostName={card.hostName}
-                />
+          <Grid container spacing={2} justifyContent="center">
+            {eventCardsData
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
               )
-            )}
+              .map(
+                (
+                  card: {
+                    id: string;
+                    title: string;
+                    description: string;
+                    date: string;
+                    time: string;
+                    tags: string;
+                    banner: string;
+                    host: string;
+                    hostName: string;
+                  },
+                  index
+                ) => (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    justifyContent="center"
+                    key={index}
+                    style={{
+                      maxWidth: 384,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <EventCard
+                      isValid={false}
+                      id={card.id}
+                      key={index}
+                      title={card.title}
+                      description={card.description}
+                      date={card.date}
+                      time={card.time}
+                      tags={card.tags}
+                      host={card.host}
+                      isDashboard={true}
+                      image={card.banner}
+                      hostName={card.hostName}
+                    />
+                  </Grid>
+                )
+              )}
+          </Grid>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((_, i) => (

@@ -109,6 +109,14 @@
   text-overflow: ellipsis;
 }
 
+.card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Number of lines to show */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .card-time {
   display: flex;
   flex-direction: column;

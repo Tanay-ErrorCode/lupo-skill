@@ -145,6 +145,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("User does not exist", { transition: Zoom });
     }
   };
+
   return (
     <Container
       className="shadow"
@@ -177,6 +178,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                 fontSize: theme.fontSize.subheading,
                 fontWeight: 800,
               }}
+              className="card-title"
               component="div"
             >
               {props.title}
@@ -214,7 +216,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       textTransform: "none",
                       fontSize: theme.fontSize.textBody,
                       fontWeight: "700",
-                      padding: "6px 12px",
+                      padding: "2px 12px",
                       backgroundColor: "rgba(63, 196, 0, 0.5)",
                       borderRadius: "8px",
                     }}
@@ -257,20 +259,16 @@ const EventCard: React.FC<EventCardProps> = (props) => {
             />
 
             {props.tags.split(",").map((tag, index) => (
-              <span
-                style={{
-                  backgroundColor: theme.colors.secondaryLight,
-                  color: "black",
-                  fontWeight: 400,
-                  fontSize: "12px",
-                  padding: "4px 8px",
-                  borderRadius: "20px",
-                }}
+              <Chip
+                label={tag}
                 key={index}
-                className="card-tag badge me-2"
-              >
-                {tag}
-              </span>
+                clickable
+                sx={{
+                  backgroundColor: theme.colors.secondaryLight,
+                  fontWeight: "bold",
+                  marginX: "0.3rem",
+                }}
+              />
             ))}
           </CardContent>
 
@@ -283,89 +281,100 @@ const EventCard: React.FC<EventCardProps> = (props) => {
         </Card>
       ) : (
         // <Link href={"#/eventDetails/" + props.id} className="link-nothing">
-        <Card className="" style={{ boxShadow: "none" }}>
-          <CardMedia
-            component="img"
-            image={props.image}
-            alt="Card Image"
-            className="card_image"
-            style={{ height: "224px" }}
-          />
-
-          <CardContent
-            style={{
-              padding: "16px",
-            }}
-          >
-            <Typography
-              style={{
-                fontSize: theme.fontSize.subheading,
-                fontWeight: 800,
-              }}
-              component="div"
-            >
-              {props.title}
-            </Typography>
-            <div
-              className="link-primary"
-              style={{
-                backgroundColor: theme.colors.primary,
-                color: theme.colors.lightBackground,
-              }}
-            >
-              <a href={"#/profile/" + props.host}>{props.hostName}</a>
-            </div>
-            <p className="card-description"> {props.description}</p>
-            <div className="d-flex align-items-center ">
-              <EventAvailableIcon
-                style={{ fontSize: "26px", color: theme.colors.primary }}
-              />
-              <span className="card-time">
-                <span className="ms-2">{props.date}</span>
-                <span className="ms-2">
-                  {props.time.replace(/\s\(Indian Standard Time\)/, "")}
-                </span>
-              </span>
-              {!props.isDashboard ? (
-                new Date(props.date) > new Date() ? (
-                  <Button className="btn-c  m-3" onClick={registerForEventX}>
-                    Register
-                  </Button>
-                ) : (
-                  <Button
-                    style={{
-                      padding: "8px 16px",
-                      borderRadius: "8px",
-                      color: "black",
-                      textTransform: "none",
-                      fontWeight: 700,
-                      fontSize: "16px",
-                    }}
-                    className="btn-d  m-2"
-                  >
-                    Expired
-                  </Button>
-                )
-              ) : null}
-            </div>
-            <hr
-              style={{
-                color: theme.colors.secondaryLight,
-                border: "1px solid",
-              }}
+        <Link
+          href={`#/eventDetails/${props.id}`}
+          className="link-nothing"
+          style={{ textDecoration: "none" }}
+        >
+          <Card className="" style={{ boxShadow: "none" }}>
+            <CardMedia
+              component="img"
+              image={props.image}
+              alt="Card Image"
+              className="card_image"
+              style={{ height: "224px" }}
             />
-            <Stack direction="row" spacing={1}>
-              {props.tags.split(",").map((tag, index) => (
-                <Chip
-                  label={tag}
-                  key={index}
-                  sx={{ backgroundColor: theme.colors.secondaryLight }}
+
+            <CardContent
+              style={{
+                padding: "16px",
+              }}
+            >
+              <Typography
+                style={{
+                  fontSize: theme.fontSize.subheading,
+                  fontWeight: 800,
+                }}
+                component="div"
+                className="card-title"
+              >
+                {props.title}
+              </Typography>
+              <div
+                className="link-primary"
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  color: theme.colors.lightBackground,
+                }}
+              >
+                <a href={"#/profile/" + props.host}>{props.hostName}</a>
+              </div>
+              <p className="card-description"> {props.description}</p>
+              <div className="d-flex align-items-center mt-4 ">
+                <EventAvailableIcon
+                  style={{ fontSize: "26px", color: theme.colors.primary }}
                 />
-              ))}
-            </Stack>
-          </CardContent>
-        </Card>
-        // </Link>
+                <span className="card-time">
+                  <span className="ms-2">{props.date}</span>
+                  <span className="ms-2">
+                    {props.time.replace(/\s\(Indian Standard Time\)/, "")}
+                  </span>
+                </span>
+                {!props.isDashboard ? (
+                  new Date(props.date) > new Date() ? (
+                    <Button className="btn-c  m-3" onClick={registerForEventX}>
+                      Register
+                    </Button>
+                  ) : (
+                    <Button
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        color: "black",
+                        textTransform: "none",
+                        fontWeight: 700,
+                        fontSize: "16px",
+                      }}
+                      className="btn-d  m-2"
+                    >
+                      Expired
+                    </Button>
+                  )
+                ) : null}
+              </div>
+              <hr
+                style={{
+                  color: theme.colors.secondaryLight,
+                  border: "1px solid",
+                }}
+              />
+              <Stack direction="row" spacing={1}>
+                {props.tags.split(",").map((tag, index) => (
+                  <Chip
+                    label={tag}
+                    key={index}
+                    clickable
+                    sx={{
+                      backgroundColor: theme.colors.secondaryLight,
+                      fontWeight: "bold",
+                      marginX: "0.3rem",
+                    }}
+                  />
+                ))}
+              </Stack>
+            </CardContent>
+          </Card>
+        </Link>
       )}
     </Container>
   );

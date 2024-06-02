@@ -20,6 +20,8 @@ import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
 import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import { X } from "@mui/icons-material";
+import { Grid } from "@mui/material";
+
 const currentUserUid = localStorage.getItem("userUid");
 interface Event {
   banner: string;
@@ -333,35 +335,52 @@ const ProfilePage = () => {
                   {createdEventCardsData.length === 0 ? (
                     <p className="text-center">No Events created</p>
                   ) : (
-                    createdEventCardsData
-                      .slice(
-                        (currentCreatedPage - 1) * itemsPerPage,
-                        currentCreatedPage * itemsPerPage
-                      )
-                      .map((card: Event, index) => {
-                        const user_uid = localStorage.getItem("userUid");
-                        let isRegistered = false;
-                        if (card.registrants.includes(user_uid!)) {
-                          isRegistered = true;
-                        }
-                        return (
-                          <EventCard
-                            isValid={true}
-                            isRegistered={isRegistered}
-                            id={card.id}
-                            key={index}
-                            title={card.title}
-                            description={card.description}
-                            date={card.date}
-                            time={card.time}
-                            tags={card.tags}
-                            host={card.host}
-                            isDashboard={false}
-                            image={card.banner}
-                            hostName={card.hostName}
-                          />
-                        );
-                      })
+                    <Grid container spacing={1} justifyContent="center">
+                      {createdEventCardsData
+                        .slice(
+                          (currentCreatedPage - 1) * itemsPerPage,
+                          currentCreatedPage * itemsPerPage
+                        )
+                        .map((card: Event, index) => {
+                          const user_uid = localStorage.getItem("userUid");
+                          let isRegistered = false;
+                          if (card.registrants.includes(user_uid!)) {
+                            isRegistered = true;
+                          }
+                          return (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={12}
+                              md={6}
+                              lg={6}
+                              justifyContent="center"
+                              key={index}
+                              style={{
+                                maxWidth: 384,
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <EventCard
+                                isValid={true}
+                                isRegistered={isRegistered}
+                                id={card.id}
+                                key={index}
+                                title={card.title}
+                                description={card.description}
+                                date={card.date}
+                                time={card.time}
+                                tags={card.tags}
+                                host={card.host}
+                                isDashboard={false}
+                                image={card.banner}
+                                hostName={card.hostName}
+                              />
+                            </Grid>
+                          );
+                        })}
+                    </Grid>
                   )}
                 </div>
               )}
