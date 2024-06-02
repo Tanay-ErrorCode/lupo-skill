@@ -31,6 +31,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const EventList = () => {
@@ -184,6 +185,7 @@ const EventList = () => {
                       image={card.banner}
                       isRegistered={isRegistered}
                       hostName={card.hostName}
+                      lastEdited={card.lastEdited}
                     />
                   </div>
                 );
