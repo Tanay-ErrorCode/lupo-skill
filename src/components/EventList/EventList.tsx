@@ -145,15 +145,8 @@ const EventList = () => {
           <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
             All Events
           </h1>
-          <div className="search-bar-container">
-            <input
-              type="text"
-              placeholder="Search by title..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="d-flex justify-content-center">
+
+          <div className="d-flex justify-content-center align-items-center">
             <DropdownButton
               id="dropdown-basic-button"
               title={`Sort by: ${sortOption}`}
@@ -162,13 +155,22 @@ const EventList = () => {
                 setSortOption(e);
                 setCurrentPage(1); // Reset to first page when sort option changes
               }}
-              style={{ marginBottom: "1em", textAlign: "center" }}
+              className="m-3"
             >
               <Dropdown.Item eventKey="All">All Events</Dropdown.Item>
               <Dropdown.Item eventKey="Upcoming">Upcoming</Dropdown.Item>
               <Dropdown.Item eventKey="Ongoing">Ongoing</Dropdown.Item>
               <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
             </DropdownButton>
+            <div className="search-bar-container m-3">
+              <input
+                type="text"
+                placeholder="Search by title..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="form-control"
+              />
+            </div>
           </div>
           {sortedEvents.length === 0 ? (
             <div
