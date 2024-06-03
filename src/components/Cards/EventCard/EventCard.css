@@ -47,6 +47,11 @@
   cursor: pointer;
   background-color: rgb(201, 255, 121) !important;
 }
+.btn-unregister {
+  background-color: #ff0f2e;
+  border: 1px solid #ff0f2e;
+  color: #ffffff; /* White text */
+}
 
 .link-nothing {
   text-decoration: none !important;

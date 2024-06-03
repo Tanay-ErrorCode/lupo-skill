@@ -210,31 +210,22 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     ))}
                   </Card.Text>
                   {eventDateTime > new Date() ? (
-                    <div className="flex flex-wrap items-right">
-                      {(props.isValid && props.isRegistered) || registerData ? (
-                        <Button
-                          className="btn-cancel "
-                          onClick={cancelRegistration}
-                        >
-                          Cancel Registration
-                        </Button>
-                      ) : null}
-                      <Button
-                        className={`${
-                          (props.isValid && props.isRegistered) || registerData
-                            ? "registration_color"
-                            : "btn-c"
-                        }  m-2 `}
-                        onClick={registerForEvent}
-                        disabled={
-                          (props.isValid && props.isRegistered) || registerData
-                        }
-                      >
-                        {(props.isValid && props.isRegistered) || registerData
-                          ? "Registered"
-                          : "Register"}
-                      </Button>
-                    </div>
+                    <Button
+                      className={`${
+                        (props.isValid && props.isRegistered) || registerData
+                          ? "btn-unregister"
+                          : "btn-c"
+                      }   position-absolute end-0 bottom-0 m-3`}
+                      onClick={
+                        (props.isValid && props.isRegistered) || registerData
+                          ? cancelRegistration
+                          : registerForEvent
+                      }
+                    >
+                      {(props.isValid && props.isRegistered) || registerData
+                        ? "Unregister"
+                        : "Register"}
+                    </Button>
                   ) : (
                     <Button className="btn-d position-absolute bottom-0 end-0 m-3">
                       Expired
