@@ -1,8 +1,12 @@
+
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./EventList.css";
+import { TextField, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+
 import {
   auth,
   firestore,
@@ -81,7 +85,9 @@ const EventList = () => {
       event.title.toLowerCase().includes(query.toLowerCase())
     );
   };
-
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, "events");
@@ -105,7 +111,16 @@ const EventList = () => {
 
     fetchData();
   }, []);
-
+  useEffect(() => {
+    if (searchQuery === "") {
+      setSortedEvents(eventCardsData);
+      setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
+    } else {
+      const filteredEvents = filterEventsByTitle(sortedEvents, searchQuery);
+      setSortedEvents(filteredEvents);
+      setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+    }
+  }, [eventCardsData, sortedEvents, searchQuery]);
   useEffect(() => {
     const filteredEvents = sortEvents(eventCardsData, sortOption);
     setSortedEvents(filteredEvents);
@@ -162,13 +177,21 @@ const EventList = () => {
               <Dropdown.Item eventKey="Ongoing">Ongoing</Dropdown.Item>
               <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
             </DropdownButton>
-            <div className="search-bar-container m-3">
-              <input
+            <div className="search-bar-container m-2">
+              <TextField
                 type="text"
                 placeholder="Search by title..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="form-control"
+                onChange={handleSearchInputChange}
+                variant="outlined"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </div>
           </div>
