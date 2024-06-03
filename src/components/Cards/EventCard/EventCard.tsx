@@ -19,8 +19,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import PageTitle from "../../../utils/PageTitle";
 import moment from "moment";
+
 interface EventCardProps {
   title: string;
   description: string;
@@ -38,17 +40,18 @@ interface EventCardProps {
   showEditIcon?: boolean; // Add this prop
   onEditEvent?: () => void; // Add this prop for edit action
   lastEdited?: number; // Add this prop for last edited timestamp
+  showDeleteIcon?: boolean; // Add this prop
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
   const [register_data, setRegister_data] = useState<boolean>(false);
+
   const registerForEventX = async () => {
     const usersRef = ref(database, "users");
     const userUid = localStorage.getItem("userUid");
 
     if (userUid === null) {
       toast.warn("You are not signed in", { transition: Zoom });
-
       return;
     }
     const userRef = child(usersRef, userUid);
@@ -98,10 +101,6 @@ const EventCard: React.FC<EventCardProps> = (props) => {
           transition: Zoom,
         });
       } else {
-        // const registeredEvents = [props.id];
-        // update(userRef, { registeredEvents });
-
-        // toast.success("Successfully registered for the event");
         let registeredEvents = "";
         registeredEvents += props.id;
         update(userRef, { registeredEvents });
@@ -140,17 +139,40 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("User does not exist", { transition: Zoom });
     }
   };
+
+  const handleDeleteEvent = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this event?"
+    );
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const eventRef = ref(database, `events/${props.id}`);
+      await set(eventRef, null);
+
+      toast.success("Event successfully deleted", { transition: Zoom });
+      window.location.reload();
+
+      if (props.onBackToDashboard) {
+        props.onBackToDashboard();
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast.error("Failed to delete event", { transition: Zoom });
+    }
+  };
+
   const date = new Date(props.date);
   const year = date.getFullYear();
-  const month = date.getMonth(); // Note: months are zero-indexed
+  const month = date.getMonth();
   const day = date.getDate();
 
-  // Extract time components
   const timeString = props.time;
   const [time, timeZone] = timeString.split(" ");
   const [hours, minutes, seconds] = time.split(":").map(Number);
 
-  // Create a new Date object combining the date and time components
   const eventDateTime = new Date(year, month, day, hours, minutes, seconds);
 
   return (
@@ -215,11 +237,24 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     <EditIcon
                       onClick={props.onEditEvent}
                       style={{
-                        width: "18",
+                        width: "22px",
                         cursor: "pointer",
                         position: "absolute",
                         top: "15px",
                         right: "30px",
+                      }}
+                    />
+                  )}
+                  {props.showDeleteIcon && (
+                    <DeleteIcon
+                      onClick={handleDeleteEvent}
+                      style={{
+                        color: "red",
+                        width: "22px",
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: "15px",
+                        right: "5px",
                       }}
                     />
                   )}
@@ -228,12 +263,6 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       Edited {moment(props.lastEdited).fromNow()}
                     </div>
                   )}
-                  {/* <Button
-                  className="btn-c position-absolute bottom-0 end-0 m-3"
-                  onClick={registerForEventX}
-                >
-                  Register
-                </Button> */}
                 </Card.Body>
               </Card>
             </Col>
