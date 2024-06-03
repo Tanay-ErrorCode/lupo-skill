@@ -286,7 +286,7 @@ const EditProfile = () => {
         Edit Profile
       </Button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
@@ -424,7 +424,11 @@ const EditProfile = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+      <Modal
+        show={showCropperModal}
+        onHide={() => setShowCropperModal(false)}
+        animation={true}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>

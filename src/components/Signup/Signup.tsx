@@ -96,7 +96,7 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>SignUp or LogIn</Modal.Title>
         </Modal.Header>
