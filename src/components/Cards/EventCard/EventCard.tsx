@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import "./EventCard.css";
-// import props.image from "../../image_assets/props.image.png";
 import { Link } from "@mui/material";
-import {
-  auth,
-  firestore,
-  database,
-  storage,
-  signInWithGooglePopup,
-} from "../../../firebaseConf";
-import GoogleButton from "react-google-button";
-import { ref, get, child, set, update } from "firebase/database";
+import { ref, get, child, update } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 import EditIcon from "@mui/icons-material/Edit";
-import PageTitle from "../../../utils/PageTitle";
 import moment from "moment";
+import { database } from "../../../firebaseConf"; // Adjust the import path as necessary
+
 interface EventCardProps {
   title: string;
   description: string;
@@ -41,116 +28,148 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
-  const [register_data, setRegister_data] = useState<boolean>(false);
-  const registerForEventX = async () => {
-    const usersRef = ref(database, "users");
+  const [registerData, setRegisterData] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [props.isRegistered]);
+
+  const fetchUserData = async () => {
     const userUid = localStorage.getItem("userUid");
 
-    if (userUid === null) {
-      toast.warn("You are not signed in", { transition: Zoom });
+    if (userUid) {
+      const userRef = child(ref(database, "users"), userUid);
+      const snapshot = await get(userRef);
 
+      if (snapshot.exists() && snapshot.val().registeredEvents) {
+        const registeredEventsArray = snapshot
+          .val()
+          .registeredEvents.split(",");
+        setRegisterData(registeredEventsArray.includes(props.id));
+      } else {
+        setRegisterData(false);
+      }
+    } else {
+      setRegisterData(false);
+    }
+  };
+
+  const registerForEvent = async () => {
+    const userUid = localStorage.getItem("userUid");
+
+    if (!userUid) {
+      toast.warn("You are not signed in", { transition: Zoom });
       return;
     }
-    const userRef = child(usersRef, userUid);
 
-    const snapshot = await get(userRef);
+    const userRef = child(ref(database, "users"), userUid);
+    const userSnapshot = await get(userRef);
 
-    if (snapshot.exists()) {
-      if (snapshot.hasChild("registeredEvents")) {
-        let registeredEventsArray = snapshot.val().registeredEvents.split(",");
-        if (registeredEventsArray.includes(props.id)) {
-          toast.error("You are already registered for this event", {
-            transition: Zoom,
-          });
-          return;
-        }
-        setRegister_data(true);
-        registeredEventsArray.push(props.id);
-        update(userRef, { registeredEvents: registeredEventsArray.join(",") });
-        const eventRef = ref(database, "events");
-        const eventRefChild = child(eventRef, props.id);
-        get(eventRefChild)
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              let registrantsArray = snapshot.val().registrants
-                ? snapshot.val().registrants.split(",")
-                : [];
-              if (registrantsArray.includes(userUid)) {
-                toast.error("You are already registered for this event", {
-                  transition: Zoom,
-                });
-                return;
-              }
+    if (userSnapshot.exists()) {
+      let registeredEventsArray = userSnapshot.val().registeredEvents
+        ? userSnapshot.val().registeredEvents.split(",")
+        : [];
+      if (registeredEventsArray.includes(props.id)) {
+        toast.error("You are already registered for this event", {
+          transition: Zoom,
+        });
+        return;
+      }
 
-              registrantsArray.push(userUid);
-              update(eventRefChild, {
-                registrants: registrantsArray.join(","),
-              });
-            } else {
-              toast.error("Event does not exist", { transition: Zoom });
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+      registeredEventsArray.push(props.id);
+      await update(userRef, {
+        registeredEvents: registeredEventsArray.join(","),
+      });
 
+      const eventRef = child(ref(database, "events"), props.id);
+      const eventSnapshot = await get(eventRef);
+
+      if (eventSnapshot.exists()) {
+        let registrantsArray = eventSnapshot.val().registrants
+          ? eventSnapshot.val().registrants.split(",")
+          : [];
+        registrantsArray.push(userUid);
+        await update(eventRef, { registrants: registrantsArray.join(",") });
+
+        setRegisterData(true);
         toast.success("Successfully registered for the event", {
           transition: Zoom,
         });
       } else {
-        // const registeredEvents = [props.id];
-        // update(userRef, { registeredEvents });
-
-        // toast.success("Successfully registered for the event");
-        let registeredEvents = "";
-        registeredEvents += props.id;
-        update(userRef, { registeredEvents });
-        const eventRef = ref(database, "events");
-        const eventRefChild = child(eventRef, props.id);
-        get(eventRefChild)
-          .then((snapshot) => {
-            if (snapshot.exists()) {
-              let registrantsArray = snapshot.val().registrants
-                ? snapshot.val().registrants.split(",")
-                : [];
-              if (registrantsArray.includes(userUid)) {
-                toast.error("You are already registered for this event", {
-                  transition: Zoom,
-                });
-                return;
-              }
-
-              registrantsArray.push(userUid);
-              update(eventRefChild, {
-                registrants: registrantsArray.join(","),
-              });
-            } else {
-              toast.error("Event does not exist", { transition: Zoom });
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-
-        toast.success("Successfully registered for the event", {
-          transition: Zoom,
-        });
+        toast.error("Event does not exist", { transition: Zoom });
       }
     } else {
       toast.error("User does not exist", { transition: Zoom });
     }
   };
+
+  const cancelRegistration = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel registration?"
+    );
+    if (!confirmed) return;
+
+    const userUid = localStorage.getItem("userUid");
+
+    if (!userUid) {
+      toast.warn("You are not signed in", { transition: Zoom });
+      return;
+    }
+
+    const userRef = child(ref(database, "users"), userUid);
+    const userSnapshot = await get(userRef);
+
+    if (userSnapshot.exists()) {
+      let registeredEventsArray = userSnapshot
+        .val()
+        .registeredEvents.split(",");
+      if (!registeredEventsArray.includes(props.id)) {
+        toast.error("You are not registered for this event", {
+          transition: Zoom,
+        });
+        return;
+      }
+
+      registeredEventsArray = registeredEventsArray.filter(
+        (eventId: string) => eventId !== props.id
+      );
+      await update(userRef, {
+        registeredEvents: registeredEventsArray.join(","),
+      });
+
+      const eventRef = child(ref(database, "events"), props.id);
+      const eventSnapshot = await get(eventRef);
+
+      if (eventSnapshot.exists()) {
+        let registrantsArray = eventSnapshot.val().registrants
+          ? eventSnapshot.val().registrants.split(",")
+          : [];
+        registrantsArray = registrantsArray.filter(
+          (uid: string) => uid !== userUid
+        );
+        await update(eventRef, { registrants: registrantsArray.join(",") });
+
+        setRegisterData(false);
+        toast.success("Successfully canceled registration for the event", {
+          transition: Zoom,
+        });
+      } else {
+        toast.error("Event does not exist", { transition: Zoom });
+      }
+    } else {
+      toast.error("User does not exist", { transition: Zoom });
+    }
+  };
+
   const date = new Date(props.date);
   const year = date.getFullYear();
   const month = date.getMonth(); // Note: months are zero-indexed
   const day = date.getDate();
 
-  // Extract time components
   const timeString = props.time;
   const [time, timeZone] = timeString.split(" ");
   const [hours, minutes, seconds] = time.split(":").map(Number);
 
-  // Create a new Date object combining the date and time components
   const eventDateTime = new Date(year, month, day, hours, minutes, seconds);
 
   return (
@@ -193,17 +212,18 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                   {eventDateTime > new Date() ? (
                     <Button
                       className={`${
-                        (props.isValid && props.isRegistered) || register_data
-                          ? "registration_color"
+                        (props.isValid && props.isRegistered) || registerData
+                          ? "btn-unregister"
                           : "btn-c"
-                      } position-absolute bottom-0 end-0 m-3 `}
-                      onClick={registerForEventX}
-                      disabled={
-                        (props.isValid && props.isRegistered) || register_data
+                      }   position-absolute end-0 bottom-0 m-3`}
+                      onClick={
+                        (props.isValid && props.isRegistered) || registerData
+                          ? cancelRegistration
+                          : registerForEvent
                       }
                     >
-                      {(props.isValid && props.isRegistered) || register_data
-                        ? "Registered"
+                      {(props.isValid && props.isRegistered) || registerData
+                        ? "Unregister"
                         : "Register"}
                     </Button>
                   ) : (
@@ -228,12 +248,6 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       Edited {moment(props.lastEdited).fromNow()}
                     </div>
                   )}
-                  {/* <Button
-                  className="btn-c position-absolute bottom-0 end-0 m-3"
-                  onClick={registerForEventX}
-                >
-                  Register
-                </Button> */}
                 </Card.Body>
               </Card>
             </Col>
@@ -286,7 +300,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       eventDateTime > new Date() ? (
                         <Button
                           className="btn-c position-absolute bottom-0 end-0 m-3"
-                          onClick={registerForEventX}
+                          onClick={registerForEvent}
                         >
                           Register
                         </Button>
