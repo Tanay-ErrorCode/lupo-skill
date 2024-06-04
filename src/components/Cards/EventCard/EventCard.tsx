@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import "./EventCard.css";
 import { Link } from "@mui/material";
-import { ref, get, child, update } from "firebase/database";
+import {
+  auth,
+  firestore,
+  database,
+  storage,
+  signInWithGooglePopup,
+} from "../../../firebaseConf";
+import GoogleButton from "react-google-button";
+import { ref, get, child, set, update, remove } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PageTitle from "../../../utils/PageTitle";
 import moment from "moment";
-import { database } from "../../../firebaseConf"; // Adjust the import path as necessary
 
 interface EventCardProps {
   title: string;
@@ -22,9 +31,10 @@ interface EventCardProps {
   isValid: boolean;
   hostName: string;
   onBackToDashboard?: () => void;
-  showEditIcon?: boolean; // Add this prop
-  onEditEvent?: () => void; // Add this prop for edit action
-  lastEdited?: number; // Add this prop for last edited timestamp
+  showEditIcon?: boolean;
+  onEditEvent?: () => void;
+  lastEdited?: number;
+  showDeleteIcon?: boolean;
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
@@ -161,9 +171,51 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     }
   };
 
+  const handleDeleteEvent = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this event?"
+    );
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const eventRef = ref(database, `events/${props.id}`);
+      await remove(eventRef);
+
+      const userUid = localStorage.getItem("userUid");
+      if (userUid) {
+        const userRef = ref(database, `users/${userUid}`);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          let createdEventsArray: string[] = snapshot
+            .val()
+            .createdEvents.split(",");
+          createdEventsArray = createdEventsArray.filter(
+            (eventId) => eventId !== props.id
+          );
+          await update(userRef, {
+            createdEvents: createdEventsArray.join(","),
+          });
+        }
+      }
+
+      toast.success("Event successfully deleted", { transition: Zoom });
+      window.location.reload();
+
+      if (props.onBackToDashboard) {
+        props.onBackToDashboard();
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast.error("Failed to delete event", { transition: Zoom });
+    }
+  };
+
   const date = new Date(props.date);
   const year = date.getFullYear();
-  const month = date.getMonth(); // Note: months are zero-indexed
+  const month = date.getMonth();
   const day = date.getDate();
 
   const timeString = props.time;
@@ -235,11 +287,24 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                     <EditIcon
                       onClick={props.onEditEvent}
                       style={{
-                        width: "18",
+                        width: "22px",
                         cursor: "pointer",
                         position: "absolute",
                         top: "15px",
                         right: "30px",
+                      }}
+                    />
+                  )}
+                  {props.showDeleteIcon && (
+                    <DeleteIcon
+                      onClick={handleDeleteEvent}
+                      style={{
+                        color: "red",
+                        width: "22px",
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: "15px",
+                        right: "5px",
                       }}
                     />
                   )}

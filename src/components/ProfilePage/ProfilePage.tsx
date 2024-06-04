@@ -371,6 +371,7 @@ const ProfilePage = () => {
                                 image={card.banner}
                                 hostName={card.hostName}
                                 showEditIcon={true} // Pass showEditIcon prop as true
+                                showDeleteIcon={true}
                                 onEditEvent={() => openEditModal(card)}
                                 lastEdited={card.lastEdited} // Pass the last edited timestamp
                               />
