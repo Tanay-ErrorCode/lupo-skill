@@ -1,0 +1,69 @@
+.happy {
+  text-align: center;
+  color: white;
+  margin: 50px 0px;
+  font-weight: bold;
+}
+.carousel-item {
+  transition: transform 1.5s ease, opacity 1.5s ease !important;
+  padding: 20px;
+}
+
+.carousel-indicators {
+  transform: translateY(4rem);
+  gap: 1rem;
+  margin: 0px 0px 0px 0px !important;
+  width: 100% !important;
+}
+.carousel-indicators button {
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50%;
+}
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  display: none;
+}
+@media (max-width: 800) {
+  .happy {
+    margin: 60px 0px;
+  }
+}
+/* testimonial.css */
+.testimonial-card {
+  max-width: 323;
+  margin-bottom: 20px;
+  height: 300px; /* Ensure all cards have the same height */
+}
+
+@media (max-width: 1240px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 1060px) {
+  .testimonial-card {
+    height: 440px;
+  }
+}
+@media (max-width: 900px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 678px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+
+@media (max-width: 598px) {
+  .testimonial-card {
+    height: 250px;
+  }
+}
+@media (max-width: 450px) {
+  .testimonial-card {
+    height: 400px;
+  }
+}

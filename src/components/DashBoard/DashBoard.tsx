@@ -23,6 +23,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { reload } from "firebase/auth";
+import PageTitle from "../../utils/PageTitle";
 
 interface Event {
   banner: string;
@@ -36,6 +37,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const Dashboard = () => {
@@ -48,7 +50,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in", { transition: Zoom });
     }
 
     const fetchData = async () => {
@@ -148,6 +149,7 @@ const Dashboard = () => {
                   banner: string;
                   host: string;
                   hostName: string;
+                  lastEdited?: number;
                 },
                 index
               ) => (
@@ -164,6 +166,7 @@ const Dashboard = () => {
                   isDashboard={true}
                   image={card.banner}
                   hostName={card.hostName}
+                  lastEdited={card.lastEdited}
                 />
               )
             )}

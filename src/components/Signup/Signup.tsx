@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import default_user from "../image_assets/default_user.png";
-import "./Signup.css";
-import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
+import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import {
   ref as storageRef,
   uploadBytes,
@@ -17,12 +13,21 @@ import bannerImage from "../image_assets/bannerImage.png";
 import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 
-const Signup = ({ isShow, returnShow }: any) => {
+import "./Signup.css";
+
+interface SignupProps {
+  isShow: boolean;
+  returnShow: (show: boolean) => void;
+}
+
+const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
   const [show, setShow] = useState(false);
+
   const handleClose = () => {
     setShow(false);
     returnShow(false);
   };
+
   useEffect(() => {
     setShow(isShow);
   }, [isShow]);
@@ -30,12 +35,7 @@ const Signup = ({ isShow, returnShow }: any) => {
   const logGoogleUser = async () => {
     try {
       const response = await signInWithGooglePopup();
-      const {
-        email,
-        uid,
-        displayName: username,
-        photoURL: pic,
-      } = response.user;
+      const { email, uid, displayName: username, photoURL } = response.user;
 
       const usersRef = ref(database, "users");
       const userRef = child(usersRef, uid);
@@ -43,40 +43,32 @@ const Signup = ({ isShow, returnShow }: any) => {
       const snapshot = await get(userRef);
 
       if (snapshot.exists()) {
+        const userData = snapshot.val();
         localStorage.setItem("userUid", uid);
-        localStorage.setItem("userPic", pic ? pic : "");
+        localStorage.setItem("username", `${username}`);
+        localStorage.setItem("userPic", userData.pic || "");
         window.location.reload();
         toast.success("Logged in successfully", { transition: Zoom });
       } else {
-        set(userRef, {
-          name: username,
-          email,
-          pic: pic || "",
-          tags: "",
-          banner: "",
-          uid,
-        });
-
         const bannerRef = storageRef(storage, `/user-banners/banner-${uid}`);
-
         const images = [bannerImage, bannerImage2, bannerImage3];
         const randomImage = images[Math.floor(Math.random() * images.length)];
         const blob = await fetch(randomImage).then((res) => res.blob());
 
         toast.promise(
           uploadBytes(bannerRef, blob).then(async () => {
-            const value = await getDownloadURL(bannerRef);
-            console.log(value, "banner uploaded");
-            localStorage.setItem("userUid", uid);
-            localStorage.setItem("userPic", pic || "");
-            set(userRef, {
+            const bannerURL = await getDownloadURL(bannerRef);
+            const picURL = photoURL || "";
+            await set(userRef, {
               name: username,
               email,
-              pic: pic || "",
+              pic: picURL,
               tags: "",
-              banner: value,
+              banner: bannerURL,
               uid,
             });
+            localStorage.setItem("userUid", uid);
+            localStorage.setItem("userPic", picURL);
             window.location.reload();
           }),
           {
@@ -90,7 +82,6 @@ const Signup = ({ isShow, returnShow }: any) => {
     } catch (error) {
       console.error(error);
 
-      // Check the type of error using instanceof
       if (error instanceof Error && error.message.includes("popup")) {
         // Handle pop-up closed by user
         // toast.error("Sign up process was canceled", { transition: Zoom });
@@ -105,16 +96,15 @@ const Signup = ({ isShow, returnShow }: any) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
-          <Modal.Title>Sign Up</Modal.Title>
+          <Modal.Title>SignUp or LogIn</Modal.Title>
         </Modal.Header>
         <Modal.Body className="d-flex justify-content-center align-items-center m-5">
           <GoogleButton
             type="light"
-            onClick={() => {
-              logGoogleUser();
-            }}
+            onClick={logGoogleUser}
+            label="Continue with Google"
           />
         </Modal.Body>
       </Modal>
