@@ -1,12 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import {
-//   Navbar,
-//   Nav,
-//   NavDropdown,
-//   Container,
-//   Offcanvas,
-//   Button,
-// } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
@@ -99,7 +91,7 @@ const NavBar = () => {
           color: "white",
 
           "&:hover": {
-            backgroundColor: "#A0DEFF",
+            backgroundColor: theme.colors.primary,
             color: "black",
           },
         }}
@@ -118,7 +110,7 @@ const NavBar = () => {
           color: "white",
 
           "&:hover": {
-            backgroundColor: "#A0DEFF",
+            backgroundColor: theme.colors.primary,
             color: "black",
           },
         }}
@@ -134,7 +126,7 @@ const NavBar = () => {
           color: "white",
 
           "&:hover": {
-            backgroundColor: "#A0DEFF",
+            backgroundColor: theme.colors.primary,
             color: "black",
           },
         }}
@@ -147,7 +139,7 @@ const NavBar = () => {
           color: "white",
 
           "&:hover": {
-            backgroundColor: "#A0DEFF",
+            backgroundColor: theme.colors.primary,
             color: "black",
           },
         }}
@@ -161,7 +153,7 @@ const NavBar = () => {
   const isSmallScreen = useMediaQuery(screenTheme.breakpoints.down("sm"));
   const isMediumScreen = useMediaQuery(screenTheme.breakpoints.down("lg"));
 
-  const iconPadding = isSmallScreen ? "10px 12px" : "20px 32px";
+  const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
   return (
@@ -170,8 +162,13 @@ const NavBar = () => {
       sx={{
         background: isHome ? "transparent" : theme.colors.darkBackground,
         backdropFilter: isHome ? "blur(12px)" : "none",
-        zIndex: 1,
-        paddingY: "20px",
+        zIndex: 1000,
+        paddingTop: "1rem",
+        paddingBottom: ".6rem",
+        // paddingY: "20px",
+        boxShadow: 'none',
+        display: "flex",
+
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
@@ -183,14 +180,14 @@ const NavBar = () => {
               width: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between", // Add justify-content: space-between
+              justifyContent: "space-between", 
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center", flex:0, justifyContent:'center'}}>
               <img
                 src={logo}
-                width={isSmallScreen ? "32px" : "65px"}
-                height={isSmallScreen ? "32px" : "65px"}
+                width={isSmallScreen ? "42px" : "48px"}
+                height={isSmallScreen ? "42px" : "48px"}
                 alt="Lupo Skill logo"
                 style={{ pointerEvents: "none", marginRight: "10px" }}
               />
@@ -200,16 +197,13 @@ const NavBar = () => {
                 component="a"
                 href="#/"
                 sx={{
-                  mr: "16px",
-                  display: { md: "flex" },
-                  // fontFamily: "Inter",
                   fontWeight: 700,
                   color: "inherit",
                   textDecoration: "none",
                   fontSize: isSmallScreen
-                    ? "16px"
+                    ? "1.3rem"
                     : isMediumScreen
-                    ? "24px"
+                    ? "1.8rem"
                     : theme.fontSize.subheading,
                 }}
               >
@@ -226,7 +220,7 @@ const NavBar = () => {
                 fontWeight: 700,
                 border: isHome ? "1px solid" : "none",
                 borderColor: theme.colors.lightBackground,
-                padding: isHome ? "12px 20px" : "0px 12px",
+                padding: isHome ? "10px 16px" : "0px 12px",
                 gap: mdGap,
                 borderRadius: "32px",
                 alignItems: "center",
@@ -260,7 +254,9 @@ const NavBar = () => {
                   borderRadius: theme.borderRadius.large,
                   border: isHome ? "2px solid transparent" : "none",
 
-                  paddingX: 2,
+                  // paddingX: 2,
+                  padding: "2px 16px",
+
                   textTransform: "none",
                   "&:hover": {
                     backgroundColor: isHome
@@ -281,7 +277,7 @@ const NavBar = () => {
                   display: "block",
                   fontWeight: 600,
                   gap: "10px",
-                  padding: "8px 16px",
+                  padding: "2px 16px",
                   fontSize: mdFontSize,
                   color: isHome
                     ? isActive("/dashboard")
@@ -292,7 +288,7 @@ const NavBar = () => {
                     : "white",
                   backgroundColor: isHome
                     ? isActive("/dashboard")
-                      ? "#A0DEFF"
+                      ? theme.colors.primary
                       : "rgba(252, 252, 252, 0.2)"
                     : isActive("/dashboard")
                     ? theme.colors.secondaryDark
@@ -318,7 +314,7 @@ const NavBar = () => {
                   display: "block",
                   fontWeight: 600,
                   gap: "10px",
-                  padding: "8px 16px",
+                  padding: "2px 16px",
                   fontSize: mdFontSize,
                   color: isHome
                     ? isActive("/events")
@@ -329,7 +325,7 @@ const NavBar = () => {
                     : "white",
                   backgroundColor: isHome
                     ? isActive("/events")
-                      ? "#A0DEFF"
+                      ? theme.colors.primary
                       : "rgba(252, 252, 252, 0.2)"
                     : isActive("/events")
                     ? theme.colors.secondaryDark
@@ -354,7 +350,7 @@ const NavBar = () => {
                   display: "block",
                   fontWeight: 600,
                   gap: "10px",
-                  padding: "8px 16px",
+                  padding: "2px 16px",
                   fontSize: mdFontSize,
                   color: isHome ? "rgba(255, 255, 255, 0.6)" : "white",
                   backgroundColor: isHome
@@ -376,6 +372,14 @@ const NavBar = () => {
                 <CreateEvent onNavLinkClick={handleMobileMenuClose} />
               </Button>
             </Box>
+            {/* icons */}
+            <Box sx={{
+                flexGrow: 0,
+                display: "flex",
+              alignItems: "center",
+              width: 'fit-content',
+                columnGap:'2.2rem',
+              }}>
             <Box
               sx={{
                 flexGrow: 0,
@@ -394,6 +398,7 @@ const NavBar = () => {
                   gap: "32px",
                   borderRadius: "32px",
                   alignItems: "center",
+                  
 
                   backgroundColor: isHome
                     ? "rgba(255, 255, 255, 0.17)"
@@ -420,6 +425,7 @@ const NavBar = () => {
                     backgroundColor: isHome
                       ? "rgba(255, 255, 255, 0.17)"
                       : "transparent",
+                    
                   }}
                 >
                   <Person2Icon />
@@ -474,7 +480,8 @@ const NavBar = () => {
               }}
             >
               <MenuIcon />
-            </IconButton>
+              </IconButton>
+              </Box>
             {expanded && (
               <Menu
                 anchorEl={mobileMenuAnchorEl}
