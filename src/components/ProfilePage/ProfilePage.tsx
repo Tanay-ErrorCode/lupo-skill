@@ -214,7 +214,7 @@ const ProfilePage = () => {
   return (
     <>
       <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
-      <Container className="mt-5">
+      <Container className="mt-5" style={{paddingTop: "6.5em"}}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
             <div className="card">

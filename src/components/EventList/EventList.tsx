@@ -123,7 +123,11 @@ const EventList = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "6.5em",
+      }}
+    >
       {isLoading ? (
         <div className=" d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />

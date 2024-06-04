@@ -36,7 +36,7 @@
 
 body {
   background-color: rgb(244, 255, 248) !important;
-  padding-top: 3.5em;
+  /* padding-top: 3.5em; */
 }
 
 .spinner-container {
@@ -45,6 +45,7 @@ body {
   align-items: center;
   height: 90vh;
 }
+
 /* Modal Fade CSS */
 .modal.fade .modal-dialog {
   transition: transform 0.5s ease-in-out !important;

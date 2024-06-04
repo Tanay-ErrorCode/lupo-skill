@@ -97,6 +97,7 @@ const HomePage = () => {
   return (
     <div
       style={{
+        paddingTop: "6.5em",
         height: "100%",
         background:
           "radial-gradient(circle, rgb(1 126 172 / 83%) 0%, rgb(27, 79, 105) 40%, rgb(0, 0, 0) 80%)",
