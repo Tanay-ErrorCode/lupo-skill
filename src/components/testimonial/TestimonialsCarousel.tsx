@@ -82,6 +82,23 @@ const TestimonialsCarousel: React.FC = () => {
     testimonials,
     itemsPerGroup
   );
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex: number) => {
+    setIndex(selectedIndex);
+  };
+
+  const handlePrev = () => {
+    setIndex((prevIndex) =>
+      prevIndex === 0 ? groupedTestimonials.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    setIndex((prevIndex) =>
+      prevIndex === groupedTestimonials.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
   return (
     <Carousel
