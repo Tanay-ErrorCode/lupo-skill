@@ -48,9 +48,12 @@
   background-color: rgb(201, 255, 121) !important;
 }
 .btn-unregister {
-  background-color: #ff0f2e;
+  background-color: #ff092a;
   border: 1px solid #ff0f2e;
   color: #ffffff; /* White text */
+}
+.btn-unregister:hover {
+  background-color: #ea001f;
 }
 
 .link-nothing {
