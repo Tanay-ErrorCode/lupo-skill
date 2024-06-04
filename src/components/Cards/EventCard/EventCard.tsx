@@ -11,7 +11,7 @@ import {
   signInWithGooglePopup,
 } from "../../../firebaseConf";
 import GoogleButton from "react-google-button";
-import { ref, get, child, set, update } from "firebase/database";
+import { ref, get, child, set, update, remove } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
@@ -139,7 +139,6 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("User does not exist", { transition: Zoom });
     }
   };
-
   const handleDeleteEvent = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this event?"
@@ -150,7 +149,26 @@ const EventCard: React.FC<EventCardProps> = (props) => {
 
     try {
       const eventRef = ref(database, `events/${props.id}`);
-      await set(eventRef, null);
+      await remove(eventRef); // Use remove instead of set
+
+      // Now, remove the event from the user's createdEvents
+      const userUid = localStorage.getItem("userUid");
+      if (userUid) {
+        const userRef = ref(database, `users/${userUid}`);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          let createdEventsArray: string[] = snapshot
+            .val()
+            .createdEvents.split(",");
+          createdEventsArray = createdEventsArray.filter(
+            (eventId) => eventId !== props.id
+          );
+          await update(userRef, {
+            createdEvents: createdEventsArray.join(","),
+          });
+        }
+      }
 
       toast.success("Event successfully deleted", { transition: Zoom });
       window.location.reload();
@@ -163,7 +181,6 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("Failed to delete event", { transition: Zoom });
     }
   };
-
   const date = new Date(props.date);
   const year = date.getFullYear();
   const month = date.getMonth();
