@@ -95,6 +95,7 @@ const classifyLink = (link: string): { name: string; icon: any } => {
 };
 
 const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
+  const [count, setcount] = useState(1);
   const [newLink, setNewLink] = useState<string>("");
   const [currentClassification, setCurrentClassification] = useState<{
     name: string;
@@ -120,12 +121,14 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
     ]);
     setNewLink("");
     setCurrentClassification({ name: "Unknown", icon: faLink });
+    setcount((prev) => prev + 1);
   };
 
   const removeLink = (index: number) => {
     const updatedLinks = [...links];
     updatedLinks.splice(index, 1);
     setLinks(updatedLinks);
+    setcount((prev) => prev - 1);
   };
 
   return (
@@ -155,20 +158,24 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
         </div>
       ))}
       <div className="d-flex mt-2 align-items-center gap-2">
-        <div className="inputsocial">
-          <Form.Control
-            type="text"
-            placeholder="Enter URL"
-            value={newLink}
-            onChange={handleInputChange}
-          />
-          <span className="classification ml-2 socialicon">
-            <FontAwesomeIcon icon={currentClassification.icon} />
-          </span>
-        </div>
-        <Button onClick={addNewLink} className="ml-2 addsociallink">
-          <FontAwesomeIcon icon={faPlusCircle} />
-        </Button>
+        {count <= 3 && (
+          <div className="inputsocial">
+            <Form.Control
+              type="text"
+              placeholder="Enter URL"
+              value={newLink}
+              onChange={handleInputChange}
+            />
+            <span className="classification ml-2 socialicon">
+              <FontAwesomeIcon icon={currentClassification.icon} />
+            </span>
+          </div>
+        )}
+        {count <= 3 && (
+          <Button onClick={addNewLink} className="ml-2 addsociallink">
+            <FontAwesomeIcon icon={faPlusCircle} />
+          </Button>
+        )}
       </div>
     </Form.Group>
   );
