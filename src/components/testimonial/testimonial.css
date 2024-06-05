@@ -6,7 +6,10 @@
 }
 .carousel-item {
   transition: transform 1.5s ease, opacity 1.5s ease !important;
-  padding: 20px;
+  padding: 10px;
+}
+.carousel-item :hover {
+  transform: scale(0.95);
 }
 
 .carousel-indicators {
