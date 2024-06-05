@@ -11,10 +11,17 @@ import { toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
-import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import {
+  Instagram,
+  Twitter,
+  Facebook,
+  Add,
+  Remove,
+  Delete,
+} from "@mui/icons-material";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-
+import AddIcon from "@mui/icons-material/Add";
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
@@ -27,9 +34,14 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [instagram, setInstagram] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
+  // const [instagram, setInstagram] = useState("");
+  // const [twitter, setTwitter] = useState("");
+  // const [facebook, setFacebook] = useState("");
+  const [socialLinks, setSocialLinks] = useState<
+    { platform: string; url: string }[]
+  >([]);
+  const [newPlatform, setNewPlatform] = useState("Instagram");
+  const [newURL, setNewURL] = useState("");
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
@@ -49,9 +61,23 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       // setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      setInstagram(userData.instagram || "");
-      setTwitter(userData.twitter || "");
-      setFacebook(userData.facebook || "");
+      const fetchedSocialLinks = [];
+      if (userData.instagram) {
+        fetchedSocialLinks.push({
+          platform: "Instagram",
+          url: userData.instagram,
+        });
+      }
+      if (userData.twitter) {
+        fetchedSocialLinks.push({ platform: "Twitter", url: userData.twitter });
+      }
+      if (userData.facebook) {
+        fetchedSocialLinks.push({
+          platform: "Facebook",
+          url: userData.facebook,
+        });
+      }
+      setSocialLinks(fetchedSocialLinks);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -256,19 +282,21 @@ const EditProfile = () => {
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
-      const updatedUserDetails = { ...currentUserDetails };
+      const socialLinksObject = socialLinks.reduce((acc, link) => {
+        acc[link.platform.toLowerCase()] = link.url;
+        return acc;
+      }, {} as { [key: string]: string });
 
-      if (headline) updatedUserDetails.headline = headline;
-      if (tags) updatedUserDetails.tags = tags;
-      if (website) updatedUserDetails.website = website;
-      if (instagram) updatedUserDetails.instagram = instagram;
-      if (twitter) updatedUserDetails.twitter = twitter;
-      if (facebook) updatedUserDetails.facebook = facebook;
+      await set(userDetailsRef, {
+        name,
+        headline,
+        website,
+        tags: listTags.join(", "),
+        banner: bannerImageUrl,
+        profile: profileImageUrl,
+        ...socialLinksObject,
+      });
 
-      updatedUserDetails.banner = bannerImageUrl;
-      updatedUserDetails.pic = profileImageUrl;
-
-      await set(userDetailsRef, updatedUserDetails);
       localStorage.setItem("userPic", profileImageUrl);
       toast.success("User details have been successfully updated");
       setIsLoading(false);
@@ -277,6 +305,45 @@ const EditProfile = () => {
     } catch (error) {
       toast.error("An error occurred while updating user details");
       setIsLoading(false);
+    }
+  };
+  const handleAddSocialLink = () => {
+    if (socialLinks.length >= 3) {
+      toast.error("You can only add up to 3 social media links", {
+        transition: Zoom,
+      });
+      return;
+    }
+    if (newURL.trim() === "") {
+      toast.error("URL cannot be empty", {
+        transition: Zoom,
+      });
+      return;
+    }
+
+    const newLink = {
+      platform: newPlatform,
+      url: newURL,
+    };
+
+    setSocialLinks((prevLinks) => [...prevLinks, newLink]);
+    setNewURL("");
+  };
+
+  const handleRemoveSocialLink = (index: number) => {
+    setSocialLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
+  };
+
+  const renderPlatformIcon = (platform: string) => {
+    switch (platform) {
+      case "Instagram":
+        return <Instagram />;
+      case "Twitter":
+        return <Twitter />;
+      case "Facebook":
+        return <Facebook />;
+      default:
+        return null;
     }
   };
 
@@ -342,57 +409,57 @@ const EditProfile = () => {
               />
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>
-                <Instagram />
-                Instagram URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={instagram.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setInstagram(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Twitter /> Twitter URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={twitter.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setTwitter(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Facebook />
-                Facebook URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={facebook.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setFacebook(`https://${updatedValue}`);
-                }}
-              />
+            <Form.Group controlId="socialLinks">
+              <Form.Label>Social Media Links</Form.Label>
+              {socialLinks.map((link, index) => (
+                <div
+                  key={index}
+                  className="d-flex align-items-center mb-2 gap-1"
+                >
+                  <span className="iconedits">
+                    {renderPlatformIcon(link.platform)}
+                  </span>
+                  <Form.Control
+                    type="text"
+                    value={link.url}
+                    readOnly
+                    className="ml-2"
+                  />
+                  <Button
+                    variant="danger"
+                    className="ml-2 iconedits"
+                    onClick={() => handleRemoveSocialLink(index)}
+                  >
+                    <Delete />
+                  </Button>
+                </div>
+              ))}
+              {socialLinks.length < 3 && (
+                <div style={{ display: "flex", gap: "0.25rem" }}>
+                  <Form.Control
+                    as="select"
+                    value={newPlatform}
+                    onChange={(e) => setNewPlatform(e.target.value)}
+                    style={{ width: "auto" }}
+                  >
+                    <option>Instagram</option>
+                    <option>Twitter</option>
+                    <option>Facebook</option>
+                  </Form.Control>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter URL"
+                    value={newURL}
+                    onChange={(e) => setNewURL(e.target.value)}
+                  />
+                  <Button
+                    onClick={handleAddSocialLink}
+                    className="mt-2 iconeditsadd"
+                  >
+                    <Add />
+                  </Button>
+                </div>
+              )}
             </Form.Group>
 
             <Form.Group>
