@@ -34,9 +34,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  // const [instagram, setInstagram] = useState("");
-  // const [twitter, setTwitter] = useState("");
-  // const [facebook, setFacebook] = useState("");
+
   const [socialLinks, setSocialLinks] = useState<
     { platform: string; url: string }[]
   >([]);
