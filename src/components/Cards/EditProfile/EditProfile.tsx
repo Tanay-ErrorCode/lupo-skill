@@ -1,3 +1,4 @@
+// src/components/Cards/EditProfile/EditProfile.tsx
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
@@ -22,6 +23,10 @@ import {
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
+
+import { Link } from "../../../utils/type"; // Import the Link type
+import InputLink from "../../../utils/InputLink";
+
 const EditProfile = () => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
@@ -34,12 +39,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [socialLinks, setSocialLinks] = useState<
-    { platform: string; url: string }[]
-  >([]);
-  const [newPlatform, setNewPlatform] = useState("Instagram");
-  const [newURL, setNewURL] = useState("");
+  const [links, setLinks] = useState<Link[]>([]); // Use Link type here
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
@@ -59,23 +59,7 @@ const EditProfile = () => {
       setHeadline(userData.headline || "");
       // setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      const fetchedSocialLinks = [];
-      if (userData.instagram) {
-        fetchedSocialLinks.push({
-          platform: "Instagram",
-          url: userData.instagram,
-        });
-      }
-      if (userData.twitter) {
-        fetchedSocialLinks.push({ platform: "Twitter", url: userData.twitter });
-      }
-      if (userData.facebook) {
-        fetchedSocialLinks.push({
-          platform: "Facebook",
-          url: userData.facebook,
-        });
-      }
-      setSocialLinks(fetchedSocialLinks);
+      setLinks(userData.links || []);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -280,11 +264,6 @@ const EditProfile = () => {
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
 
-      const socialLinksObject = socialLinks.reduce((acc, link) => {
-        acc[link.platform.toLowerCase()] = link.url;
-        return acc;
-      }, {} as { [key: string]: string });
-
       await set(userDetailsRef, {
         name,
         headline,
@@ -292,7 +271,7 @@ const EditProfile = () => {
         tags: listTags.join(", "),
         banner: bannerImageUrl,
         profile: profileImageUrl,
-        ...socialLinksObject,
+        links,
       });
 
       localStorage.setItem("userPic", profileImageUrl);
@@ -303,45 +282,6 @@ const EditProfile = () => {
     } catch (error) {
       toast.error("An error occurred while updating user details");
       setIsLoading(false);
-    }
-  };
-  const handleAddSocialLink = () => {
-    if (socialLinks.length >= 3) {
-      toast.error("You can only add up to 3 social media links", {
-        transition: Zoom,
-      });
-      return;
-    }
-    if (newURL.trim() === "") {
-      toast.error("URL cannot be empty", {
-        transition: Zoom,
-      });
-      return;
-    }
-
-    const newLink = {
-      platform: newPlatform,
-      url: newURL,
-    };
-
-    setSocialLinks((prevLinks) => [...prevLinks, newLink]);
-    setNewURL("");
-  };
-
-  const handleRemoveSocialLink = (index: number) => {
-    setSocialLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
-  };
-
-  const renderPlatformIcon = (platform: string) => {
-    switch (platform) {
-      case "Instagram":
-        return <Instagram />;
-      case "Twitter":
-        return <Twitter />;
-      case "Facebook":
-        return <Facebook />;
-      default:
-        return null;
     }
   };
 
@@ -408,56 +348,7 @@ const EditProfile = () => {
             </Form.Group>
 
             <Form.Group controlId="socialLinks">
-              <Form.Label>Social Media Links</Form.Label>
-              {socialLinks.map((link, index) => (
-                <div
-                  key={index}
-                  className="d-flex align-items-center mb-2 gap-1"
-                >
-                  <span className="iconedits">
-                    {renderPlatformIcon(link.platform)}
-                  </span>
-                  <Form.Control
-                    type="text"
-                    value={link.url}
-                    readOnly
-                    className="ml-2"
-                  />
-                  <Button
-                    variant="danger"
-                    className="ml-2 iconedits"
-                    onClick={() => handleRemoveSocialLink(index)}
-                  >
-                    <Delete />
-                  </Button>
-                </div>
-              ))}
-              {socialLinks.length < 3 && (
-                <div style={{ display: "flex", gap: "0.25rem" }}>
-                  <Form.Control
-                    as="select"
-                    value={newPlatform}
-                    onChange={(e) => setNewPlatform(e.target.value)}
-                    style={{ width: "auto" }}
-                  >
-                    <option>Instagram</option>
-                    <option>Twitter</option>
-                    <option>Facebook</option>
-                  </Form.Control>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter URL"
-                    value={newURL}
-                    onChange={(e) => setNewURL(e.target.value)}
-                  />
-                  <Button
-                    onClick={handleAddSocialLink}
-                    className="mt-2 iconeditsadd"
-                  >
-                    <Add />
-                  </Button>
-                </div>
-              )}
+              <InputLink links={links} setLinks={setLinks} />
             </Form.Group>
 
             <Form.Group>
