@@ -14,14 +14,7 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-   apiKey: "AIzaSyBqdIooMKQoP-UvwTZ5AwFRAzmcIRc6Z9M",
-  authDomain: "opensource-e2177.firebaseapp.com",
-  databaseURL: "https://opensource-e2177-default-rtdb.firebaseio.com",
-  projectId: "opensource-e2177",
-  storageBucket: "opensource-e2177.appspot.com",
-  messagingSenderId: "46630801309",
-  appId: "1:46630801309:web:07a236335c20aa58e0e974",
-  measurementId: "G-WVTGE0XQYH"
+  //enter the config details from firebase
 };
 
 const app = firebase.initializeApp(firebaseConfig);

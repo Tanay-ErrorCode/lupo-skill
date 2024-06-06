@@ -7,13 +7,6 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
   "storage": {
-    "rules": "storage.rules",
-    "cors": [
-      {
-        "origin": ["http://localhost:3000"],
-        "method": ["GET", "PUT", "POST", "DELETE"],
-        "maxAgeSeconds": 3600
-      }
-    ]
+    "rules": "storage.rules"
   }
 }
