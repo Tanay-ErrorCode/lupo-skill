@@ -12,34 +12,8 @@
   padding: 20px;
 }
 
-/* .testimonial-card {
-  max-width: 300px;
-  margin-bottom: 20px;
-  height: 300px;
-  border: 2px solid #9ABAC2;
-  border-radius: 15px;
-  background-color: white; 
-  transition: transform 0.3s ease, background-color 0.3s ease; 
-} */
-
-/* .testimonial-card:hover {
-  transform: scale(1.05);
-  background-color: linear-gradient(290.7deg, rgb(133, 255, 159) 2.3%, rgb(0, 172, 249) 100.2%);
-  animation: rotate 0.5s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    filter: hue-rotate(360deg);
-  }
-} */
-
 .testimonial-card:hover {
   transform: scale(1.05);
-  /* box-shadow: 0 0 10px linear-gradient(290.7deg,rgb(255, 242, 0), rgb(0, 172, 249) 100.2%) ;  */
   background: linear-gradient(
     290.7deg,
     rgb(255, 242, 0),
