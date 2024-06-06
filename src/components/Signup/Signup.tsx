@@ -3,16 +3,7 @@ import { Modal } from "react-bootstrap";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import bannerImage from "../image_assets/bannerImage.png";
-import bannerImage2 from "../image_assets/bannerImage2.png";
-import bannerImage3 from "../image_assets/bannerImage3.png";
-
+import { database, signInWithGooglePopup } from "../../firebaseConf";
 import "./Signup.css";
 
 interface SignupProps {
@@ -50,34 +41,35 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
         window.location.reload();
         toast.success("Logged in successfully", { transition: Zoom });
       } else {
-        const bannerRef = storageRef(storage, `/user-banners/banner-${uid}`);
-        const images = [bannerImage, bannerImage2, bannerImage3];
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        const blob = await fetch(randomImage).then((res) => res.blob());
+        const randomColors = [
+          "#FFEBEE",
+          "#E3F2FD",
+          "#E8F5E9",
+          "#FFFDE7",
+          "#F3E5F5",
+          "#FFF3E0",
+          "#E0F7FA",
+          "#FFF0E1",
+          "#F8F4FF",
+          "#E0F2F1",
+        ];
+        const randomColor =
+          randomColors[Math.floor(Math.random() * randomColors.length)];
+        const picURL = photoURL || "";
 
-        toast.promise(
-          uploadBytes(bannerRef, blob).then(async () => {
-            const bannerURL = await getDownloadURL(bannerRef);
-            const picURL = photoURL || "";
-            await set(userRef, {
-              name: username,
-              email,
-              pic: picURL,
-              tags: "",
-              banner: bannerURL,
-              uid,
-            });
-            localStorage.setItem("userUid", uid);
-            localStorage.setItem("userPic", picURL);
-            window.location.reload();
-          }),
-          {
-            pending: "Signing up...",
-            success: "Signed Up successfully!",
-            error: "Failed to sign up",
-          },
-          { transition: Zoom }
-        );
+        await set(userRef, {
+          name: username,
+          email,
+          pic: picURL,
+          tags: "",
+          bannerColor: randomColor,
+          uid,
+        });
+
+        localStorage.setItem("userUid", uid);
+        localStorage.setItem("userPic", picURL);
+        window.location.reload();
+        toast.success("Signed up successfully", { transition: Zoom });
       }
     } catch (error) {
       console.error(error);
@@ -95,20 +87,18 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
   };
 
   return (
-    <>
-      <Modal show={show} onHide={handleClose} animation={true}>
-        <Modal.Header closeButton>
-          <Modal.Title>SignUp or LogIn</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="d-flex justify-content-center align-items-center m-5">
-          <GoogleButton
-            type="light"
-            onClick={logGoogleUser}
-            label="Continue with Google"
-          />
-        </Modal.Body>
-      </Modal>
-    </>
+    <Modal show={show} onHide={handleClose} animation={true}>
+      <Modal.Header closeButton>
+        <Modal.Title>SignUp or LogIn</Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="d-flex justify-content-center align-items-center m-5">
+        <GoogleButton
+          type="light"
+          onClick={logGoogleUser}
+          label="Continue with Google"
+        />
+      </Modal.Body>
+    </Modal>
   );
 };
 

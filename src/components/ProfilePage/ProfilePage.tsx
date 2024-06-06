@@ -51,6 +51,8 @@ const ProfilePage = () => {
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
   );
+  const [banner, setBanner] = useState(null);
+  const [bannercolor, setbannercolor] = useState(null);
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -145,7 +147,7 @@ const ProfilePage = () => {
       const isValidUrl = (url: string) => {
         return url.startsWith("https://");
       };
-
+      console.log(userData);
       if (
         userData.instagram &&
         isValidUrl(userData.instagram.trim()) &&
@@ -187,8 +189,8 @@ const ProfilePage = () => {
         facebook.style.opacity = "0.5";
         facebook.style.pointerEvents = "none";
       }
-
-      profileBanner.src = userData.banner || bannerImage;
+      setBanner(userData.banner);
+      setbannercolor(userData.bannerColor);
       profileImage.src = userData.pic || default_user;
 
       const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
@@ -214,20 +216,31 @@ const ProfilePage = () => {
   return (
     <>
       <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
-      <Container className="mt-5" style={{paddingTop: "6.5em"}}>
+      <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
             <div className="card">
               <div className="card-body">
                 <div className="profile-banner-wrapper position-relative">
-                  <Image
-                    src={bannerImage}
-                    alt="Banner"
-                    className="profile-banner"
-                    fluid
-                    id="profile-banner"
-                    style={{ pointerEvents: "none", borderRadius: "16px" }}
-                  />
+                  {banner ? (
+                    <Image
+                      src={banner}
+                      alt="Banner"
+                      className="profile-banner"
+                      fluid
+                      id="profile-banner"
+                      style={{ pointerEvents: "none", borderRadius: "16px" }}
+                    />
+                  ) : (
+                    <div
+                      className="profile-banner-color"
+                      style={{
+                        background: `${bannercolor}`, // Use backgroundColor instead of background
+                        borderRadius: "16px",
+                        height: "200px", // Example height, you can adjust as needed
+                      }}
+                    ></div>
+                  )}
                   <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
                     <Image
                       src={default_user}
