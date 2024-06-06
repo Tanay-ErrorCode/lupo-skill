@@ -99,6 +99,7 @@ const HomePage = () => {
       style={{
         paddingTop: "6.5em",
         height: "100%",
+        overflow: "hidden",
         background:
           "radial-gradient(circle, rgb(1 126 172 / 83%) 0%, rgb(27, 79, 105) 40%, rgb(0, 0, 0) 80%)",
         // "radial-gradient(circle,navy 0%, seagreen 50%, rgba(0, 0, 0, 1) 90%)",
