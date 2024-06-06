@@ -7,6 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { useMediaQuery, useTheme } from "@mui/material";
+import "./testimonial.css"; // Import custom CSS
 
 // Define the props interface
 interface TestimonialCardProps {
@@ -35,7 +36,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         margin: isSmallScreen ? "0 auto" : "initial",
       }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
+      <CardContent className="box" sx={{ flexGrow: 1 }}>
         <Box
           display="flex"
           flexDirection="column"
@@ -49,9 +50,15 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
             gap="20px"
           >
             <Avatar
+              className="testimonial-image"
               alt={name}
               src={image}
-              sx={{ width: 56, height: 56, border: "1.5px solid #AE8892" }}
+              sx={{
+                width: 56,
+                height: 56,
+                border: "1.5px solid #AE8892",
+                color: "none",
+              }}
             />
             <Typography variant="h5" fontSize={"1.1rem"} fontWeight="700">
               {name}
