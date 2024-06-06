@@ -1,106 +1,99 @@
-// src/utils/InputLink.tsx
 import React, { useState, ChangeEvent } from "react";
 import { Form, Button } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "./type"; // Import the Link type
 
 import {
-  faInstagram,
-  faTwitter,
-  faYoutube,
-  faTwitch,
-  faDiscord,
-  faReddit,
-  faGithub,
-  faMedium,
-  faFacebook,
-  faLinkedin,
-  faPinterest,
-  faTiktok,
-  faAmazon,
-  faEbay,
-  faStackOverflow,
-  faApple,
-  faGooglePlay,
-  faSpotify,
-  faMicrosoft,
-  faWordpress,
-  faWhatsapp,
-  faTelegram,
-} from "@fortawesome/free-brands-svg-icons";
-
-import {
-  faLink,
-  faPlusCircle,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+  Instagram,
+  Twitter,
+  Youtube,
+  Twitch,
+  Discord,
+  Reddit,
+  Github,
+  Medium,
+  Facebook,
+  Linkedin,
+  Pinterest,
+  Tiktok,
+  Amazon,
+  StackOverflow,
+  Apple,
+  Google,
+  Spotify,
+  Microsoft,
+  Wordpress,
+  Whatsapp,
+  Telegram,
+  Link as LinkIcon,
+  PlusCircle,
+  PlusLg,
+  Trash,
+} from "react-bootstrap-icons";
 
 interface InputLinkProps {
   links: Link[];
   setLinks: React.Dispatch<React.SetStateAction<Link[]>>;
 }
 
-const classifyLink = (link: string): { name: string; icon: any } => {
+const classifyLink = (
+  link: string
+): { name: string; icon: React.ElementType } => {
   if (link.includes("instagram.com")) {
-    return { name: "Instagram", icon: faInstagram };
+    return { name: "Instagram", icon: Instagram };
   } else if (link.includes("twitter.com")) {
-    return { name: "Twitter", icon: faTwitter };
+    return { name: "Twitter", icon: Twitter };
   } else if (link.includes("youtube.com")) {
-    return { name: "YouTube", icon: faYoutube };
+    return { name: "YouTube", icon: Youtube };
   } else if (link.includes("twitch.tv")) {
-    return { name: "Twitch", icon: faTwitch };
+    return { name: "Twitch", icon: Twitch };
   } else if (link.includes("discord.com") || link.includes("discord.gg")) {
-    return { name: "Discord", icon: faDiscord };
+    return { name: "Discord", icon: Discord };
   } else if (link.includes("reddit.com")) {
-    return { name: "Reddit", icon: faReddit };
+    return { name: "Reddit", icon: Reddit };
   } else if (link.includes("github.com")) {
-    return { name: "GitHub", icon: faGithub };
+    return { name: "GitHub", icon: Github };
   } else if (link.includes("medium.com")) {
-    return { name: "Medium", icon: faMedium };
+    return { name: "Medium", icon: Medium };
   } else if (link.includes("facebook.com")) {
-    return { name: "Facebook", icon: faFacebook };
+    return { name: "Facebook", icon: Facebook };
   } else if (link.includes("linkedin.com")) {
-    return { name: "LinkedIn", icon: faLinkedin };
+    return { name: "LinkedIn", icon: Linkedin };
   } else if (link.includes("pinterest.com")) {
-    return { name: "Pinterest", icon: faPinterest };
+    return { name: "Pinterest", icon: Pinterest };
   } else if (link.includes("tiktok.com")) {
-    return { name: "TikTok", icon: faTiktok };
+    return { name: "TikTok", icon: Tiktok };
   } else if (link.includes("amazon.com")) {
-    return { name: "Amazon", icon: faAmazon };
-  } else if (link.includes("ebay.com")) {
-    return { name: "eBay", icon: faEbay };
+    return { name: "Amazon", icon: Amazon };
   } else if (link.includes("stackoverflow.com")) {
-    return { name: "Stack Overflow", icon: faStackOverflow };
+    return { name: "Stack Overflow", icon: StackOverflow };
   } else if (link.includes("apple.com")) {
-    return { name: "Apple", icon: faApple };
+    return { name: "Apple", icon: Apple };
   } else if (link.includes("play.google.com")) {
-    return { name: "Google Play", icon: faGooglePlay };
-  } else if (link.includes("itunes.apple.com")) {
-    return { name: "Apple App Store", icon: faApple };
+    return { name: "Google Play", icon: Google };
   } else if (link.includes("spotify.com")) {
-    return { name: "Spotify", icon: faSpotify };
+    return { name: "Spotify", icon: Spotify };
   } else if (link.includes("microsoft.com")) {
-    return { name: "Microsoft", icon: faMicrosoft };
+    return { name: "Microsoft", icon: Microsoft };
   } else if (link.includes("wordpress.com")) {
-    return { name: "WordPress", icon: faWordpress };
+    return { name: "WordPress", icon: Wordpress };
   } else if (link.includes("whatsapp.com")) {
-    return { name: "WhatsApp", icon: faWhatsapp };
+    return { name: "WhatsApp", icon: Whatsapp };
   } else if (link.includes("telegram.org")) {
-    return { name: "Telegram", icon: faTelegram };
+    return { name: "Telegram", icon: Telegram };
   } else {
-    return { name: "Unknown", icon: faLink };
+    return { name: "Unknown", icon: LinkIcon };
   }
 };
 
 const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
-  const [count, setcount] = useState(1);
+  const [count, setCount] = useState(1);
   const [newLink, setNewLink] = useState<string>("");
   const [currentClassification, setCurrentClassification] = useState<{
     name: string;
-    icon: any;
-  }>({ name: "Unknown", icon: faLink });
+    icon: React.ElementType;
+  }>({ name: "Unknown", icon: LinkIcon });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const link = event.target.value;
@@ -120,15 +113,15 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
       { url: newLink, name: classification.name, icon: classification.icon },
     ]);
     setNewLink("");
-    setCurrentClassification({ name: "Unknown", icon: faLink });
-    setcount((prev) => prev + 1);
+    setCurrentClassification({ name: "Unknown", icon: LinkIcon });
+    setCount((prev) => prev + 1);
   };
 
   const removeLink = (index: number) => {
     const updatedLinks = [...links];
     updatedLinks.splice(index, 1);
     setLinks(updatedLinks);
-    setcount((prev) => prev - 1);
+    setCount((prev) => prev - 1);
   };
 
   return (
@@ -145,7 +138,7 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
               readOnly
             />
             <span className="classification ml-2 socialicon">
-              <FontAwesomeIcon icon={inputField.icon} />
+              <inputField.icon className="icon" />
             </span>
           </div>
           <Button
@@ -153,7 +146,7 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
             onClick={() => removeLink(index)}
             className="ml-2 addsociallink"
           >
-            <FontAwesomeIcon icon={faTrash} />
+            <Trash />
           </Button>
         </div>
       ))}
@@ -167,13 +160,13 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
               onChange={handleInputChange}
             />
             <span className="classification ml-2 socialicon">
-              <FontAwesomeIcon icon={currentClassification.icon} />
+              <currentClassification.icon className="icon" />
             </span>
           </div>
         )}
         {count <= 3 && (
           <Button onClick={addNewLink} className="ml-2 addsociallink">
-            <FontAwesomeIcon icon={faPlusCircle} />
+            <PlusLg />
           </Button>
         )}
       </div>
