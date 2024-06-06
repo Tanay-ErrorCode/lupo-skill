@@ -83,7 +83,8 @@ const EventList = () => {
   };
 
   const handleSearch = () => {
-    const filteredEvents = filterEventsByTitle(eventCardsData, searchQuery);
+    const trimmedQuery = searchQuery.trim();
+    const filteredEvents = filterEventsByTitle(eventCardsData, trimmedQuery);
     const sortedFilteredEvents = sortEvents(filteredEvents, sortOption);
     setSortedEvents(sortedFilteredEvents);
     setDisplayedEvents(sortedFilteredEvents);
@@ -166,6 +167,7 @@ const EventList = () => {
               <div className="search-button-container">
                 <Button
                   variant="dark"
+                  style={{ color: "#5AB2FF" }}
                   className="search-button"
                   onClick={handleSearch}
                 >
