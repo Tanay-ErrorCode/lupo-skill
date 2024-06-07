@@ -147,7 +147,6 @@ const ProfilePage = () => {
       const isValidUrl = (url: string) => {
         return url.startsWith("https://");
       };
-      console.log(userData);
 
       if (
         userData.instagram &&
@@ -176,7 +175,6 @@ const ProfilePage = () => {
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
-      console.log(userData);
       if (
         userData.facebook &&
         isValidUrl(userData.facebook.trim()) &&
