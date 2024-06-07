@@ -51,8 +51,8 @@ const ProfilePage = () => {
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
   );
-  const [banner, setBanner] = useState(null);
-  const [bannercolor, setbannercolor] = useState(null);
+  const [banner, setBanner] = useState<string | null>(null);
+
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -148,6 +148,7 @@ const ProfilePage = () => {
         return url.startsWith("https://");
       };
       console.log(userData);
+
       if (
         userData.instagram &&
         isValidUrl(userData.instagram.trim()) &&
@@ -175,7 +176,7 @@ const ProfilePage = () => {
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
-
+      console.log(userData);
       if (
         userData.facebook &&
         isValidUrl(userData.facebook.trim()) &&
@@ -190,7 +191,7 @@ const ProfilePage = () => {
         facebook.style.pointerEvents = "none";
       }
       setBanner(userData.banner);
-      setbannercolor(userData.bannerColor);
+
       profileImage.src = userData.pic || default_user;
 
       const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
@@ -222,7 +223,7 @@ const ProfilePage = () => {
             <div className="card">
               <div className="card-body">
                 <div className="profile-banner-wrapper position-relative">
-                  {banner ? (
+                  {banner && !banner.startsWith("#") ? (
                     <Image
                       src={banner}
                       alt="Banner"
@@ -235,7 +236,7 @@ const ProfilePage = () => {
                     <div
                       className="profile-banner-color"
                       style={{
-                        background: `${bannercolor}`, // Use backgroundColor instead of background
+                        backgroundColor: `${banner}`, // Use backgroundColor instead of background
                         borderRadius: "16px",
                         height: "200px", // Example height, you can adjust as needed
                       }}

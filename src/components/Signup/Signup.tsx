@@ -62,7 +62,7 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
           email,
           pic: picURL,
           tags: "",
-          bannerColor: randomColor,
+          banner: randomColor,
           uid,
         });
 
