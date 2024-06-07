@@ -6,6 +6,7 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { useMediaQuery, useTheme } from "@mui/material";
+import "./testimonial.css"; // Import custom CSS
 import { keyframes } from "@emotion/react";
 
 interface TestimonialCardProps {
