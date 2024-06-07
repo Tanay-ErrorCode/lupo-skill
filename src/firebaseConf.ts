@@ -14,7 +14,7 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  // firebase configuration
+  // firebase config
 };
 
 const app = firebase.initializeApp(firebaseConfig);

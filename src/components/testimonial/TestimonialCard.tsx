@@ -1,4 +1,3 @@
-// TestimonialCard.tsx
 import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,13 +6,23 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { useMediaQuery, useTheme } from "@mui/material";
+import "./testimonial.css"; // Import custom CSS
+import { keyframes } from "@emotion/react";
 
-// Define the props interface
 interface TestimonialCardProps {
   image: string;
   name: string;
   text: string;
 }
+
+const rotate = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({
   image,
@@ -25,7 +34,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
   return (
     <Card
-      className="testimonial-card"
+      className="testimonial-card "
       sx={{
         padding: "6px",
         border: "2.5px solid #9ABAC2",
@@ -33,9 +42,48 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         flexDirection: "column",
         borderRadius: "15px",
         margin: isSmallScreen ? "0 auto" : "initial",
+        position: "relative",
+        overflow: "hidden",
+        transition: "transform 0.3s ease",
+
+        backgroundColor: "#fff",
+        "&:hover": {
+          transform: "scale(1.07)",
+          border: "none",
+          "&::before": {
+            opacity: 1,
+          },
+          "&::after": {
+            opacity: 1,
+          },
+        },
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: "-2px",
+          right: "-2px",
+          bottom: "-2px",
+          left: "-2px",
+          backgroundImage:
+            "linear-gradient(290.7deg,rgb(255, 242, 0), rgb(0, 172, 249) 100.2%)",
+          borderImageSlice: 1,
+          animation: `${rotate} 2s linear infinite`,
+          zIndex: 1,
+          opacity: 0,
+          transition: "opacity 0.3s ease",
+          inset: "-8rem -8rem",
+        },
+        "&::after": {
+          content: '""',
+          borderRadius: "15px",
+          position: "absolute",
+          inset: "4px",
+          background: "#fff",
+          zIndex: 1,
+        },
       }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
+      <CardContent sx={{ flexGrow: 1, zIndex: 2 }}>
         <Box
           display="flex"
           flexDirection="column"
