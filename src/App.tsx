@@ -18,9 +18,10 @@ import PageTitle from "./utils/PageTitle";
 function App() {
   return (
     <div className="App">
-      <NavBar />
       <NotificationsPannel />
       <HashRouter>
+        <NavBar />
+
         <Routes>
           <Route
             path="/"

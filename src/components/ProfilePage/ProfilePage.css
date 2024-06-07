@@ -11,6 +11,10 @@
   gap: 10px;
   margin-bottom: 10px;
 }
+.profile-banner-color {
+  width: 100%;
+  height: 140px;
+}
 
 .social-media-item {
   display: flex;

@@ -51,6 +51,8 @@ const ProfilePage = () => {
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
   );
+  const [banner, setBanner] = useState<string | null>(null);
+
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -173,7 +175,6 @@ const ProfilePage = () => {
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
-
       if (
         userData.facebook &&
         isValidUrl(userData.facebook.trim()) &&
@@ -187,6 +188,7 @@ const ProfilePage = () => {
         facebook.style.opacity = "0.5";
         facebook.style.pointerEvents = "none";
       }
+      setBanner(userData.banner);
 
       profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.profile || default_user;
@@ -214,20 +216,31 @@ const ProfilePage = () => {
   return (
     <>
       <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
-      <Container className="mt-5">
+      <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
             <div className="card">
               <div className="card-body">
                 <div className="profile-banner-wrapper position-relative">
-                  <Image
-                    src={bannerImage}
-                    alt="Banner"
-                    className="profile-banner"
-                    fluid
-                    id="profile-banner"
-                    style={{ pointerEvents: "none", borderRadius: "16px" }}
-                  />
+                  {banner && !banner.startsWith("#") ? (
+                    <Image
+                      src={banner}
+                      alt="Banner"
+                      className="profile-banner"
+                      fluid
+                      id="profile-banner"
+                      style={{ pointerEvents: "none", borderRadius: "16px" }}
+                    />
+                  ) : (
+                    <div
+                      className="profile-banner-color"
+                      style={{
+                        backgroundColor: `${banner}`, // Use backgroundColor instead of background
+                        borderRadius: "16px",
+                        height: "200px", // Example height, you can adjust as needed
+                      }}
+                    ></div>
+                  )}
                   <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
                     <Image
                       src={default_user}
