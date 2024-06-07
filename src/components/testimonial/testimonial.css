@@ -13,14 +13,29 @@
 }
 
 .testimonial-card:hover {
-  transform: scale(1.05);
-  background: linear-gradient(
-    290.7deg,
-    rgb(255, 242, 0),
-    rgb(0, 172, 249) 100.2%
+  transform: scale(1.02);
+  background: repeating-conic-gradient(
+    from var(--a),
+    rgb(255, 242, 0) 30%,
+    rgb(255, 242, 0) 40%,
+    rgb(0, 172, 249) 70%
   );
-  animation: rotate 3.5s linear infinite;
+  animation: animate 1.5s linear infinite;
 }
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes animate {
+  0% {
+    --a: 0deg;
+  }
+  100% {
+    --a: 360deg;
+  }
+}
+
 .testimonial-image {
   animation: none !important;
   transition: none !important;
@@ -34,9 +49,9 @@
   0% {
     filter: hue-rotate(0deg);
   }
-  100% {
+  /* 100% {
     filter: hue-rotate(360deg);
-  }
+  } */
 }
 
 .carousel-indicators {
