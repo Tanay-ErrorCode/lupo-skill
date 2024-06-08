@@ -14,27 +14,16 @@ import { Image as BootstrapImage } from "react-bootstrap";
 import "./EventDetails.css";
 import bannerImage from "../image_assets/bannerImage.png";
 import { Link, useParams } from "react-router-dom";
-import { ref, get, child, set, update } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-
-import {
-  auth,
-  firestore,
-  database,
-  storage,
-  signInWithGooglePopup,
-} from "../../firebaseConf";
+import { database } from "../../firebaseConf";
 import PageTitle from "../../utils/PageTitle";
+import moment from "moment";
+
 const EventDetails = () => {
   const { id } = useParams();
   const userUid = localStorage.getItem("userUid");
-  const [isHost, setIsHost] = useState(false); // Change this variable to true if the current user is the host
-  // const googleMeetLink = "https://meet.google.com/xyz-pqrs"; // Replace with your Google Meet link
+  const [isHost, setIsHost] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [banner_Image, setBannerImage] = useState(bannerImage);
   const [title, setTitle] = useState("");
@@ -44,6 +33,7 @@ const EventDetails = () => {
   const [time, setTime] = useState("");
   const [host, setHost] = useState("");
   const [hostName, setHostName] = useState("");
+  const [lastEdited, setLastEdited] = useState(null);
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [googleMeetLink, setGoogleMeetLink] = useState(
     "Nothing yet, ask the host to add one"
@@ -68,6 +58,8 @@ const EventDetails = () => {
         setTime(eventData.time);
         setHost(eventData.host);
         setHostName(eventData.hostName);
+        setLastEdited(eventData.lastEdited);
+
         if (eventData.host === userUid) {
           setIsHost(true);
         }
@@ -94,7 +86,8 @@ const EventDetails = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [id, userUid]);
+
   const addMeetingLink = () => {
     const eventRef = ref(database, "events/" + id);
     update(eventRef, {
@@ -102,12 +95,17 @@ const EventDetails = () => {
     });
     toast.success("Google Meet link added successfully", { transition: Zoom });
   };
+
   return (
     <>
       <PageTitle title={`${title} | Lupo Skill`} />
       <div>
         {isLoading ? (
-          <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-center align-items-center"
+            style={{
+                  paddingTop: "6.5em",
+                  }}
+            >
             <Spinner animation="border" />
           </div>
         ) : (
@@ -157,6 +155,11 @@ const EventDetails = () => {
                           ))}
                         </Col>
                       </Row>
+                      {lastEdited && (
+                        <div className="text-muted mt-2">
+                          Edited {moment(lastEdited).fromNow()}
+                        </div>
+                      )}
                     </Container>
                   </Card.Body>
                 </Card>
@@ -165,7 +168,6 @@ const EventDetails = () => {
                     <div>
                       {isHost ? (
                         <>
-                          {" "}
                           <InputGroup className="mb-3">
                             <InputGroup.Text>
                               Google Meet link :
@@ -205,7 +207,7 @@ const EventDetails = () => {
                 </Card>
                 <Card className="p-1 mt-2 shadow">
                   <Card.Body>
-                    Number of registerents : {registeredUsers.length}
+                    Number of registrants : {registeredUsers.length}
                   </Card.Body>
                 </Card>
               </Col>

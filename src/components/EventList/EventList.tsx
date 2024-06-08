@@ -26,6 +26,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const EventList = () => {
@@ -144,7 +145,11 @@ const EventList = () => {
     }
   };
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "6.5em",
+      }}
+    >
       {isLoading ? (
         <div className=" d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
@@ -241,6 +246,7 @@ const EventList = () => {
                       image={card.banner}
                       isRegistered={isRegistered}
                       hostName={card.hostName}
+                      lastEdited={card.lastEdited}
                     />
                   </div>
                 );

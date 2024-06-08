@@ -13,12 +13,13 @@ import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
-
+import EditEventModal from "../Cards/EditEventModal/EditEventModal";
 import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
 import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import { X } from "@mui/icons-material";
 import PageTitle from "../../utils/PageTitle";
 const currentUserUid = localStorage.getItem("userUid");
@@ -34,6 +35,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const ProfilePage = () => {
@@ -43,11 +45,14 @@ const ProfilePage = () => {
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
   const [isJLoading, setIsJLoading] = useState(true);
-
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [joinedEventCardsData, setJoinedEventCardsData] = useState<Event[]>([]);
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
   );
+  const [banner, setBanner] = useState<string | null>(null);
+
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -55,6 +60,10 @@ const ProfilePage = () => {
   if (userUid === null) {
     window.location.href = "#/";
   }
+  const openEditModal = (event: Event) => {
+    setCurrentEvent(event);
+    setShowEditModal(true);
+  };
 
   useEffect(() => {
     if (!userUid) {
@@ -166,7 +175,6 @@ const ProfilePage = () => {
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
-
       if (
         userData.facebook &&
         isValidUrl(userData.facebook.trim()) &&
@@ -180,8 +188,8 @@ const ProfilePage = () => {
         facebook.style.opacity = "0.5";
         facebook.style.pointerEvents = "none";
       }
+      setBanner(userData.banner);
 
-      profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.pic || default_user;
 
       const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
@@ -207,20 +215,31 @@ const ProfilePage = () => {
   return (
     <>
       <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
-      <Container className="mt-5">
+      <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
             <div className="card">
               <div className="card-body">
                 <div className="profile-banner-wrapper position-relative">
-                  <Image
-                    src={bannerImage}
-                    alt="Banner"
-                    className="profile-banner"
-                    fluid
-                    id="profile-banner"
-                    style={{ pointerEvents: "none", borderRadius: "16px" }}
-                  />
+                  {banner && !banner.startsWith("#") ? (
+                    <Image
+                      src={banner}
+                      alt="Banner"
+                      className="profile-banner"
+                      fluid
+                      id="profile-banner"
+                      style={{ pointerEvents: "none", borderRadius: "16px" }}
+                    />
+                  ) : (
+                    <div
+                      className="profile-banner-color"
+                      style={{
+                        backgroundColor: `${banner}`, // Use backgroundColor instead of background
+                        borderRadius: "16px",
+                        height: "200px", // Example height, you can adjust as needed
+                      }}
+                    ></div>
+                  )}
                   <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
                     <Image
                       src={default_user}
@@ -348,21 +367,27 @@ const ProfilePage = () => {
                             isRegistered = true;
                           }
                           return (
-                            <EventCard
-                              isValid={true}
-                              isRegistered={isRegistered}
-                              id={card.id}
-                              key={index}
-                              title={card.title}
-                              description={card.description}
-                              date={card.date}
-                              time={card.time}
-                              tags={card.tags}
-                              host={card.host}
-                              isDashboard={false}
-                              image={card.banner}
-                              hostName={card.hostName}
-                            />
+                            <div style={{ display: "flex" }}>
+                              <EventCard
+                                isValid={true}
+                                isRegistered={isRegistered}
+                                id={card.id}
+                                key={index}
+                                title={card.title}
+                                description={card.description}
+                                date={card.date}
+                                time={card.time}
+                                tags={card.tags}
+                                host={card.host}
+                                isDashboard={false}
+                                image={card.banner}
+                                hostName={card.hostName}
+                                showEditIcon={true} // Pass showEditIcon prop as true
+                                showDeleteIcon={true}
+                                onEditEvent={() => openEditModal(card)}
+                                lastEdited={card.lastEdited} // Pass the last edited timestamp
+                              />
+                            </div>
                           );
                         })
                     )}
@@ -463,6 +488,14 @@ const ProfilePage = () => {
             </Card>
           </Col>
         </Row>
+        <EditEventModal
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          event={currentEvent}
+          refreshEvents={() => {
+            // Function to refresh events after editing
+          }}
+        />
       </Container>
     </>
   );

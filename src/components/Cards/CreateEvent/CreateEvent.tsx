@@ -294,7 +294,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton className="modal_back">
           <Modal.Title>Create Event</Modal.Title>
         </Modal.Header>
@@ -381,7 +381,11 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+      <Modal
+        show={showCropperModal}
+        onHide={() => setShowCropperModal(false)}
+        animation={true}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>

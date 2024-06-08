@@ -37,6 +37,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const Dashboard = () => {
@@ -49,7 +50,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in", { transition: Zoom });
     }
 
     const fetchData = async () => {
@@ -115,7 +115,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "6.5em",
+      }}
+    >
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
@@ -145,6 +149,7 @@ const Dashboard = () => {
                   banner: string;
                   host: string;
                   hostName: string;
+                  lastEdited?: number;
                 },
                 index
               ) => (
@@ -161,6 +166,7 @@ const Dashboard = () => {
                   isDashboard={true}
                   image={card.banner}
                   hostName={card.hostName}
+                  lastEdited={card.lastEdited}
                 />
               )
             )}
