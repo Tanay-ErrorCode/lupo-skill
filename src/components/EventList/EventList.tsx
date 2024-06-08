@@ -138,7 +138,11 @@ const EventList = () => {
         return "No events found";
     }
   };
-
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
     <div>
       {isLoading ? (
@@ -162,12 +166,17 @@ const EventList = () => {
                   fullWidth
                   onChange={handleSearchInputChange}
                   className="search-input"
+                  onKeyDown={handleKeyPress}
                 />
               </div>
               <div className="search-button-container">
                 <Button
                   variant="dark"
-                  style={{ color: "#5AB2FF" }}
+                  style={{
+                    backgroundColor: "#5AB2FF",
+                    color: "white",
+                    borderColor: "#5AB2FF",
+                  }}
                   className="search-button"
                   onClick={handleSearch}
                 >
@@ -180,7 +189,11 @@ const EventList = () => {
             <DropdownButton
               id="dropdown-basic-button"
               title={`Sort by: ${sortOption}`}
-              variant="dark"
+              style={{
+                backgroundColor: "#5AB2FF",
+                color: "white",
+                borderRadius: "10px",
+              }}
               onSelect={(e: any) => {
                 setSortOption(e);
                 setCurrentPage(1); // Reset to first page when sort option changes
