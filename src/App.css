@@ -50,3 +50,34 @@ body {
 .modal.fade .modal-dialog {
   transition: transform 0.5s ease-in-out !important;
 }
+/*Scrollbar*/
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f5f5f5;
+  transition: width 0.3s;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #fff;
+  background-image: -webkit-gradient(
+    linear,
+    40% 0%,
+    75% 84%,
+    from(#333333),
+    to(#000000),
+    color-stop(0.6, #666666)
+  );
+  transition: background-color 0.3s, width 0.3s;
+}
+/* Hover effect */
+::-webkit-scrollbar:hover {
+  width: 14px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #666666;
+}
