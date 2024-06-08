@@ -183,13 +183,15 @@ const HomePage = () => {
                       delay: 1.5,
                     }}
                   >
-                    <Typography
-                      variant="h5"
-                      fontWeight={600}
-                      style={{ marginBottom: "1rem", marginLeft: ".3rem" }}
-                    >
-                      Ready to share skills ? 🧠
-                    </Typography>
+                    {!loggedIn && (
+                      <Typography
+                        variant="h5"
+                        fontWeight={600}
+                        style={{ marginBottom: "1rem", marginLeft: ".3rem" }}
+                      >
+                        Ready to share skills ? 🧠
+                      </Typography>
+                    )}
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, x: -150 }}
