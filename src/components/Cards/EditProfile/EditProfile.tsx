@@ -1,4 +1,3 @@
-// src/components/Cards/EditProfile/EditProfile.tsx
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
@@ -12,20 +11,10 @@ import { toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
-import {
-  Instagram,
-  Twitter,
-  Facebook,
-  Add,
-  Remove,
-  Delete,
-} from "@mui/icons-material";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import AddIcon from "@mui/icons-material/Add";
-
-import { Link } from "../../../utils/type"; // Import the Link type
-import InputLink from "../../../utils/InputLink";
+import InputLink from "../../../utils/InputLink"; // Import the InputLink component
+import { Link as LinkType } from "../../../utils/type";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
@@ -39,10 +28,10 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [links, setLinks] = useState<Link[]>([]); // Use Link type here
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
+  const [links, setLinks] = useState<{ [key: string]: LinkType }>({});
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -57,9 +46,12 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      // setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      setLinks(userData.links || []);
+      setLinks(userData.links || {}); // Fetch links data
+      if (userData.tags) {
+        setTags(userData.tags);
+        setListTags(userData.tags.split(", "));
+      }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -121,6 +113,7 @@ const EditProfile = () => {
         .join(", ")
     );
   };
+
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsArray = e.target.value.split(",");
     if (tagsArray.length <= 5) {
@@ -263,7 +256,7 @@ const EditProfile = () => {
         await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
-
+      console.log(links);
       await set(userDetailsRef, {
         name,
         headline,
@@ -346,10 +339,8 @@ const EditProfile = () => {
                 }
               />
             </Form.Group>
-
-            <Form.Group controlId="socialLinks">
-              <InputLink links={links} setLinks={setLinks} />
-            </Form.Group>
+            <InputLink links={links} setLinks={setLinks} />
+            {/* want link here */}
 
             <Form.Group>
               <Form.Label>Banner Image</Form.Label>

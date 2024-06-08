@@ -190,8 +190,7 @@ const ProfilePage = () => {
       }
       setBanner(userData.banner);
 
-      profileBanner.src = userData.banner || bannerImage;
-      profileImage.src = userData.profile || default_user;
+      profileImage.src = userData.pic || default_user;
 
       const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
       tags.innerHTML = tagsArray
