@@ -31,7 +31,7 @@ const EditProfile = () => {
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
-  const [links, setLinks] = useState<{ [key: string]: LinkType }>({});
+  const [links, setLinks] = useState<LinkType>({});
 
   const fetchUserData = async () => {
     const user = auth.currentUser;

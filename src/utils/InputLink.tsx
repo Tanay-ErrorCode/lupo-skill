@@ -32,8 +32,8 @@ import {
 } from "react-bootstrap-icons";
 
 interface InputLinkProps {
-  links: { [key: string]: LinkType }; // Change links prop to an object
-  setLinks: React.Dispatch<React.SetStateAction<{ [key: string]: LinkType }>>;
+  links: LinkType; // Change links prop to an object
+  setLinks: React.Dispatch<React.SetStateAction<LinkType>>;
 }
 
 const classifyLink = (
@@ -76,18 +76,15 @@ const classifyLink = (
 
 const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
   const [newLink, setNewLink] = useState<string>("");
-  const [currentClassification, setCurrentClassification] = useState<{
+  const [linkClassification, setLinkClassification] = useState<{
     name: string;
     icon: React.ElementType;
-  }>({
-    name: "Unknown",
-    icon: LinkIcon,
-  });
+  }>({ name: "Unknown", icon: LinkIcon });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const link = event.target.value;
     setNewLink(link);
-    setCurrentClassification(classifyLink(link));
+    setLinkClassification(classifyLink(link));
   };
 
   const addNewLink = () => {
@@ -96,19 +93,24 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
       return;
     }
 
+    if (Object.keys(links).length >= 3) {
+      toast.error("You can only add up to 3 links");
+      return;
+    }
+
     const classification = classifyLink(newLink);
-    const newLinkKey = `link_${Date.now()}`; // Unique key for each link
+
+    if (links[classification.name]) {
+      toast.error(`${classification.name} link already exists`);
+      return;
+    }
 
     setLinks({
       ...links,
-      [newLinkKey]: {
-        url: newLink,
-        name: classification.name,
-        icon: classification.icon,
-      },
+      [classification.name]: newLink,
     });
     setNewLink("");
-    setCurrentClassification({ name: "Unknown", icon: LinkIcon });
+    setLinkClassification({ name: "Unknown", icon: LinkIcon });
   };
 
   const removeLink = (key: string) => {
@@ -120,18 +122,20 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
   return (
     <Form.Group controlId="socialLinks">
       <Form.Label>Social Media Links</Form.Label>
-      {Object.keys(links).map((key) => (
+      {Object.entries(links).map(([key, url]) => (
         <div key={key} className="d-flex align-items-center mb-2 gap-2">
           <div className="inputsocial">
             <Form.Control
               type="text"
               className="link-input"
               placeholder="Paste your link here"
-              value={links[key].url}
+              value={url}
               readOnly
             />
             <span className="classification ml-2 socialicon">
-              {React.createElement(links[key].icon, { className: "icon" })}
+              {React.createElement(classifyLink(url).icon, {
+                className: "icon",
+              })}
             </span>
           </div>
           <Button
@@ -143,24 +147,26 @@ const InputLink: React.FC<InputLinkProps> = ({ links, setLinks }) => {
           </Button>
         </div>
       ))}
-      <div className="d-flex mt-2 align-items-center gap-2">
-        <div className="inputsocial">
-          <Form.Control
-            type="text"
-            placeholder="Enter URL"
-            value={newLink}
-            onChange={handleInputChange}
-          />
-          <span className="classification ml-2 socialicon">
-            {React.createElement(currentClassification.icon, {
-              className: "icon",
-            })}
-          </span>
+      {Object.keys(links).length < 3 && (
+        <div className="d-flex mt-2 align-items-center gap-2">
+          <div className="inputsocial">
+            <Form.Control
+              type="text"
+              placeholder="Enter URL"
+              value={newLink}
+              onChange={handleInputChange}
+            />
+            <span className="classification ml-2 socialicon">
+              {React.createElement(linkClassification.icon, {
+                className: "icon",
+              })}
+            </span>
+          </div>
+          <Button onClick={addNewLink} className="ml-2 addsociallink">
+            <PlusLg />
+          </Button>
         </div>
-        <Button onClick={addNewLink} className="ml-2 addsociallink">
-          <PlusLg />
-        </Button>
-      </div>
+      )}
     </Form.Group>
   );
 };
