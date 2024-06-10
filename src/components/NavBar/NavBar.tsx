@@ -26,6 +26,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Person2Icon from "@mui/icons-material/Person2";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -36,6 +38,9 @@ const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] =
+    useState<null | HTMLElement>(null);
+  const [unreadCount, setUnreadCount] = useState(3); // Example unread count
 
   const isActive = (path: String) => {
     return location.pathname === path;
@@ -50,7 +55,6 @@ const NavBar = () => {
 
   const handleMobileMenuClose = () => {
     setMobileMenuAnchorEl(null);
-
     setExpanded(false);
   };
 
@@ -65,6 +69,16 @@ const NavBar = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNotificationsOpen = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setNotificationsAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationsClose = () => {
+    setNotificationsAnchorEl(null);
   };
 
   const toggleTheme = () => {
@@ -156,6 +170,7 @@ const NavBar = () => {
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
+
   return (
     <AppBar
       position="fixed"
@@ -165,10 +180,8 @@ const NavBar = () => {
         zIndex: 1000,
         paddingTop: "1rem",
         paddingBottom: ".6rem",
-        // paddingY: "20px",
-        boxShadow: 'none',
+        boxShadow: "none",
         display: "flex",
-
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
@@ -180,10 +193,17 @@ const NavBar = () => {
               width: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between", 
+              justifyContent: "space-between",
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", flex:0, justifyContent:'center'}}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flex: 0,
+                justifyContent: "center",
+              }}
+            >
               <img
                 src={logo}
                 width={isSmallScreen ? "42px" : "48px"}
@@ -224,7 +244,6 @@ const NavBar = () => {
                 gap: mdGap,
                 borderRadius: "32px",
                 alignItems: "center",
-
                 backgroundColor: isHome
                   ? "rgba(255, 255, 255, 0.17)"
                   : "transparent",
@@ -253,10 +272,7 @@ const NavBar = () => {
                   display: "block",
                   borderRadius: theme.borderRadius.large,
                   border: isHome ? "2px solid transparent" : "none",
-
-                  // paddingX: 2,
                   padding: "2px 16px",
-
                   textTransform: "none",
                   "&:hover": {
                     backgroundColor: isHome
@@ -331,7 +347,6 @@ const NavBar = () => {
                     ? theme.colors.secondaryDark
                     : "transparent",
                   border: isHome ? "2px solid transparent" : "none",
-
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -359,7 +374,6 @@ const NavBar = () => {
                   borderRadius: theme.borderRadius.large,
                   textTransform: "none",
                   border: isHome ? "2px solid transparent" : "none",
-
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -372,47 +386,26 @@ const NavBar = () => {
                 <CreateEvent onNavLinkClick={handleMobileMenuClose} />
               </Button>
             </Box>
-            {/* icons */}
-            <Box sx={{
-                flexGrow: 0,
-                display: "flex",
-              alignItems: "center",
-              width: 'fit-content',
-                columnGap:'2.2rem',
-              }}>
+
             <Box
               sx={{
                 flexGrow: 0,
                 display: "flex",
                 alignItems: "center",
-                gap: mdGap,
+                width: "fit-content",
+                columnGap: "2.2rem",
               }}
             >
-              <IconButton
-                onClick={toggleTheme}
-                color="inherit"
+              <Box
                 sx={{
-                  border: isHome ? "1px solid" : "none",
-                  borderColor: theme.colors.lightBackground,
-                  padding: iconPadding,
-                  gap: "32px",
-                  borderRadius: "32px",
+                  flexGrow: 0,
+                  display: "flex",
                   alignItems: "center",
-                  
-
-                  backgroundColor: isHome
-                    ? "rgba(255, 255, 255, 0.17)"
-                    : "transparent",
+                  gap: mdGap,
                 }}
               >
-                {mode ? <Brightness4 /> : <Brightness7 />}
-              </IconButton>
-
-              {!is_signup ? (
-                // <Signup />
-
                 <IconButton
-                  onClick={handleDashboard}
+                  onClick={toggleTheme}
                   color="inherit"
                   sx={{
                     border: isHome ? "1px solid" : "none",
@@ -421,22 +414,23 @@ const NavBar = () => {
                     gap: "32px",
                     borderRadius: "32px",
                     alignItems: "center",
-
                     backgroundColor: isHome
                       ? "rgba(255, 255, 255, 0.17)"
                       : "transparent",
-                    
                   }}
                 >
-                  <Person2Icon />
+                  {mode ? <Brightness4 /> : <Brightness7 />}
                 </IconButton>
-              ) : (
-                <div>
+
+                {!is_signup ? (
                   <IconButton
-                    onClick={handleMenuOpen}
+                    onClick={handleDashboard}
+                    color="inherit"
                     sx={{
                       border: isHome ? "1px solid" : "none",
                       borderColor: theme.colors.lightBackground,
+                      padding: iconPadding,
+                      gap: "32px",
                       borderRadius: "32px",
                       alignItems: "center",
                       backgroundColor: isHome
@@ -444,44 +438,96 @@ const NavBar = () => {
                         : "transparent",
                     }}
                   >
-                    <Avatar alt="User Avatar" src={userPic || default_user} />
+                    <Person2Icon />
                   </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    sx={{ margin: 1 }}
-                  >
-                    <MenuItem
-                      component={Link}
-                      to={`/profile/${userUid ? userUid : ""}`}
-                      onClick={handleMenuClose}
-                      sx={{ color: "green" }}
+                ) : (
+                  <div>
+                    <IconButton
+                      onClick={handleMenuOpen}
+                      sx={{
+                        border: isHome ? "1px solid" : "none",
+                        borderColor: theme.colors.lightBackground,
+                        borderRadius: "32px",
+                        alignItems: "center",
+                        backgroundColor: isHome
+                          ? "rgba(255, 255, 255, 0.17)"
+                          : "transparent",
+                      }}
                     >
-                      View Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </div>
-              )}
-            </Box>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleMobileMenuOpen}
-              sx={{
-                display: {
-                  xs: "flex",
-                  md: "none",
-                },
-              }}
-            >
-              <MenuIcon />
-              </IconButton>
+                      <Avatar alt="User Avatar" src={userPic || default_user} />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      sx={{ margin: 1 }}
+                    >
+                      <MenuItem
+                        component={Link}
+                        to={`/profile/${userUid ? userUid : ""}`}
+                        onClick={handleMenuClose}
+                        sx={{ color: "green" }}
+                      >
+                        View Profile
+                      </MenuItem>
+                      <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                )}
               </Box>
+
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="notifications"
+                onClick={handleNotificationsOpen}
+                sx={{
+                  border: isHome ? "1px solid" : "none",
+                  borderColor: theme.colors.lightBackground,
+                  padding: iconPadding,
+                  gap: "32px",
+                  borderRadius: "32px",
+                  alignItems: "center",
+                  backgroundColor: isHome
+                    ? "rgba(255, 255, 255, 0.17)"
+                    : "transparent",
+                }}
+              >
+                <Badge badgeContent={unreadCount} color="primary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+
+              <Menu
+                anchorEl={notificationsAnchorEl}
+                open={Boolean(notificationsAnchorEl)}
+                onClose={handleNotificationsClose}
+                sx={{ marginTop: "0.5rem" }}
+              >
+                <MenuItem onClick={handleNotificationsClose}>
+                  Notification 1
+                </MenuItem>
+                <MenuItem onClick={handleNotificationsClose}>
+                  Notification 2
+                </MenuItem>
+                <MenuItem onClick={handleNotificationsClose}>
+                  Notification 3
+                </MenuItem>
+              </Menu>
+
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleMobileMenuOpen}
+                sx={{ display: { xs: "flex", md: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+
             {expanded && (
               <Menu
                 anchorEl={mobileMenuAnchorEl}
@@ -497,19 +543,18 @@ const NavBar = () => {
                 }}
                 MenuListProps={{
                   sx: {
-                    padding: 0, // Remove padding from MenuList
+                    padding: 0,
                     backgroundColor: "#0F0F0F",
                   },
                 }}
               >
-                {" "}
                 <Box sx={{ backgroundColor: "#0F0F0F", width: "100%" }}>
                   {mobileMenuItems}
                 </Box>
               </Menu>
             )}
           </Box>
-        </Container>{" "}
+        </Container>
       </Toolbar>
     </AppBar>
   );
