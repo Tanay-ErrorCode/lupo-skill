@@ -8,6 +8,8 @@ import {
   Pagination,
   Spinner,
 } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ProfilePage.css";
 import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
@@ -143,48 +145,63 @@ const ProfilePage = () => {
       headline.innerText = userData.headline || "Developer";
       userName.innerText = userData.name || "Sample User";
       website.innerText = userData.website || "NAN";
+      const isValidUrl = (url: string, platform: string): boolean => {
+        const urlPattern = /^https:\/\/(www\.)?/;
+        if (!urlPattern.test(url)) {
+          return false;
+        }
+        type domaintype = {
+          [keys: string]: RegExp;
+        };
+        const domainPattern: domaintype = {
+          instagram: /^https:\/\/(www\.)?instagram\.com\//,
+          twitter: /^https:\/\/(www\.)?x\.com\//,
+          facebook: /^https:\/\/(www\.)?facebook\.com\//,
+        };
 
-      const isValidUrl = (url: string) => {
-        return url.startsWith("https://");
+        return domainPattern[platform].test(url);
       };
 
       if (
+        isValidUrl(userData.instagram, "instagram") &&
         userData.instagram &&
-        isValidUrl(userData.instagram.trim()) &&
-        userData.instagram != "https://" &&
-        userData.instagram != ""
+        userData.instagram !== "https://" &&
+        userData.instagram !== ""
       ) {
         instagram.href = userData.instagram;
         instagram.style.opacity = "1.0";
         instagram.style.pointerEvents = "auto";
       } else {
+        instagram.href = "#";
         instagram.style.opacity = "0.5";
         instagram.style.pointerEvents = "none";
       }
 
       if (
+        isValidUrl(userData.twitter, "twitter") &&
         userData.twitter &&
-        isValidUrl(userData.twitter.trim()) &&
-        userData.twitter != "https://" &&
-        userData.twitter != ""
+        userData.twitter !== "https://" &&
+        userData.twitter !== ""
       ) {
         twitter.href = userData.twitter;
         twitter.style.opacity = "1.0";
         twitter.style.pointerEvents = "auto";
       } else {
+        twitter.href = "#";
         twitter.style.opacity = "0.5";
         twitter.style.pointerEvents = "none";
       }
       if (
+        isValidUrl(userData.facebook, "facebook") &&
         userData.facebook &&
-        isValidUrl(userData.facebook.trim()) &&
-        userData.facebook != "https://" &&
-        userData.facebook != ""
+        userData.facebook !== "https://" &&
+        userData.facebook !== ""
       ) {
         facebook.href = userData.facebook;
         facebook.style.opacity = "1.0";
         facebook.style.pointerEvents = "auto";
       } else {
+        facebook.href = "#";
         facebook.style.opacity = "0.5";
         facebook.style.pointerEvents = "none";
       }
@@ -484,20 +501,34 @@ const ProfilePage = () => {
                     ))}
                   </Pagination>
                 </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <EditEventModal
-          show={showEditModal}
-          handleClose={() => setShowEditModal(false)}
-          event={currentEvent}
-          refreshEvents={() => {
-            // Function to refresh events after editing
-          }}
-        />
-      </Container>
-    </>
+              )}
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination>
+                  {[...Array(totalJoinedPages)].map((_, i) => (
+                    <Pagination.Item
+                      key={i + 1}
+                      active={i + 1 === currentJoinedPage}
+                      onClick={() => {
+                        handleJoinedPageChange(i + 1);
+                        window.scrollTo({
+                          top: 0,
+                          left: 0,
+                          behavior: "smooth",
+                        });
+                      }}
+                    >
+                      {i + 1}
+                    </Pagination.Item>
+                  ))}
+                </Pagination>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <ToastContainer />
+    </Container>
   );
 };
 

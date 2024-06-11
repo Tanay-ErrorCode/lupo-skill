@@ -221,6 +221,22 @@ const EditProfile = () => {
       };
     });
   };
+  const isValidUrl = (url: string, platform: string): boolean => {
+    const urlPattern = /^https:\/\/(www\.)?/;
+    if (!urlPattern.test(url)) {
+      return false;
+    }
+    type domaintype = {
+      [keys: string]: RegExp;
+    };
+    const domainPattern: domaintype = {
+      instagram: /^https:\/\/(www\.)?instagram\.com\//,
+      twitter: /^https:\/\/(www\.)?x\.com\//,
+      facebook: /^https:\/\/(www\.)?facebook\.com\//,
+    };
+
+    return domainPattern[platform].test(url);
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -267,11 +283,36 @@ const EditProfile = () => {
         links,
       });
 
+      const updatedUserDetails = { ...currentUserDetails };
+
+      let insta = isValidUrl(instagram, "instagram") ? instagram : "";
+      let tweet = isValidUrl(twitter, "twitter") ? twitter : "";
+      let face = isValidUrl(facebook, "facebook") ? facebook : "";
+      if (instagram && !insta)
+        toast.error("Please enter a valid instagram url");
+      if (twitter && !tweet) toast.error("Please enter a valid twitter url");
+      if (facebook && !face) toast.error("Please enter a valid facebook url");
+
+      if (name) updatedUserDetails.name = name;
+      if (headline) updatedUserDetails.headline = headline;
+      if (tags) updatedUserDetails.tags = tags;
+      if (website) updatedUserDetails.website = website;
+      if (instagram) updatedUserDetails.instagram = instagram;
+      if (twitter) updatedUserDetails.twitter = twitter;
+      if (facebook) updatedUserDetails.facebook = facebook;
+
+      updatedUserDetails.banner = bannerImageUrl;
+      updatedUserDetails.pic = profileImageUrl;
+
+      await set(userDetailsRef, updatedUserDetails);
       localStorage.setItem("userPic", profileImageUrl);
       toast.success("User details have been successfully updated");
       setIsLoading(false);
       handleClose();
-      window.location.reload();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     } catch (error) {
       toast.error("An error occurred while updating user details");
       setIsLoading(false);
