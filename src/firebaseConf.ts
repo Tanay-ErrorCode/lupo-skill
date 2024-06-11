@@ -15,14 +15,6 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase config
-  apiKey: "AIzaSyA8ooV2yhe-pRdbaOnzm-tm4JKJ5SjTcJM",
-  authDomain: "jio-jamai.firebaseapp.com",
-  databaseURL: "https://jio-jamai-default-rtdb.firebaseio.com",
-  projectId: "jio-jamai",
-  storageBucket: "jio-jamai.appspot.com",
-  messagingSenderId: "1034732973241",
-  appId: "1:1034732973241:web:b66c4dc0f3502c45dcbf68",
-  measurementId: "G-12YE23385J",
 };
 
 const app = firebase.initializeApp(firebaseConfig);
