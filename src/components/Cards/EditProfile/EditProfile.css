@@ -26,6 +26,25 @@
   gap: 10px;
   margin-top: 10px;
 }
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.iconedits {
+  transform: translateY(-5px);
+}
+.iconeditsadd {
+  transform: translateY(-8px);
+}
+.select-icon {
+  height: 36px;
+  transform: translateY(-5px);
+}
+.addIcon {
+  width: 30px;
+  transform: translateY(-5px);
+}
 
 .image-preview img {
   width: 100px;

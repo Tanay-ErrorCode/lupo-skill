@@ -166,9 +166,8 @@ const NavBar = () => {
         paddingTop: "1rem",
         paddingBottom: ".6rem",
         // paddingY: "20px",
-        boxShadow: 'none',
+        boxShadow: "none",
         display: "flex",
-
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
@@ -180,10 +179,17 @@ const NavBar = () => {
               width: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between", 
+              justifyContent: "space-between",
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", flex:0, justifyContent:'center'}}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flex: 0,
+                justifyContent: "center",
+              }}
+            >
               <img
                 src={logo}
                 width={isSmallScreen ? "42px" : "48px"}
@@ -373,46 +379,25 @@ const NavBar = () => {
               </Button>
             </Box>
             {/* icons */}
-            <Box sx={{
-                flexGrow: 0,
-                display: "flex",
-              alignItems: "center",
-              width: 'fit-content',
-                columnGap:'2.2rem',
-              }}>
             <Box
               sx={{
                 flexGrow: 0,
                 display: "flex",
                 alignItems: "center",
-                gap: mdGap,
+                width: "fit-content",
+                columnGap: "2.2rem",
               }}
             >
-              <IconButton
-                onClick={toggleTheme}
-                color="inherit"
+              <Box
                 sx={{
-                  border: isHome ? "1px solid" : "none",
-                  borderColor: theme.colors.lightBackground,
-                  padding: iconPadding,
-                  gap: "32px",
-                  borderRadius: "32px",
+                  flexGrow: 0,
+                  display: "flex",
                   alignItems: "center",
-                  
-
-                  backgroundColor: isHome
-                    ? "rgba(255, 255, 255, 0.17)"
-                    : "transparent",
+                  gap: mdGap,
                 }}
               >
-                {mode ? <Brightness4 /> : <Brightness7 />}
-              </IconButton>
-
-              {!is_signup ? (
-                // <Signup />
-
                 <IconButton
-                  onClick={handleDashboard}
+                  onClick={toggleTheme}
                   color="inherit"
                   sx={{
                     border: isHome ? "1px solid" : "none",
@@ -425,63 +410,84 @@ const NavBar = () => {
                     backgroundColor: isHome
                       ? "rgba(255, 255, 255, 0.17)"
                       : "transparent",
-                    
                   }}
                 >
-                  <Person2Icon />
+                  {mode ? <Brightness4 /> : <Brightness7 />}
                 </IconButton>
-              ) : (
-                <div>
+
+                {!is_signup ? (
+                  // <Signup />
+
                   <IconButton
-                    onClick={handleMenuOpen}
+                    onClick={handleDashboard}
+                    color="inherit"
                     sx={{
                       border: isHome ? "1px solid" : "none",
                       borderColor: theme.colors.lightBackground,
+                      padding: iconPadding,
+                      gap: "32px",
                       borderRadius: "32px",
                       alignItems: "center",
+
                       backgroundColor: isHome
                         ? "rgba(255, 255, 255, 0.17)"
                         : "transparent",
                     }}
                   >
-                    <Avatar alt="User Avatar" src={userPic || default_user} />
+                    <Person2Icon />
                   </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    sx={{ margin: 1 }}
-                  >
-                    <MenuItem
-                      component={Link}
-                      to={`/profile/${userUid ? userUid : ""}`}
-                      onClick={handleMenuClose}
-                      sx={{ color: "green" }}
+                ) : (
+                  <div>
+                    <IconButton
+                      onClick={handleMenuOpen}
+                      sx={{
+                        border: isHome ? "1px solid" : "none",
+                        borderColor: theme.colors.lightBackground,
+                        borderRadius: "32px",
+                        alignItems: "center",
+                        backgroundColor: isHome
+                          ? "rgba(255, 255, 255, 0.17)"
+                          : "transparent",
+                      }}
                     >
-                      View Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </div>
-              )}
-            </Box>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleMobileMenuOpen}
-              sx={{
-                display: {
-                  xs: "flex",
-                  md: "none",
-                },
-              }}
-            >
-              <MenuIcon />
-              </IconButton>
+                      <Avatar alt="User Avatar" src={userPic || default_user} />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      sx={{ margin: 1 }}
+                    >
+                      <MenuItem
+                        component={Link}
+                        to={`/profile/${userUid ? userUid : ""}`}
+                        onClick={handleMenuClose}
+                        sx={{ color: "green" }}
+                      >
+                        View Profile
+                      </MenuItem>
+                      <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                )}
               </Box>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleMobileMenuOpen}
+                sx={{
+                  display: {
+                    xs: "flex",
+                    md: "none",
+                  },
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
             {expanded && (
               <Menu
                 anchorEl={mobileMenuAnchorEl}
