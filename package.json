@@ -17,7 +17,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "cropperjs": "^1.6.2",
-    "firebase": "^10.12.1",
+    "firebase": "^10.12.2",
     "image-conversion": "^2.1.1",
     "install": "^0.13.0",
     "moment": "^2.30.1",

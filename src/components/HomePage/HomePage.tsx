@@ -545,21 +545,31 @@ const HomePage = () => {
                     delay: 0.5,
                   }}
                 >
-                  Give us a star! ⭐
-                </Typography>
-                <Link
-                  to="https://github.com/Tanay-ErrorCode/lupo-skill"
-                  style={{ textDecoration: "none" }}
-                >
-                  <CustomButton
-                    icon={<GitHubIcon />}
-                    text="Star on GitHub"
-                    backgroundColor={theme.colors.primary}
-                    textColor={theme.colors.brightBackground}
-                    onClick={() => console.log("Get Started")}
-                    borderColor={theme.colors.secondaryLight}
-                  />
-                </Link>
+                  <Typography
+                    variant="h6"
+                    fontWeight={300}
+                    style={{
+                      marginBottom: "1rem",
+                      marginLeft: ".3rem",
+                      color: theme.colors.brightBackground,
+                    }}
+                  >
+                    Give us a star! ⭐
+                  </Typography>
+                  <Link
+                    to="https://github.com/Tanay-ErrorCode/lupo-skill"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <CustomButton
+                      icon={<GitHubIcon />}
+                      text="Star on GitHub"
+                      backgroundColor={theme.colors.primary}
+                      textColor={theme.colors.brightBackground}
+                      onClick={() => console.log("Get Started")}
+                      borderColor={theme.colors.secondaryLight}
+                    />
+                  </Link>
+                </motion.div>
               </Grid>
               <Grid
                 item
