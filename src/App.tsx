@@ -14,6 +14,7 @@ import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";
 import Footer from "./components/Footer/Footer";
 import PageTitle from "./utils/PageTitle";
+import { ScrollToTop } from "./components/Scrolltotop";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
       <NotificationsPannel />
       <HashRouter>
         <NavBar />
-
+        <ScrollToTop />
         <Routes>
           <Route
             path="/"

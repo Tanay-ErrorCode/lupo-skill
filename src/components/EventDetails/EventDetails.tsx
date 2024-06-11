@@ -101,11 +101,12 @@ const EventDetails = () => {
       <PageTitle title={`${title} | Lupo Skill`} />
       <div>
         {isLoading ? (
-          <div className="d-flex justify-content-center align-items-center"
+          <div
+            className="d-flex justify-content-center align-items-center"
             style={{
-                  paddingTop: "6.5em",
-                  }}
-            >
+              paddingTop: "6.5em",
+            }}
+          >
             <Spinner animation="border" />
           </div>
         ) : (

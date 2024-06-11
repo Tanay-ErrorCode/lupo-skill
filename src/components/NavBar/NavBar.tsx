@@ -180,6 +180,7 @@ const NavBar = () => {
         zIndex: 1000,
         paddingTop: "1rem",
         paddingBottom: ".6rem",
+        // paddingY: "20px",
         boxShadow: "none",
         display: "flex",
       }}
@@ -204,33 +205,41 @@ const NavBar = () => {
                 justifyContent: "center",
               }}
             >
-              <img
-                src={logo}
-                width={isSmallScreen ? "42px" : "48px"}
-                height={isSmallScreen ? "42px" : "48px"}
-                alt="Lupo Skill logo"
-                style={{ pointerEvents: "none", marginRight: "10px" }}
-              />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                href="#/"
+              <Box
                 sx={{
-                  fontWeight: 700,
-                  color: "inherit",
-                  textDecoration: "none",
-                  fontSize: isSmallScreen
-                    ? "1.3rem"
-                    : isMediumScreen
-                    ? "1.8rem"
-                    : theme.fontSize.subheading,
+                  display: "flex",
+                  alignItems: "center",
+                  flex: 0,
+                  justifyContent: "center",
                 }}
               >
-                Lupo Skill
-              </Typography>
+                <img
+                  src={logo}
+                  width={isSmallScreen ? "42px" : "48px"}
+                  height={isSmallScreen ? "42px" : "48px"}
+                  alt="Lupo Skill logo"
+                  style={{ pointerEvents: "none", marginRight: "10px" }}
+                />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="a"
+                  href="#/"
+                  sx={{
+                    fontWeight: 700,
+                    color: "inherit",
+                    textDecoration: "none",
+                    fontSize: isSmallScreen
+                      ? "1.3rem"
+                      : isMediumScreen
+                      ? "1.8rem"
+                      : theme.fontSize.subheading,
+                  }}
+                >
+                  Lupo Skill
+                </Typography>
+              </Box>
             </Box>
-
             <Box
               sx={{
                 display: {
@@ -414,6 +423,7 @@ const NavBar = () => {
                     gap: "32px",
                     borderRadius: "32px",
                     alignItems: "center",
+
                     backgroundColor: isHome
                       ? "rgba(255, 255, 255, 0.17)"
                       : "transparent",

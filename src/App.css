@@ -50,3 +50,19 @@ body {
 .modal.fade .modal-dialog {
   transition: transform 0.5s ease-in-out !important;
 }
+.inputsocial {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.socialicon {
+  position: absolute;
+  right: 1px;
+  transform: translateY(-5px);
+  background: #ffffff;
+  padding: 5px;
+}
+.addsociallink {
+  transform: translateY(-5px);
+}
