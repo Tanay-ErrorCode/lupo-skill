@@ -11,9 +11,10 @@ import { toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageCropper from "../../../utils/ImageCropper";
 import "./EditProfile.css";
-import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import InputLink from "../../../utils/InputLink"; // Import the InputLink component
+import { Link as LinkType } from "../../../utils/type";
 
 const EditProfile = () => {
   const [show, setShow] = useState(false);
@@ -27,12 +28,10 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [instagram, setInstagram] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(1);
   const [isBannerImage, setIsBannerImage] = useState(false);
+  const [links, setLinks] = useState<LinkType>({});
 
   const fetchUserData = async () => {
     const user = auth.currentUser;
@@ -47,11 +46,12 @@ const EditProfile = () => {
 
       setName(userData.name || "");
       setHeadline(userData.headline || "");
-      // setTags(userData.tags || "");
       setWebsite(userData.website || "");
-      setInstagram(userData.instagram || "");
-      setTwitter(userData.twitter || "");
-      setFacebook(userData.facebook || "");
+      setLinks(userData.links || {}); // Fetch links data
+      if (userData.tags) {
+        setTags(userData.tags);
+        setListTags(userData.tags.split(", "));
+      }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -113,6 +113,7 @@ const EditProfile = () => {
         .join(", ")
     );
   };
+
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsArray = e.target.value.split(",");
     if (tagsArray.length <= 5) {
@@ -271,6 +272,16 @@ const EditProfile = () => {
         await uploadBytes(profileImageRef, profileImage);
         profileImageUrl = await getDownloadURL(profileImageRef);
       }
+      console.log(links);
+      await set(userDetailsRef, {
+        name,
+        headline,
+        website,
+        tags: listTags.join(", "),
+        banner: bannerImageUrl,
+        profile: profileImageUrl,
+        links,
+      });
 
       const updatedUserDetails = { ...currentUserDetails };
 
@@ -314,7 +325,7 @@ const EditProfile = () => {
         Edit Profile
       </Button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
@@ -322,13 +333,7 @@ const EditProfile = () => {
           <Form>
             <Form.Group>
               <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setName(e.target.value)
-                }
-              />
+              <Form.Control type="text" value={name} disabled />
             </Form.Group>
 
             <Form.Group>
@@ -375,59 +380,8 @@ const EditProfile = () => {
                 }
               />
             </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Instagram />
-                Instagram URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={instagram.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setInstagram(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Twitter /> Twitter URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={twitter.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setTwitter(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>
-                <Facebook />
-                Facebook URL
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={facebook.substring(8)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const inputValue = e.target.value;
-                  const updatedValue = inputValue.startsWith("https://")
-                    ? inputValue.substring(8)
-                    : inputValue;
-                  setFacebook(`https://${updatedValue}`);
-                }}
-              />
-            </Form.Group>
+            <InputLink links={links} setLinks={setLinks} />
+            {/* want link here */}
 
             <Form.Group>
               <Form.Label>Banner Image</Form.Label>
@@ -458,7 +412,11 @@ const EditProfile = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
+      <Modal
+        show={showCropperModal}
+        onHide={() => setShowCropperModal(false)}
+        animation={true}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Crop Image</Modal.Title>
         </Modal.Header>

@@ -8,6 +8,8 @@ assignees: ""
 
 <!-- Do not remove this template !, make the changes in the template itself -->
 
+<!-- इस टेम्प्लेट को न हटाएं!, टेम्प्लेट में ही बदलाव करें -->
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is.
 

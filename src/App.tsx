@@ -8,25 +8,53 @@ import HomePage from "./components/HomePage/HomePage";
 import Dashboard from "./components/DashBoard/DashBoard";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import EventDetails from "./components/EventDetails/EventDetails";
+
 import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";
+import Footer from "./components/Footer/Footer";
+import PageTitle from "./utils/PageTitle";
+import { ScrollToTop } from "./components/Scrolltotop";
 
 function App() {
   return (
     <div className="App">
-      <NavBar />
       <NotificationsPannel />
       <HashRouter>
+        <NavBar />
+        <ScrollToTop />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/events" element={<EventList />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <HomePage />
+                <PageTitle title="Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <>
+                <EventList /> <PageTitle title="Events | Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <>
+                <Dashboard /> <PageTitle title="Dashboard | Lupo Skill" />
+              </>
+            }
+          />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </HashRouter>
+      <Footer />
     </div>
   );
 }
