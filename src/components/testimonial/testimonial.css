@@ -67,7 +67,11 @@
 }
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
-  display: none;
+  display: none !important;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  display: none !important;
 }
 @media (max-width: 800) {
   .happy {
