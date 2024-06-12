@@ -26,8 +26,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Person2Icon from "@mui/icons-material/Person2";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Badge from "@mui/material/Badge";
+import NotificationsPanel from "../Notification/NotificationsPanel";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -38,9 +37,6 @@ const NavBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
-  const [notificationsAnchorEl, setNotificationsAnchorEl] =
-    useState<null | HTMLElement>(null);
-  const [unreadCount, setUnreadCount] = useState(3); // Example unread count
 
   const isActive = (path: String) => {
     return location.pathname === path;
@@ -55,6 +51,7 @@ const NavBar = () => {
 
   const handleMobileMenuClose = () => {
     setMobileMenuAnchorEl(null);
+
     setExpanded(false);
   };
 
@@ -69,16 +66,6 @@ const NavBar = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleNotificationsOpen = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    setNotificationsAnchorEl(event.currentTarget);
-  };
-
-  const handleNotificationsClose = () => {
-    setNotificationsAnchorEl(null);
   };
 
   const toggleTheme = () => {
@@ -170,7 +157,6 @@ const NavBar = () => {
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
-
   return (
     <AppBar
       position="fixed"
@@ -205,41 +191,33 @@ const NavBar = () => {
                 justifyContent: "center",
               }}
             >
-              <Box
+              <img
+                src={logo}
+                width={isSmallScreen ? "42px" : "48px"}
+                height={isSmallScreen ? "42px" : "48px"}
+                alt="Lupo Skill logo"
+                style={{ pointerEvents: "none", marginRight: "10px" }}
+              />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="#/"
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  flex: 0,
-                  justifyContent: "center",
+                  fontWeight: 700,
+                  color: "inherit",
+                  textDecoration: "none",
+                  fontSize: isSmallScreen
+                    ? "1.3rem"
+                    : isMediumScreen
+                    ? "1.8rem"
+                    : theme.fontSize.subheading,
                 }}
               >
-                <img
-                  src={logo}
-                  width={isSmallScreen ? "42px" : "48px"}
-                  height={isSmallScreen ? "42px" : "48px"}
-                  alt="Lupo Skill logo"
-                  style={{ pointerEvents: "none", marginRight: "10px" }}
-                />
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="a"
-                  href="#/"
-                  sx={{
-                    fontWeight: 700,
-                    color: "inherit",
-                    textDecoration: "none",
-                    fontSize: isSmallScreen
-                      ? "1.3rem"
-                      : isMediumScreen
-                      ? "1.8rem"
-                      : theme.fontSize.subheading,
-                  }}
-                >
-                  Lupo Skill
-                </Typography>
-              </Box>
+                Lupo Skill
+              </Typography>
             </Box>
+
             <Box
               sx={{
                 display: {
@@ -253,6 +231,7 @@ const NavBar = () => {
                 gap: mdGap,
                 borderRadius: "32px",
                 alignItems: "center",
+
                 backgroundColor: isHome
                   ? "rgba(255, 255, 255, 0.17)"
                   : "transparent",
@@ -281,7 +260,10 @@ const NavBar = () => {
                   display: "block",
                   borderRadius: theme.borderRadius.large,
                   border: isHome ? "2px solid transparent" : "none",
+
+                  // paddingX: 2,
                   padding: "2px 16px",
+
                   textTransform: "none",
                   "&:hover": {
                     backgroundColor: isHome
@@ -356,6 +338,7 @@ const NavBar = () => {
                     ? theme.colors.secondaryDark
                     : "transparent",
                   border: isHome ? "2px solid transparent" : "none",
+
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -383,6 +366,7 @@ const NavBar = () => {
                   borderRadius: theme.borderRadius.large,
                   textTransform: "none",
                   border: isHome ? "2px solid transparent" : "none",
+
                   "&:hover": {
                     backgroundColor: isHome
                       ? theme.colors.primary
@@ -395,7 +379,7 @@ const NavBar = () => {
                 <CreateEvent onNavLinkClick={handleMobileMenuClose} />
               </Button>
             </Box>
-
+            {/* icons */}
             <Box
               sx={{
                 flexGrow: 0,
@@ -431,8 +415,13 @@ const NavBar = () => {
                 >
                   {mode ? <Brightness4 /> : <Brightness7 />}
                 </IconButton>
+                <IconButton>
+                  <NotificationsPanel />
+                </IconButton>
 
                 {!is_signup ? (
+                  // <Signup />
+
                   <IconButton
                     onClick={handleDashboard}
                     color="inherit"
@@ -443,6 +432,7 @@ const NavBar = () => {
                       gap: "32px",
                       borderRadius: "32px",
                       alignItems: "center",
+
                       backgroundColor: isHome
                         ? "rgba(255, 255, 255, 0.17)"
                         : "transparent",
@@ -487,57 +477,21 @@ const NavBar = () => {
                   </div>
                 )}
               </Box>
-
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="notifications"
-                onClick={handleNotificationsOpen}
-                sx={{
-                  border: isHome ? "1px solid" : "none",
-                  borderColor: theme.colors.lightBackground,
-                  padding: iconPadding,
-                  gap: "32px",
-                  borderRadius: "32px",
-                  alignItems: "center",
-                  backgroundColor: isHome
-                    ? "rgba(255, 255, 255, 0.17)"
-                    : "transparent",
-                }}
-              >
-                <Badge badgeContent={unreadCount} color="primary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-
-              <Menu
-                anchorEl={notificationsAnchorEl}
-                open={Boolean(notificationsAnchorEl)}
-                onClose={handleNotificationsClose}
-                sx={{ marginTop: "0.5rem" }}
-              >
-                <MenuItem onClick={handleNotificationsClose}>
-                  Notification 1
-                </MenuItem>
-                <MenuItem onClick={handleNotificationsClose}>
-                  Notification 2
-                </MenuItem>
-                <MenuItem onClick={handleNotificationsClose}>
-                  Notification 3
-                </MenuItem>
-              </Menu>
-
               <IconButton
                 edge="start"
                 color="inherit"
                 aria-label="menu"
                 onClick={toggleMobileMenuOpen}
-                sx={{ display: { xs: "flex", md: "none" } }}
+                sx={{
+                  display: {
+                    xs: "flex",
+                    md: "none",
+                  },
+                }}
               >
                 <MenuIcon />
               </IconButton>
             </Box>
-
             {expanded && (
               <Menu
                 anchorEl={mobileMenuAnchorEl}
@@ -553,18 +507,19 @@ const NavBar = () => {
                 }}
                 MenuListProps={{
                   sx: {
-                    padding: 0,
+                    padding: 0, // Remove padding from MenuList
                     backgroundColor: "#0F0F0F",
                   },
                 }}
               >
+                {" "}
                 <Box sx={{ backgroundColor: "#0F0F0F", width: "100%" }}>
                   {mobileMenuItems}
                 </Box>
               </Menu>
             )}
           </Box>
-        </Container>
+        </Container>{" "}
       </Toolbar>
     </AppBar>
   );
