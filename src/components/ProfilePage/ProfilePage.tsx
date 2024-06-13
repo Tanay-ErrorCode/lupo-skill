@@ -18,11 +18,14 @@ import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
-import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+// import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import { X } from "@mui/icons-material";
 import PageTitle from "../../utils/PageTitle";
+import { classifyLink } from "../../utils/InputLink";
+
 const currentUserUid = localStorage.getItem("userUid");
+
 interface Event {
   banner: string;
   createdAt: number;
@@ -36,6 +39,9 @@ interface Event {
   time: string;
   title: string;
   lastEdited?: number;
+}
+interface Link {
+  [key: string]: string;
 }
 
 const ProfilePage = () => {
@@ -52,7 +58,7 @@ const ProfilePage = () => {
     []
   );
   const [banner, setBanner] = useState<string | null>(null);
-
+  const [links, setLinks] = useState<Link>({});
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -125,11 +131,7 @@ const ProfilePage = () => {
       ) as HTMLParagraphElement;
       const tags = document.getElementById("tags") as HTMLElement;
       const website = document.getElementById("website") as HTMLSpanElement;
-      const instagram = document.getElementById(
-        "instagram"
-      ) as HTMLAnchorElement;
-      const twitter = document.getElementById("twitter") as HTMLAnchorElement;
-      const facebook = document.getElementById("facebook") as HTMLAnchorElement;
+
       const userName = document.getElementById(
         "user-name"
       ) as HTMLHeadingElement;
@@ -147,47 +149,8 @@ const ProfilePage = () => {
       const isValidUrl = (url: string) => {
         return url.startsWith("https://");
       };
+      setLinks(userData.links || {});
 
-      if (
-        userData.instagram &&
-        isValidUrl(userData.instagram.trim()) &&
-        userData.instagram != "https://" &&
-        userData.instagram != ""
-      ) {
-        instagram.href = userData.instagram;
-        instagram.style.opacity = "1.0";
-        instagram.style.pointerEvents = "auto";
-      } else {
-        instagram.style.opacity = "0.5";
-        instagram.style.pointerEvents = "none";
-      }
-
-      if (
-        userData.twitter &&
-        isValidUrl(userData.twitter.trim()) &&
-        userData.twitter != "https://" &&
-        userData.twitter != ""
-      ) {
-        twitter.href = userData.twitter;
-        twitter.style.opacity = "1.0";
-        twitter.style.pointerEvents = "auto";
-      } else {
-        twitter.style.opacity = "0.5";
-        twitter.style.pointerEvents = "none";
-      }
-      if (
-        userData.facebook &&
-        isValidUrl(userData.facebook.trim()) &&
-        userData.facebook != "https://" &&
-        userData.facebook != ""
-      ) {
-        facebook.href = userData.facebook;
-        facebook.style.opacity = "1.0";
-        facebook.style.pointerEvents = "auto";
-      } else {
-        facebook.style.opacity = "0.5";
-        facebook.style.pointerEvents = "none";
-      }
       setBanner(userData.banner);
 
       profileImage.src = userData.pic || default_user;
@@ -297,40 +260,23 @@ const ProfilePage = () => {
                     <span className="text-secondary" id="website">
                       NAN
                     </span>
-                    <div className="social-media-list d-flex justify-content-center align-items-center flex-wrap">
-                      <div className="social-media-item">
-                        <a
-                          id="instagram"
-                          href=""
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Instagram className="instagram-icon" />
-                        </a>
-                        <span className="social-media-label" />
-                      </div>
-                      <div className="social-media-item">
-                        <a
-                          id="twitter"
-                          href=""
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <X className="x-icon" />
-                        </a>
-                        <span className="social-media-label" />
-                      </div>
-                      <div className="social-media-item">
-                        <a
-                          id="facebook"
-                          href=""
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Facebook className="facebook-icon" />
-                        </a>
-                        <span className="social-media-label" />
-                      </div>
+                    <div className=" d-flex justify-content-center align-items-center flex-wrap ">
+                      {Object.keys(links).map((key, index) => {
+                        const linkInfo = classifyLink(links[key]);
+                        const IconComponent = linkInfo.icon;
+                        return (
+                          <div className="mb-2" key={index}>
+                            <a
+                              href={links[key]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="d-flex align-items-center text-black text-decoration-none"
+                            >
+                              <IconComponent size={24} className="me-2" />
+                            </a>
+                          </div>
+                        );
+                      })}
                     </div>
                   </li>
                 </ul>
