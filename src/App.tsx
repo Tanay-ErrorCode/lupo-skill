@@ -15,6 +15,7 @@ import ErrorPage from "./components/ErrorPage/404ErrorPage";
 import Footer from "./components/Footer/Footer";
 import PageTitle from "./utils/PageTitle";
 import { ScrollToTop } from "./components/Scrolltotop";
+import CreateEvent from "./components/Cards/CreateEvent/CreateEvent";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               </>
             }
           />
+          <Route path="/createEvent" element={<CreateEvent />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="*" element={<ErrorPage />} />

@@ -134,6 +134,9 @@ const NavBar = () => {
         Events
       </MenuItem>
       <MenuItem
+        component={Link}
+        to="/createEvent"
+        onClick={handleMobileMenuClose}
         sx={{
           fontWeight: 700,
           color: "white",
@@ -144,7 +147,7 @@ const NavBar = () => {
           },
         }}
       >
-        <CreateEvent onNavLinkClick={handleMobileMenuClose} />
+        Create Event
       </MenuItem>
     </>
   );
@@ -352,18 +355,28 @@ const NavBar = () => {
                 Events
               </Button>
               <Button
+                href="#/createEvent"
+                onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
                   fontWeight: 600,
                   gap: "10px",
                   padding: "2px 16px",
                   fontSize: mdFontSize,
-                  color: isHome ? "rgba(255, 255, 255, 0.6)" : "white",
+                  color: isHome
+                    ? isActive("/createEvent")
+                      ? "white"
+                      : "rgba(255, 255, 255, 0.6)"
+                    : isActive("/createEvent")
+                    ? "black"
+                    : "white",
                   backgroundColor: isHome
-                    ? "rgba(252, 252, 252, 0.2)"
+                    ? isActive("/createEvent")
+                      ? theme.colors.primary
+                      : "rgba(252, 252, 252, 0.2)"
+                    : isActive("/createEvent")
+                    ? theme.colors.secondaryDark
                     : "transparent",
-                  borderRadius: theme.borderRadius.large,
-                  textTransform: "none",
                   border: isHome ? "2px solid transparent" : "none",
 
                   "&:hover": {
@@ -373,9 +386,11 @@ const NavBar = () => {
                     color: isHome ? "white" : "black",
                     border: isHome ? "2px solid white" : "none",
                   },
+                  borderRadius: theme.borderRadius.large,
+                  textTransform: "none",
                 }}
               >
-                <CreateEvent onNavLinkClick={handleMobileMenuClose} />
+                Create Event
               </Button>
             </Box>
             {/* icons */}
