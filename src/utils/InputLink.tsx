@@ -36,7 +36,7 @@ interface InputLinkProps {
   setLinks: React.Dispatch<React.SetStateAction<LinkType>>;
 }
 
-const classifyLink = (
+export const classifyLink = (
   link: string
 ): { name: string; icon: React.ElementType } => {
   if (link.includes("instagram.com"))
