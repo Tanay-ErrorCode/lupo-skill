@@ -372,9 +372,15 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
             />
           </Form.Group>
 
-          {showCropperModal && (
-            <div className="cropper-modal">
-              <h2>Crop Image</h2>
+          <Modal
+            show={showCropperModal}
+            onHide={() => setShowCropperModal(false)}
+            animation={true}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Crop Image</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
               {image && (
                 <ImageCropper
                   setCroppedImageUrl={handleSaveCroppedImage}
@@ -382,9 +388,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   aspectRatio={cropperAspectRatio}
                 />
               )}
-              <Button onClick={() => setShowCropperModal(false)}>Close</Button>
-            </div>
-          )}
+            </Modal.Body>
+          </Modal>
 
           <Button className="btn-create mt-3" onClick={createEventDb}>
             Create
