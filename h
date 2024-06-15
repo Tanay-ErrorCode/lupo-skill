@@ -1,0 +1,505 @@
+[33mcommit 6b8dd8930d7c83f3d8aa48c842e01888553ba69d[m[33m ([m[1;36mHEAD -> [m[1;32missue-113[m[33m, [m[1;31morigin/issue-113[m[33m)[m
+Merge: 573af84 4f267aa
+Author: Utsav Ladia <124615886+Utsavladia@users.noreply.github.com>
+Date:   Sat Jun 15 18:52:18 2024 +0530
+
+    Merge branch 'Tanay-ErrorCode:main' into issue-113
+
+[33mcommit 4f267aa2533a4ed61a15737e606f689eadd29550[m
+Merge: 90acc19 a5926c7
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sat Jun 15 18:39:23 2024 +0530
+
+    Merge pull request #214 from Tomkndn/create-event-page
+    
+    Implemented modal to a page
+
+[33mcommit 573af8424e70f4083d5e894b8c4e7fbf8956dac5[m
+Merge: 9665164 90acc19
+Author: Utsav Ladia <124615886+Utsavladia@users.noreply.github.com>
+Date:   Sat Jun 15 10:39:35 2024 +0530
+
+    Merge branch 'main' into issue-113
+
+[33mcommit a5926c7b6ccbf23b567a104253885c19c6743726[m
+Author: Tomkndn <ntamsoy@gmail.com>
+Date:   Sat Jun 15 00:13:29 2024 +0530
+
+    fixed image cropper modal
+
+[33mcommit 90acc19dceac4c9f99dc68e9beedb1ab294598c6[m
+Merge: d8c889d 5bb65ac
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Fri Jun 14 22:53:24 2024 +0530
+
+    Merge pull request #215 from nishant0708/social
+    
+    feat: Update Social Media Links Display Logic on Profile #211
+
+[33mcommit 5bb65acaa6a403e4e5645c86efec270a164765e0[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Fri Jun 14 02:33:13 2024 +0530
+
+    updated social media links
+
+[33mcommit e96663ea33c74d1b770eedc9168fefeed659e84a[m
+Author: Tomkndn <ntamsoy@gmail.com>
+Date:   Thu Jun 13 23:59:41 2024 +0530
+
+    converted modal to page
+
+[33mcommit d8c889de7a31057ac91e5573f783d0618450cdc5[m
+Merge: cffe3ef 2eabc47
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Wed Jun 12 22:47:58 2024 +0530
+
+    Merge pull request #213 from nishant0708/caraousel-hover
+    
+    bug : Hover Issue ON carousel Card item #208
+
+[33mcommit 2eabc478846282be92691158f69a62cf89dbbc6a[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Wed Jun 12 22:33:47 2024 +0530
+
+    fixed hover-issue
+
+[33mcommit cffe3efd48c46d8cd0ac2dc19b2cad0372d82354[m
+Merge: c98f21c d707f6e
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 19:12:28 2024 +0530
+
+    Merge pull request #210 from Tanay-ErrorCode/revert-120-social_changes
+    
+    Revert "Added social media field and improved the validity of social media url."
+
+[33mcommit d707f6eccd644195b581b4e9af12841c873bfeed[m
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 19:12:19 2024 +0530
+
+    Revert "Added social media field and improved the validity of social media url."
+
+[33mcommit c98f21c6a6b8fdc2e1d3c047cedc9668f6e87786[m
+Merge: ccd86f2 f912341
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 19:12:01 2024 +0530
+
+    Merge pull request #120 from AnirbanChattopadhyay-2004/social_changes
+    
+    Added social media field and improved the validity of social media url.
+
+[33mcommit f91234142774821d0c5a1e0aca625f9dd84d047d[m
+Merge: f1e87af ccd86f2
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 19:11:19 2024 +0530
+
+    Merge branch 'main' into social_changes
+
+[33mcommit ccd86f22a5c223132308921c6867fdf46615da06[m
+Merge: 2657828 14ab77d
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 18:40:28 2024 +0530
+
+    Merge pull request #209 from paulkrishanu4/scroll_top
+    
+    Render page from top
+
+[33mcommit 26578284f4820f38042c422ad4cb947039b0fee3[m
+Merge: 559f4f6 9ed2770
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 11 18:36:32 2024 +0530
+
+    Merge pull request #181 from nishant0708/short-edit
+    
+    feat: Dynamic Addition of Social Media URL Fields in Edit Profile Modal #163
+
+[33mcommit 14ab77dd952ce7f80c9232b512013f9f4ea2501b[m
+Author: paulkrishanu4 <paulkrishanu84@gmail.com>
+Date:   Tue Jun 11 18:35:23 2024 +0530
+
+    updated
+
+[33mcommit d92db324c29785631120d2dd6ab7c0cfbf39496d[m
+Author: paulkrishanu4 <paulkrishanu84@gmail.com>
+Date:   Tue Jun 11 17:08:46 2024 +0530
+
+    updated scroll to top on new page render
+
+[33mcommit 359cf1d887084aa547690d461c36d943088a923f[m
+Author: paulkrishanu4 <paulkrishanu84@gmail.com>
+Date:   Tue Jun 11 17:03:37 2024 +0530
+
+    auto scroll to top on render of new page
+
+[33mcommit 9ed2770a3a7a68162ec2b9bf2169976089231682[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 10 21:47:08 2024 +0530
+
+    added forgot passeord implementation
+
+[33mcommit 559f4f66e4400c49902a104009c5fe83dec9638b[m
+Merge: 4dffe83 ad34c16
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Mon Jun 10 20:43:47 2024 +0530
+
+    Merge pull request #200 from nishant0708/ready-skil
+    
+    bug: Text does not disappear on sign-in #194
+
+[33mcommit 72d996eb5dd3ebed51a132c9e9f82fe1f0e72ae0[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 10 04:01:32 2024 +0530
+
+    FIxed issue
+
+[33mcommit ad34c16e83652509bb9642d07642d887dfc8f2cc[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sun Jun 9 01:10:26 2024 +0530
+
+    removed text
+
+[33mcommit 231dec2abb0c71c9c7c6b28cd81104e0064a4d0c[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sun Jun 9 00:59:42 2024 +0530
+
+    updated
+
+[33mcommit 4dffe83e8075cedfbf6a4f5de8c0fd79a63d96d4[m
+Merge: b69e4c9 e0d9629
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sat Jun 8 18:44:28 2024 +0530
+
+    Merge pull request #196 from nishant0708/footer
+    
+    bug : Footer Overlapping Pagination Buttons #183
+
+[33mcommit e0d962962598eeede927bb1357362fa362b7dedf[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sat Jun 8 14:12:56 2024 +0530
+
+    footer fixed
+
+[33mcommit abde555a637f552c8742e99c655371c5fa8ade78[m
+Merge: 20ae5e7 b69e4c9
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sat Jun 8 13:06:21 2024 +0530
+
+    Merge branch 'main' of https://github.com/nishant0708/lupo-skill into short-edit
+
+[33mcommit b69e4c94c707f7d8652f2b2f49d0df3b12f8ea87[m
+Author: Tanay-ErrorCode <codingkaku@gmail.com>
+Date:   Sat Jun 8 12:15:33 2024 +0530
+
+    Updated package-lock
+
+[33mcommit 0073d278fd228d4a2f4baf8c1c6a68f0dc7e0832[m
+Merge: 98ca8a8 c687523
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sat Jun 8 12:08:15 2024 +0530
+
+    Merge pull request #166 from mukilan2815/main
+    
+    Seach bar added
+
+[33mcommit c6875236ca05ac9ac1215681c0f174a1d0cf65e2[m
+Merge: 4217a07 98ca8a8
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sat Jun 8 12:08:04 2024 +0530
+
+    Merge branch 'main' into main
+
+[33mcommit 4217a075d5648b28f54144aa3f1e89027fa1b660[m
+Author: Tanay-ErrorCode <codingkaku@gmail.com>
+Date:   Sat Jun 8 12:07:14 2024 +0530
+
+    resolved conflicts
+
+[33mcommit 27cfa4a68b537f190075a8d716d9cc4876eadfff[m
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sat Jun 8 11:45:13 2024 +0530
+
+    Update EventList.tsx
+
+[33mcommit 20ae5e72f43fce1672a0bc1f65088ec5123b4cad[m
+Merge: c34b2a1 98ca8a8
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sat Jun 8 00:41:39 2024 +0530
+
+    fixed merge conflicts
+
+[33mcommit 98ca8a8c4086337e45732daac01c325c38ba3215[m
+Merge: 54b0960 58fea24
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Sat Jun 8 00:00:32 2024 +0530
+
+    Merge pull request #188 from nishant0708/dynamic-banner
+    
+    feat: Dynamic Banner Color on Signup #156
+
+[33mcommit 58fea24321d87235890691d4fc88dcfa0a784763[m
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Fri Jun 7 23:59:18 2024 +0530
+
+    Update ProfilePage.tsx
+
+[33mcommit 3bd09f296cbb0355501fd272de7fc3f7a454c400[m
+Merge: 2fd111f 54b0960
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Fri Jun 7 23:56:24 2024 +0530
+
+    Merge branch 'main' into dynamic-banner
+
+[33mcommit 54b0960156f1039f2a87ec988b30a9b213023046[m
+Merge: 9de238a 708fba1
+Author: Tanay-ErrorCode <codingkaku@gmail.com>
+Date:   Fri Jun 7 20:02:10 2024 +0530
+
+    Improved hover effect
+
+[33mcommit 9de238a8170a3cf0c2b01d4a4de6039d6b2bf8c0[m
+Author: Tanay-ErrorCode <codingkaku@gmail.com>
+Date:   Fri Jun 7 19:54:42 2024 +0530
+
+    Improved hover effect
+
+[33mcommit 708fba19114dff662802252eca91b4a51ae9da59[m
+Merge: f181239 000847a
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Fri Jun 7 19:53:02 2024 +0530
+
+    Merge pull request #189 from Damini2004/HoverEffect
+    
+    Hover effect Added
+
+[33mcommit 000847af91623fd470f6b4297ec7a93e2302197a[m
+Author: Damini2004 <divyachachane8@gmail.com>
+Date:   Fri Jun 7 17:39:48 2024 +0530
+
+    Commit 2
+
+[33mcommit 2fd111f9e0e39498c16b3bda5759f5fa1734470c[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Fri Jun 7 17:28:43 2024 +0530
+
+    changed to startswith
+
+[33mcommit 1c736932ef3f33737380e37f461ef9f617492780[m
+Author: Damini2004 <divyachachane8@gmail.com>
+Date:   Fri Jun 7 01:16:47 2024 +0530
+
+    Added Hover
+
+[33mcommit 5a1cfd4601a1178bb89f23d541336bfe41fa6d20[m
+Author: Damini2004 <divyachachane8@gmail.com>
+Date:   Fri Jun 7 01:15:50 2024 +0530
+
+    Commit2
+
+[33mcommit 185bba5ee91658f0336166142046aea4c555b547[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Thu Jun 6 18:51:41 2024 +0530
+
+    dynamic-banner
+
+[33mcommit c34b2a1c876509704d8bfbb9e2d4bfd6f38fa80d[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Thu Jun 6 18:32:15 2024 +0530
+
+    using bootstrap icons
+
+[33mcommit f1812396656d77c84e12860fccdb1db830acd9d2[m
+Merge: 745f498 25be6d8
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Thu Jun 6 15:40:55 2024 +0530
+
+    Merge pull request #187 from nishant0708/mobile-bug
+    
+    bug : White Space Appears When Scrolling Right on Mobile View (Homepage) #184
+
+[33mcommit 25be6d8544fa9f38844bc7219f3ee59001a77a00[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Thu Jun 6 15:16:01 2024 +0530
+
+    removed whitespace
+
+[33mcommit 882befb2a3557b7095401502bc86052e61895917[m
+Author: mukilan2815 <mukilan2808@gmail.com>
+Date:   Thu Jun 6 11:40:24 2024 +0530
+
+    removed
+
+[33mcommit a2531b69f284bb960f539f997cc7ed4883fca8de[m
+Author: mukilan2815 <mukilan2808@gmail.com>
+Date:   Thu Jun 6 10:11:07 2024 +0530
+
+    space accepting bug fixed
+
+[33mcommit bfbc68a7ec74bdf3e3cdde3b783211ced3254c74[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Wed Jun 5 21:53:39 2024 +0530
+
+    restricted to 3 fields max
+
+[33mcommit 789de2c0ec392aaca4babe9b8494e6723fc7d9fc[m
+Author: mukilan2815 <mukilan2808@gmail.com>
+Date:   Wed Jun 5 21:06:43 2024 +0530
+
+    fixed ui
+
+[33mcommit 09b58ea23a3e5b25594a7392c7b23a242e0cca6d[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Wed Jun 5 19:14:34 2024 +0530
+
+    updated
+
+[33mcommit 5f8e91c13b1667b37afd18de377c3448139943d6[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Wed Jun 5 12:52:32 2024 +0530
+
+    updated input of social media
+
+[33mcommit eef85d04672ceddb61ef4f637c1dd6a267deaf5a[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Wed Jun 5 12:47:04 2024 +0530
+
+    updated input of social media
+
+[33mcommit 745f498b64ebc31b5e7e64df1cac0c98ea7ea151[m
+Merge: e0f51ed 13a7d00
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 4 23:39:59 2024 +0530
+
+    Merge pull request #128 from Utsavladia/issue-118
+    
+    issue #118 Redesign the Navbar component
+
+[33mcommit 13a7d0037c5424bbe9ab961e4b5ed385d5643871[m[33m ([m[1;31morigin/issue-118[m[33m)[m
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Tue Jun 4 23:33:03 2024 +0530
+
+    Update NavBar.tsx
+
+[33mcommit 8c8ef6ab16736db01f81b66086970c83aadf66d6[m
+Merge: 5f38dd0 e0f51ed
+Author: Neyati <116624667+Doraemon012@users.noreply.github.com>
+Date:   Tue Jun 4 22:29:22 2024 +0530
+
+    Merge branch 'main' into issue-118
+
+[33mcommit e0f51edc6ddc8a6c6ee2be751f98607ac3b121f2[m
+Merge: 9494ed7 211a3a8
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 4 12:05:00 2024 +0530
+
+    Merge pull request #176 from nishant0708/delete-event
+    
+    feat: Their should be option to delete created event by user. #167
+
+[33mcommit 211a3a8eb9a3d488acee2d56527df5145e7ac16a[m
+Merge: b52bb87 9494ed7
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 4 12:04:12 2024 +0530
+
+    Merge branch 'main' into delete-event
+
+[33mcommit 9494ed70173ad95864080e5e866ce79e5640ed8d[m
+Merge: e5d3f62 395361c
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Tue Jun 4 11:47:25 2024 +0530
+
+    Merge pull request #174 from nishant0708/remove-registration
+    
+    feat: Option to remove registration of registered event. #168
+
+[33mcommit 395361c28ab824735b42d355db44603f79bd813c[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Tue Jun 4 10:51:13 2024 +0530
+
+    updated hover
+
+[33mcommit b52bb872bc795547e4c8c69f1350adb2f5cba31a[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Tue Jun 4 10:41:41 2024 +0530
+
+    updated deleteevent
+
+[33mcommit 96651642ac8c2c5d605b16469e615b68a88f7b13[m
+Merge: 1658523 e5d3f62
+Author: Utsav Ladia <124615886+Utsavladia@users.noreply.github.com>
+Date:   Tue Jun 4 10:08:07 2024 +0530
+
+    Merge branch 'main' into issue-113
+
+[33mcommit 59a437197095eadebc65747b670576f9ed0ea414[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 3 17:00:56 2024 +0530
+
+    delete event functionality
+
+[33mcommit 753a97bede55ecc19fb071774fb28d40208b196a[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 3 12:20:35 2024 +0530
+
+    changed button
+
+[33mcommit e5d3f621f9c3bbf3c2ee82777d1fd0d2e22a86bc[m
+Merge: 7b2a56d 5a4b5cb
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Mon Jun 3 10:47:53 2024 +0530
+
+    Merge pull request #170 from nishant0708/Modal-animation
+    
+    feat: Add animation to all the modals #164added animation to modals
+
+[33mcommit c4c7656d2e69971b5a91e81a8ba5e7220ab959dc[m
+Author: Mukilan T <71129858+mukilan2815@users.noreply.github.com>
+Date:   Mon Jun 3 06:12:57 2024 +0530
+
+    Update EventList.tsx
+
+[33mcommit c32edadb3e6e64d346b8c6c9fb368345823220d1[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 3 02:42:43 2024 +0530
+
+    added remove-registration
+
+[33mcommit 5a4b5cb589c5b3665c842e35d788b005e8a1d6d8[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Mon Jun 3 00:28:52 2024 +0530
+
+    fade animation using bootstrap
+
+[33mcommit 165852379e0659258c750a19e11966a663c4a359[m
+Author: Utsavladia <utsavladia@gmail.com>
+Date:   Sun Jun 2 22:59:05 2024 +0530
+
+    Done all the suggested changes
+
+[33mcommit 7b2a56d2f76d5702f1fda1a2b8617d008176f6c9[m
+Merge: b1b7bb8 38b9574
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sun Jun 2 17:22:02 2024 +0530
+
+    Merge pull request #169 from nishant0708/popup
+    
+    Fixed::bug : SignUp/LogIn Popup and Toast Displayed When User is Logged Out. #165
+
+[33mcommit 3afb42c4d5c29c929283869dc6f69ccc2c41c6d4[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sun Jun 2 17:12:04 2024 +0530
+
+    added animation to modals
+
+[33mcommit 38b9574c1164d09383974211cff40fd533628e4d[m
+Author: Nishant Kaushal <101548649+nishant0708@users.noreply.github.com>
+Date:   Sun Jun 2 16:51:26 2024 +0530
+
+    removed toast
+
+[33mcommit b1b7bb81e34ab0c0cdff111e76bfd64aef2e2234[m
+Merge: f726ce2 520ea3d
+Author: Tanay <90561803+Tanay-ErrorCode@users.noreply.github.com>
+Date:   Sun Jun 2 10:49:38 2024 +0530
+
+    Merge pull request #160 from nishant0708/event-Editing
+    
+    feat: User can edit created event date, time and description. #85
