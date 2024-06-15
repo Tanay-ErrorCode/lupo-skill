@@ -69,7 +69,9 @@ const NotificationsPanel = () => {
         onClose={handleClose}
         sx={{
           marginTop: "0.5rem",
-          translate: "-150px 0px",
+          transform: isSmallScreen
+            ? "translate(-100px, 0px)"
+            : "translate(-130px, 0px)",
           maxHeight: maxNotificationHeight,
           overflowY: "auto",
         }}
