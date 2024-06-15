@@ -104,13 +104,13 @@ const EventDetails = () => {
           <div
             className="d-flex justify-content-center align-items-center"
             style={{
-              paddingTop: "6.5em",
+              paddingTop: "9.5em",
             }}
           >
             <Spinner animation="border" />
           </div>
         ) : (
-          <Container>
+          <Container className="event-detailcontainer">
             <Row>
               <Col>
                 <Card className="p-3 shadow mt-2">
