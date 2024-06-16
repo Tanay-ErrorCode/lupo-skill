@@ -263,7 +263,7 @@ const EditProfile = () => {
         website,
         tags: listTags.join(", "),
         banner: bannerImageUrl,
-        profile: profileImageUrl,
+        pic: profileImageUrl,
         links,
       });
 
