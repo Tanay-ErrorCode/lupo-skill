@@ -9,7 +9,7 @@ import { signOutUser } from "../../firebaseConf";
 import logo from "../image_assets/logo.png";
 import theme from "../../theme";
 
-import { useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -26,6 +26,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Person2Icon from "@mui/icons-material/Person2";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import NotificationsPanel from "../Notification/NotificationsPanel";
+import { Switch } from "@mui/material";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -80,6 +82,39 @@ const NavBar = () => {
     handleMobileMenuClose();
   };
 
+  const CustomSwitch = styled(Switch)(({ theme }) => ({
+    "& .MuiSwitch-switchBase": {
+      "&:hover": {
+        "& .MuiSwitch-thumb": {
+          color: "black",
+        },
+        "& + .MuiSwitch-track": {
+          backgroundColor: "black",
+        },
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      color: "#007fff",
+    },
+    "& .MuiSwitch-track": {
+      backgroundColor: "#007fff",
+    },
+  }));
+  const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+    fontWeight: 700,
+    color: "white",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.main,
+      color: "black",
+      "& .MuiSwitch-track": {
+        backgroundColor: "black",
+      },
+      "& .MuiSwitch-thumb": {
+        color: "black",
+      },
+    },
+  }));
+
   const mobileMenuItems = (
     <>
       <MenuItem
@@ -133,6 +168,16 @@ const NavBar = () => {
       >
         Events
       </MenuItem>
+      <StyledMenuItem onClick={toggleTheme}>
+        Mode:{" "}
+        <CustomSwitch
+          checked={mode}
+          onChange={toggleTheme}
+          icon={<Brightness4 />}
+          checkedIcon={<Brightness7 />}
+          color="default"
+        />
+      </StyledMenuItem>
       <MenuItem
         component={Link}
         to="/createEvent"
@@ -354,6 +399,7 @@ const NavBar = () => {
               >
                 Events
               </Button>
+
               <Button
                 href="#/createEvent"
                 onClick={handleMobileMenuClose}
@@ -411,23 +457,28 @@ const NavBar = () => {
                   gap: mdGap,
                 }}
               >
-                <IconButton
-                  onClick={toggleTheme}
-                  color="inherit"
-                  sx={{
-                    border: isHome ? "1px solid" : "none",
-                    borderColor: theme.colors.lightBackground,
-                    padding: iconPadding,
-                    gap: "32px",
-                    borderRadius: "32px",
-                    alignItems: "center",
+                {!isSmallScreen && (
+                  <IconButton
+                    onClick={toggleTheme}
+                    color="inherit"
+                    sx={{
+                      border: isHome ? "1px solid" : "none",
+                      borderColor: theme.colors.lightBackground,
+                      padding: iconPadding,
+                      gap: "32px",
+                      borderRadius: "32px",
+                      alignItems: "center",
 
-                    backgroundColor: isHome
-                      ? "rgba(255, 255, 255, 0.17)"
-                      : "transparent",
-                  }}
-                >
-                  {mode ? <Brightness4 /> : <Brightness7 />}
+                      backgroundColor: isHome
+                        ? "rgba(255, 255, 255, 0.17)"
+                        : "transparent",
+                    }}
+                  >
+                    {mode ? <Brightness4 /> : <Brightness7 />}
+                  </IconButton>
+                )}
+                <IconButton>
+                  <NotificationsPanel />
                 </IconButton>
 
                 {!is_signup ? (
