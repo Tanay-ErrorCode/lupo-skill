@@ -1,24 +1,10 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  InputGroup,
-  FormControl,
-  Nav,
-} from "react-bootstrap";
+import { Modal, Button, Form, Nav } from "react-bootstrap";
 import "./CreateEvent.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Signup from "../../Signup/Signup";
-import {
-  auth,
-  firestore,
-  database,
-  storage,
-  signInWithGooglePopup,
-} from "../../../firebaseConf";
-import GoogleButton from "react-google-button";
+import { auth, database, storage } from "../../../firebaseConf";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import {
@@ -29,6 +15,7 @@ import {
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import ImageCropper from "../../../utils/ImageCropper";
+import DropZone from "../../../utils/DropZone";
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -78,13 +65,14 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
       setImage(file);
+      setImagePreview(URL.createObjectURL(file));
       setCropperAspectRatio(16 / 9);
-
       setShowCropperModal(true);
     } else {
       toast.error("Please select a valid image file (JPEG/PNG)", {
@@ -92,6 +80,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
       });
     }
   };
+
   const handleSaveCroppedImage = async (croppedImageUrl: string | null) => {
     if (croppedImageUrl) {
       try {
@@ -105,6 +94,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         });
 
         setImage(compressedFile);
+        setImagePreview(croppedImageUrl);
       } catch (error) {
         console.error("Error compressing image:", error);
         toast.error("An error occurred while compressing the image");
@@ -283,6 +273,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         .join(", ")
     );
   };
+
   return (
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
@@ -294,107 +285,123 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <div className="container w-50 my-5">
-        <h1 className="center">Create Event</h1>
-        <Form>
-          <Form.Group controlId="formTitle">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter title"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setTitle(e.target.value)
-              }
-            />
-          </Form.Group>
-          <Form.Group controlId="formDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setDescription(e.target.value)
-              }
-            />
-          </Form.Group>
-          <Form.Group controlId="formDate">
-            <Form.Label>Date</Form.Label>
-            <br />
-            <DatePicker
-              selected={startDate}
-              onChange={(date: Date) => setStartDate(date)}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formTime">
-            <Form.Label>Time</Form.Label>
-            <br />
-            <DatePicker
-              selected={startTime}
-              onChange={(date: Date) => setStartTime(date)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="Time"
-              dateFormat="h:mm aa"
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formTags">
-            <Form.Label>Tags (max 5)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter tags"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPopTags(e.target.value)
-              }
-              onKeyDown={handleKeyDown}
-              value={popTags}
-            />
-            <Stack direction="row" className="mt-2" spacing={1}>
-              {listTags.map((ele, index) => (
-                <Chip
-                  key={index}
-                  label={ele}
-                  onDelete={() => handleDelete(ele)}
-                  color="success"
-                  variant="outlined"
+      <div className="container ">
+        <div className="Create_event_box">
+          <div className="box1">
+            <h3 className="font-bold">Event Info</h3>
+            <Form>
+              <Form.Group controlId="formTitle" className="mt-4">
+                <Form.Label className="create-event-label">
+                  Event Title
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  className="create-event-input"
+                  placeholder="Enter title"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setTitle(e.target.value)
+                  }
                 />
-              ))}
-            </Stack>
-          </Form.Group>
-          <Form.Group controlId="formImageUpload">
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-          </Form.Group>
-
-          <Modal
-            show={showCropperModal}
-            onHide={() => setShowCropperModal(false)}
-            animation={true}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Crop Image</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {image && (
-                <ImageCropper
-                  setCroppedImageUrl={handleSaveCroppedImage}
-                  src={URL.createObjectURL(image)}
-                  aspectRatio={cropperAspectRatio}
+              </Form.Group>
+              <Form.Group controlId="formDescription" className="mt-4">
+                <Form.Label className="create-event-label">
+                  Description
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  className="create-event-input"
+                  rows={5}
+                  placeholder="Enter description"
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setDescription(e.target.value)
+                  }
                 />
-              )}
-            </Modal.Body>
-          </Modal>
+              </Form.Group>
+              <Form.Group controlId="formTags" className="mt-4">
+                <Form.Label className="create-event-label">
+                  Event Tags
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter tags"
+                  className="create-event-input"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPopTags(e.target.value)
+                  }
+                  onKeyDown={handleKeyDown}
+                  value={popTags}
+                />
+                <Stack direction="row" className="mt-2" spacing={1}>
+                  {listTags.map((ele, index) => (
+                    <Chip
+                      key={index}
+                      label={ele}
+                      onDelete={() => handleDelete(ele)}
+                      color="success"
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
+              </Form.Group>
+            </Form>
+          </div>
+          <div className="left-create">
+            <div className="publish-box">
+              <h5 className="create-publish" onClick={createEventDb}>
+                Publish Event
+              </h5>
+              <div className="button-container">
+                <Button
+                  variant="primary"
+                  className="publish-button"
+                  onClick={createEventDb}
+                >
+                  Publish
+                </Button>
+                <Button variant="secondary" className="preview-button">
+                  Preview
+                </Button>
+              </div>
+            </div>
+            <div className="upload-box">
+              <h5 className="upload-box-head">Upload Event Banner</h5>
+              <div className="">
+                <DropZone handleImageChange={handleImageChange} />
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Uploaded Preview"
+                    className="mt-4"
+                    style={{
+                      width: "100%",
+                      maxHeight: "300px",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <Button className="btn-create mt-3" onClick={createEventDb}>
-            Create
-          </Button>
-        </Form>
+        <Modal
+          show={showCropperModal}
+          onHide={() => setShowCropperModal(false)}
+          animation={true}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Crop Image</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {imagePreview && (
+              <ImageCropper
+                setCroppedImageUrl={handleSaveCroppedImage}
+                src={imagePreview}
+                aspectRatio={cropperAspectRatio}
+              />
+            )}
+          </Modal.Body>
+        </Modal>
       </div>
     </>
   );

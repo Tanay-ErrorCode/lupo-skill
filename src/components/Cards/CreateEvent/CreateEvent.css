@@ -1,4 +1,4 @@
-.create-event-container {
+/* .create-event-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,6 +10,7 @@
   width: 100%;
   backdrop-filter: blur(5px);
 }
+
 
 .event-card {
   width: 50%;
@@ -58,4 +59,115 @@
 
 .modal_back .modal-title {
   color: black !important;
+} */
+
+.container {
+  margin-top: 100px;
+  height: auto;
+  margin-bottom: 29px;
+}
+.font-bold {
+  font-size: 36px;
+  font-weight: 700;
+  padding: 5px 0px;
+  border-bottom: 1.5px solid #9abac2;
+}
+.create-event-label {
+  font-size: 24px;
+  font-weight: 500;
+}
+.box1 {
+  padding: 20px;
+  border-radius: 20px;
+  width: 65%;
+  border: 2px solid #9abac2;
+}
+.Create_event_box {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.create-event-input {
+  background: #fcfcfc;
+  border: 0.5px solid #bcc8cb;
+}
+.create-event-input::placeholder {
+  color: rgba(60, 60, 67, 0.2);
+}
+.left-create {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  width: 30%;
+}
+.button-container {
+  display: flex;
+  margin-top: 25px;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.create-publish {
+  font-weight: 700;
+  font-size: 36px;
+  padding: 7px 0px;
+  border-bottom: 1.5px solid #9abac2;
+}
+.publish-button {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 16px 32px;
+  border-radius: 24px;
+  color: #5ab2ff;
+  color: white;
+}
+.publish-box,
+.upload-box {
+  border: 2px solid #9abac2;
+  padding: 16px;
+  border-radius: 20px;
+}
+.preview-button {
+  padding: 16px 32px;
+  border-radius: 24px;
+  /* height: 54px; */
+  font-size: 18px;
+  font-weight: 700;
+  /* width: 135px; */
+  background: #caf4ff;
+  color: black;
+}
+.upload-box-head {
+  font-weight: 700;
+  font-size: 28px;
+  padding: 7px 0px;
+  border-bottom: 1.5px solid #9abac2;
+}
+.dropzone {
+  background: #caf4ff;
+  min-height: 150px;
+  border-radius: 24px;
+  padding: 16px 32px;
+  border: 3px dotted #9abac2;
+  margin-top: 24px;
+  align-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #3c3c43;
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  .Create_event_box {
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+  }
+  .box1 {
+    width: 100%;
+  }
+  .left-create {
+    width: 100%;
+  }
 }
