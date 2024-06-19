@@ -567,6 +567,8 @@ const HomePage = () => {
                       textColor={theme.colors.brightBackground}
                       onClick={() => console.log("Get Started")}
                       borderColor={theme.colors.secondaryLight}
+                      colorChange={true}
+                      borderStyleChange={true}
                     />
                   </Link>
                 </motion.div>
@@ -613,6 +615,8 @@ const HomePage = () => {
                       textColor={theme.colors.brightBackground}
                       onClick={() => console.log("Get Started")}
                       borderColor={theme.colors.secondaryLight}
+                      colorChange={true}
+                      borderStyleChange={true}
                     />
                   </Link>
                 </motion.div>

@@ -1,0 +1,36 @@
+.multi-color-border {
+  transition: transform 1s ease, opacity 1s ease !important;
+  padding: 3px;
+  border-radius: 18px;
+}
+
+.static-border {
+  padding: 3px;
+}
+
+.multi-color-border:hover {
+  transform: scale(1.02);
+  background: repeating-conic-gradient(
+    from var(--a),
+    rgb(255, 242, 0) 30%,
+    rgb(255, 242, 0) 40%,
+    rgb(0, 172, 249) 70%
+  );
+  animation: animate 1.5s linear infinite;
+}
+
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes animate {
+  0% {
+    --a: 0deg;
+  }
+
+  100% {
+    --a: 360deg;
+  }
+}
