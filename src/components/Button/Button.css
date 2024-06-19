@@ -8,15 +8,19 @@
   padding: 3px;
 }
 
+.custom-button:hover {
+  border: none !important;
+}
+
 .multi-color-border:hover {
-  transform: scale(1.02);
-  background: repeating-conic-gradient(
+  transform: scale(1.03);
+  background: conic-gradient(
     from var(--a),
-    rgb(255, 242, 0) 30%,
-    rgb(255, 242, 0) 40%,
-    rgb(0, 172, 249) 70%
+    rgb(219, 208, 2) 20%,
+    rgb(0, 172, 249) 50%,
+    rgb(219, 208, 2) 100%
   );
-  animation: animate 1.5s linear infinite;
+  animation: animate 10s linear infinite;
 }
 
 @property --a {

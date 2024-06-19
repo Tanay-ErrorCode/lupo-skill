@@ -81,6 +81,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        className="custom-button"
       >
         {text}
       </Button>
