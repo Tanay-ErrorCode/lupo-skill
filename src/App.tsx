@@ -16,6 +16,8 @@ import Footer from "./components/Footer/Footer";
 import PageTitle from "./utils/PageTitle";
 import { ScrollToTop } from "./components/Scrolltotop";
 import CreateEvent from "./components/Cards/CreateEvent/CreateEvent";
+import ArticlesHomepage from "./components/Article/ArticlesHomepage";
+import ArticleWritingPage from "./components/Article/ArticleWritingPage";
 
 function App() {
   return (
@@ -54,6 +56,8 @@ function App() {
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/article" element={<ArticlesHomepage />} />
+          <Route path="/article/write" element={<ArticleWritingPage />} />
         </Routes>
       </HashRouter>
       <Footer />
