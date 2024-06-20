@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import './ArticleWritingPage.css'; // Ensure the CSS is correctly applied
+import React, { useState, FormEvent } from "react";
+import ReactMarkdown from "react-markdown";
+import "./ArticleWritingPage.css"; // Ensure the CSS is correctly applied
 
-const ArticleWritingPage = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const ArticleWritingPage: React.FC = () => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log('Article submitted:', { title, content });
+    console.log("Article submitted:", { title, content });
     // Add your form submission logic here
   };
 
   return (
-    <div className='article-write'>
+    <div className="article-write">
       <form onSubmit={handleSubmit} className="article-form">
         <div className="title-container">
-        <i class="bi bi-plus-circle"></i>
+          <i className="bi bi-plus-circle"></i>
           <input
             type="text"
             placeholder="Title"
@@ -33,11 +33,10 @@ const ArticleWritingPage = () => {
           required
           className="article-textarea"
         ></textarea>
-      
       </form>
       <div className="markdown-preview">
         <h1>Preview:</h1>
-        <ReactMarkdown >{content}</ReactMarkdown>
+        <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
   );
