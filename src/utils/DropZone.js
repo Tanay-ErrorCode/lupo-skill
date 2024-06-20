@@ -44,7 +44,7 @@ const DropZone = ({ handleImageChange }) => {
         onChange={handleChange}
         style={{ display: 'none' }}
       />
-      {!isImageUploaded && <p className="dropzone">+ Upload</p>}
+      { <p className="dropzone">+ Upload</p>}
     </div>
   );
 };
