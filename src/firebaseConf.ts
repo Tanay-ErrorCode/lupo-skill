@@ -14,8 +14,7 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB5fKbvV_-YFMM1Ph1tPef-Zr2bvVJD0kI",
-  projectId: "project-8e015",
+    // firebase config
 };
 
 const app = firebase.initializeApp(firebaseConfig);
