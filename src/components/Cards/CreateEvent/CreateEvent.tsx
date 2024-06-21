@@ -16,6 +16,7 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import ImageCropper from "../../../utils/ImageCropper";
 import DropZone from "../../../utils/DropZone";
+import { Box, Container, TextField, Typography } from "@mui/material";
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -285,46 +286,52 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <div className="container ">
-        <div className="Create_event_box">
-          <div className="box1">
-            <h3 className="font-bold">Event Info</h3>
-            <Form>
-              <Form.Group controlId="formTitle" className="mt-4">
-                <Form.Label className="create-event-label">
+      <Container className="container">
+        <Box className="Create_event_box">
+          <Box className="box1">
+            <Typography variant="h5" className="font-bold">
+              Event Info
+            </Typography>
+            <form>
+              <Box className="mt-3">
+                <Typography className="create-event-label ">
                   Event Title
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  className="create-event-input"
-                  placeholder="Enter title"
+                </Typography>
+                <TextField
+                  label="Event Title"
+                  variant="outlined"
+                  fullWidth
+                  className="mt-3 create-event-input"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setTitle(e.target.value)
                   }
                 />
-              </Form.Group>
-              <Form.Group controlId="formDescription" className="mt-4">
-                <Form.Label className="create-event-label">
-                  Description
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  className="create-event-input"
+              </Box>
+              <Box className="mt-3">
+                <Typography className="create-event-label">
+                  Event Description
+                </Typography>
+                <TextField
+                  label="Description"
+                  variant="outlined"
+                  fullWidth
+                  multiline
                   rows={5}
-                  placeholder="Enter description"
+                  className="mt-3 create-event-input"
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setDescription(e.target.value)
                   }
                 />
-              </Form.Group>
-              <Form.Group controlId="formTags" className="mt-4">
-                <Form.Label className="create-event-label">
+              </Box>
+              <Box className="mt-3">
+                <Typography className="create-event-label">
                   Event Tags
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter tags"
-                  className="create-event-input"
+                </Typography>
+                <TextField
+                  label="Event Tags"
+                  variant="outlined"
+                  fullWidth
+                  className="mt-3 create-event-input"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setPopTags(e.target.value)
                   }
@@ -342,30 +349,36 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     />
                   ))}
                 </Stack>
-              </Form.Group>
-            </Form>
-          </div>
-          <div className="left-create">
-            <div className="publish-box">
-              <h5 className="create-publish" onClick={createEventDb}>
+              </Box>
+            </form>
+          </Box>
+          <Box className="left-create">
+            <Box className="publish-box">
+              <Typography
+                variant="h6"
+                className="create-publish"
+                onClick={createEventDb}
+              >
                 Publish Event
-              </h5>
-              <div className="button-container">
+              </Typography>
+              <Box className="button-container">
                 <Button
-                  variant="primary"
+                  variant="contained"
                   className="publish-button"
                   onClick={createEventDb}
                 >
                   Publish
                 </Button>
-                <Button variant="secondary" className="preview-button">
+                <Button variant="outlined" className="preview-button">
                   Preview
                 </Button>
-              </div>
-            </div>
-            <div className="upload-box">
-              <h5 className="upload-box-head">Upload Event Banner</h5>
-              <div className="">
+              </Box>
+            </Box>
+            <Box className="upload-box">
+              <Typography variant="h6" className="upload-box-head">
+                Upload Event Banner
+              </Typography>
+              <Box>
                 <DropZone handleImageChange={handleImageChange} />
                 {imagePreview && (
                   <img
@@ -379,10 +392,10 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     }}
                   />
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
         <Modal
           show={showCropperModal}
@@ -402,7 +415,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
             )}
           </Modal.Body>
         </Modal>
-      </div>
+      </Container>
     </>
   );
 };
