@@ -5,34 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-y: scroll;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-/* Scrollbar  */
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: #021c23;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #29b4da;
-  border-radius: 5px;
-  transition: background-color 0.3s, width 0.3s, height 0.3s;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #12c0f0;
-}
-
-::-webkit-scrollbar:hover {
-  width: 7px;
 }
