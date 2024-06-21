@@ -8,7 +8,7 @@ Lupo Skill is an open-source platform where people can share their skills throug
 
 <br/>
 
-## Why didi I select these technologies?
+## Why did I select these technologies?
 
 - **TypeScript :** I used typescript because of its numerous advantages.
   - TypeScript introduces static typing, making code more readable and understandable.
