@@ -1,6 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ArticlesHomepage.css"; // Make sure to style the components
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ClapIcon from "./clap.svg";
+import "./ArticlesHomepage.css";
 
 interface Article {
   id: string;
@@ -20,7 +29,7 @@ const dummyArticles: Article[] = [
     id: "1",
     title: "Navigating the World of AI: A Beginner’s Guide to Development",
     authorName: "Myself",
-    authorProfileImage: "https://via.placeholder.com/50", // Placeholder image
+    authorProfileImage: "https://via.placeholder.com/50",
     publicationDate: new Date(),
     description:
       "Introduction Artificial Intelligence (AI) is revolutionizing the way we interact with technology. From virtual assistants to predictive...",
@@ -46,7 +55,7 @@ const dummyArticles: Article[] = [
 
 const ArticlesHomepage: React.FC = () => {
   return (
-    <div className="ariclehomepage-div">
+    <div className="articlehomepage-div">
       <div className="Articlehead">
         <h1>Articles</h1>
         <Link to="/article/write" className="create-article-button">
@@ -55,39 +64,56 @@ const ArticlesHomepage: React.FC = () => {
       </div>
       <div className="articles-container">
         {dummyArticles.map((article) => (
-          <div key={article.id} className="article-card">
+          <Card key={article.id} className="article-card">
             <div className="author-section">
-              <img
-                src={article.authorProfileImage}
+              <CardMedia
+                component="img"
+                image={article.authorProfileImage}
                 alt={article.authorName}
                 className="author-image"
               />
               <div>
-                <p className="article-author">by {article.authorName}</p>
-                {/* <p className="article-date">{article.publicationDate.toDateString()}</p> */}
+                <Typography variant="body2" className="article-author">
+                  by {article.authorName}
+                </Typography>
+                {/* <Typography variant="body2" className="article-date">{article.publicationDate.toDateString()}</Typography> */}
               </div>
             </div>
-            <div className="article-details">
-              <h2 className="article-title">
+            <CardContent className="article-details">
+              <Typography
+                variant="h5"
+                component="div"
+                className="article-title"
+              >
                 <Link to={`/article/${article.id}`}>{article.title}</Link>
-              </h2>
-              <p className="article-description">{article.description}</p>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                className="article-description"
+              >
+                {article.description}
+              </Typography>
               <div className="meta-info">
-                <p className="time-ago">{article.timeAgo}</p>
-                <p className="read-time">{article.readTime}</p>
+                <Typography variant="body2" className="time-ago">
+                  {article.timeAgo}
+                </Typography>
+                <Typography variant="body2" className="read-time">
+                  {article.readTime}
+                </Typography>
               </div>
               <div className="icon-section">
-                <div className="comment-icon">
+                <IconButton size="small" className="comment-icon">
                   <i className="bi bi-chat"></i>
                   <span className="comment-count">{article.commentCount}</span>
-                </div>
-                <div className="clap-icon">
-                  <img src="/clap.svg" alt="Clap icon" />
+                </IconButton>
+                <IconButton size="small" className="clap-icon">
+                  <img src={ClapIcon} alt="Clap icon" />
                   <span className="clap-count">{article.clapCount}</span>
-                </div>
+                </IconButton>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
