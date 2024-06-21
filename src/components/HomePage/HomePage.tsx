@@ -226,11 +226,11 @@ const HomePage = () => {
             xs={12}
             lg={6}
             style={{
-              marginTop: "2.2rem",
+              marginTop: "2.1rem",
               backgroundImage: `url(${back})`,
-              backgroundSize: "auto 95vh",
+              backgroundSize: "auto 66vh",
               backgroundRepeat: "no-repeat",
-              backgroundPosition: "right",
+              backgroundPosition: "center",
               height: "100vh",
             }}
           />
