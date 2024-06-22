@@ -6,10 +6,16 @@ import {
   CardMedia,
   Typography,
   IconButton,
+  Avatar,
+  CardHeader,
+  CardActionArea,
+  CardActions,
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ClapIcon from "./clap.svg";
 import "./ArticlesHomepage.css";
+import { red } from "@mui/material/colors";
+import { CardTitle } from "react-bootstrap";
 
 interface Article {
   id: string;
@@ -57,7 +63,9 @@ const ArticlesHomepage: React.FC = () => {
   return (
     <div className="articlehomepage-div">
       <div className="Articlehead">
-        <h1>Articles</h1>
+        <Typography variant="h4" component="h1" fontWeight={600} gutterBottom>
+          Articles
+        </Typography>
         <Link to="/article/write" className="create-article-button">
           Create Article
         </Link>
@@ -65,20 +73,17 @@ const ArticlesHomepage: React.FC = () => {
       <div className="articles-container">
         {dummyArticles.map((article) => (
           <Card key={article.id} className="article-card">
-            <div className="author-section">
-              <CardMedia
-                component="img"
-                image={article.authorProfileImage}
-                alt={article.authorName}
-                className="author-image"
-              />
-              <div>
-                <Typography variant="body2" className="article-author">
-                  by {article.authorName}
-                </Typography>
-                {/* <Typography variant="body2" className="article-date">{article.publicationDate.toDateString()}</Typography> */}
-              </div>
-            </div>
+            <CardHeader
+              avatar={
+                <Avatar
+                  alt={article.authorName}
+                  src={article.authorProfileImage}
+                />
+              }
+              title={article.authorName}
+              subheader={article.timeAgo}
+            />
+
             <CardContent className="article-details">
               <Typography
                 variant="h5"
@@ -95,24 +100,26 @@ const ArticlesHomepage: React.FC = () => {
                 {article.description}
               </Typography>
               <div className="meta-info">
-                <Typography variant="body2" className="time-ago">
-                  {article.timeAgo}
-                </Typography>
                 <Typography variant="body2" className="read-time">
                   {article.readTime}
                 </Typography>
               </div>
-              <div className="icon-section">
-                <IconButton size="small" className="comment-icon">
-                  <i className="bi bi-chat"></i>
-                  <span className="comment-count">{article.commentCount}</span>
-                </IconButton>
-                <IconButton size="small" className="clap-icon">
-                  <img src={ClapIcon} alt="Clap icon" />
-                  <span className="clap-count">{article.clapCount}</span>
-                </IconButton>
-              </div>
             </CardContent>
+
+            <CardActions>
+              <IconButton size="small" className="comment-icon">
+                <ChatBubbleOutlineIcon />
+                <span className="comment-count">{article.commentCount}</span>
+              </IconButton>
+              <IconButton size="small" className="clap-icon">
+                <img
+                  src={ClapIcon}
+                  alt="Clap icon"
+                  style={{ width: "1.3rem" }}
+                />
+                <span className="clap-count">{article.clapCount}</span>
+              </IconButton>
+            </CardActions>
           </Card>
         ))}
       </div>
