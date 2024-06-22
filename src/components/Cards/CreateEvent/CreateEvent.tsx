@@ -294,107 +294,108 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton className="modal_back">
-          <Modal.Title>Create Event</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="modal_back">
-          <Form>
-            <Form.Group controlId="formTitle">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter title"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formDescription">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group controlId="formDate">
-              <Form.Label>Date</Form.Label>
-              <br />
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date) => setStartDate(date)}
-              />
-            </Form.Group>
+      <div className="container w-50 my-5">
+        <h1 className="center">Create Event</h1>
+        <Form>
+          <Form.Group controlId="formTitle">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter title"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setTitle(e.target.value)
+              }
+            />
+          </Form.Group>
+          <Form.Group controlId="formDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(e.target.value)
+              }
+            />
+          </Form.Group>
+          <Form.Group controlId="formDate">
+            <Form.Label>Date</Form.Label>
+            <br />
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date) => setStartDate(date)}
+            />
+          </Form.Group>
 
-            <Form.Group controlId="formTime">
-              <Form.Label>Time</Form.Label>
-              <br />
-              <DatePicker
-                selected={startTime}
-                onChange={(date: Date) => setStartTime(date)}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="h:mm aa"
-              />
-            </Form.Group>
+          <Form.Group controlId="formTime">
+            <Form.Label>Time</Form.Label>
+            <br />
+            <DatePicker
+              selected={startTime}
+              onChange={(date: Date) => setStartTime(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="h:mm aa"
+            />
+          </Form.Group>
 
-            <Form.Group controlId="formTags">
-              <Form.Label>Tags (max 5)</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter tags"
-                onChange={(e) => setPopTags(e.target.value)}
-                onKeyDown={handleKeyDown}
-                value={popTags}
-              />
-              <Stack direction="row" className="mt-2" spacing={1}>
-                {listTags.map((ele, index) => {
-                  return (
-                    <Chip
-                      key={index}
-                      label={ele}
-                      onDelete={() => handleDelete(ele)}
-                      color="success"
-                      variant="outlined"
-                    />
-                  );
-                })}
-              </Stack>
-            </Form.Group>
-            <Form.Group controlId="formImageUpload">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className="modal_back">
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button className="btn-create" onClick={createEventDb}>
+          <Form.Group controlId="formTags">
+            <Form.Label>Tags (max 5)</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter tags"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPopTags(e.target.value)
+              }
+              onKeyDown={handleKeyDown}
+              value={popTags}
+            />
+            <Stack direction="row" className="mt-2" spacing={1}>
+              {listTags.map((ele, index) => (
+                <Chip
+                  key={index}
+                  label={ele}
+                  onDelete={() => handleDelete(ele)}
+                  color="success"
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
+          </Form.Group>
+          <Form.Group controlId="formImageUpload">
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </Form.Group>
+
+          <Modal
+            show={showCropperModal}
+            onHide={() => setShowCropperModal(false)}
+            animation={true}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Crop Image</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {image && (
+                <ImageCropper
+                  setCroppedImageUrl={handleSaveCroppedImage}
+                  src={URL.createObjectURL(image)}
+                  aspectRatio={cropperAspectRatio}
+                />
+              )}
+            </Modal.Body>
+          </Modal>
+
+          <Button className="btn-create mt-3" onClick={createEventDb}>
             Create
           </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={showCropperModal} onHide={() => setShowCropperModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Crop Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {image && (
-            <ImageCropper
-              setCroppedImageUrl={handleSaveCroppedImage}
-              src={URL.createObjectURL(image)}
-              aspectRatio={cropperAspectRatio}
-            />
-          )}
-        </Modal.Body>
-      </Modal>
+        </Form>
+      </div>
     </>
   );
 };

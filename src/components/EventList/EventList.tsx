@@ -1,24 +1,17 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
-import bannerImage3 from "../image_assets/bannerImage3.png";
+import {
+  Pagination,
+  Spinner,
+  DropdownButton,
+  Dropdown,
+  Button,
+} from "react-bootstrap";
 import "./EventList.css";
-import {
-  auth,
-  firestore,
-  database,
-  storage,
-  signInWithGooglePopup,
-} from "../../firebaseConf";
-import GoogleButton from "react-google-button";
-import { ref, get, child, set } from "firebase/database";
-import { toast } from "react-toastify";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import { Grid } from "@mui/material";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { ref, get } from "firebase/database";
+import { database } from "../../firebaseConf";
 
 interface Event {
   banner: string;
@@ -27,11 +20,13 @@ interface Event {
   description: string;
   host: string;
   hostName: string;
+
   id: string;
   registrants: string[];
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const EventList = () => {
@@ -44,6 +39,8 @@ const EventList = () => {
   const [sortOption, setSortOption] = useState<
     "All" | "Ongoing" | "Past" | "Upcoming"
   >("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -76,6 +73,26 @@ const EventList = () => {
     }
   };
 
+  const filterEventsByTitle = (events: Event[], query: string): Event[] => {
+    return events.filter((event) =>
+      event.title.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearch = () => {
+    const trimmedQuery = searchQuery.trim();
+    const filteredEvents = filterEventsByTitle(eventCardsData, trimmedQuery);
+    const sortedFilteredEvents = sortEvents(filteredEvents, sortOption);
+    setSortedEvents(sortedFilteredEvents);
+    setDisplayedEvents(sortedFilteredEvents);
+    setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
+    setCurrentPage(1); // Reset to first page when search is performed
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, "events");
@@ -86,9 +103,9 @@ const EventList = () => {
           const res: Event[] = Object.values(snapshotValue) as Event[];
           res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
           setEventCardsData(res);
-          const filteredEvents = sortEvents(res, sortOption);
-          setSortedEvents(filteredEvents);
-          setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+          setSortedEvents(res);
+          setDisplayedEvents(res);
+          setTotalPages(Math.ceil(res.length / itemsPerPage));
           setIsLoading(false);
         }
       } else {
@@ -101,9 +118,10 @@ const EventList = () => {
   }, []);
 
   useEffect(() => {
-    const filteredEvents = sortEvents(eventCardsData, sortOption);
-    setSortedEvents(filteredEvents);
-    setTotalPages(Math.ceil(filteredEvents.length / itemsPerPage));
+    const sortedFilteredEvents = sortEvents(eventCardsData, sortOption);
+    setSortedEvents(sortedFilteredEvents);
+    setDisplayedEvents(sortedFilteredEvents);
+    setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
   }, [eventCardsData, sortOption]);
 
   const renderNoEventsMessage = (
@@ -121,7 +139,11 @@ const EventList = () => {
         return "No events found";
     }
   };
-
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
     <div
       style={{
@@ -137,16 +159,51 @@ const EventList = () => {
           <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
             All Events
           </h1>
-          <div className="d-flex justify-content-center">
+
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="search-bar-container m-2">
+              <div className="search-input-container">
+                <TextField
+                  type="text"
+                  placeholder="Search by title..."
+                  value={searchQuery}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleSearchInputChange}
+                  className="search-input"
+                  onKeyDown={handleKeyPress}
+                />
+              </div>
+              <div className="search-button-container">
+                <Button
+                  variant="dark"
+                  style={{
+                    backgroundColor: "#5AB2FF",
+                    color: "white",
+                    borderColor: "#5AB2FF",
+                  }}
+                  className="search-button"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon />
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="d-flex justify-content-center align-items-center">
             <DropdownButton
               id="dropdown-basic-button"
               title={`Sort by: ${sortOption}`}
-              variant="dark"
+              style={{
+                backgroundColor: "#5AB2FF",
+                color: "white",
+                borderRadius: "10px",
+              }}
               onSelect={(e: any) => {
                 setSortOption(e);
                 setCurrentPage(1); // Reset to first page when sort option changes
               }}
-              style={{ marginBottom: "1em", textAlign: "center" }}
+              className="m-3"
             >
               <Dropdown.Item eventKey="All">All Events</Dropdown.Item>
               <Dropdown.Item eventKey="Upcoming">Upcoming</Dropdown.Item>
@@ -154,7 +211,7 @@ const EventList = () => {
               <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
             </DropdownButton>
           </div>
-          {sortedEvents.length === 0 ? (
+          {displayedEvents.length === 0 ? (
             <div
               style={{
                 textAlign: "center",
@@ -165,50 +222,37 @@ const EventList = () => {
               {renderNoEventsMessage(sortOption)}
             </div>
           ) : (
-            <Grid container spacing={2} justifyContent="center">
-              {sortedEvents
-                .slice(
-                  (currentPage - 1) * itemsPerPage,
-                  currentPage * itemsPerPage
-                )
-                .map((card: Event, index) => {
-                  const user_uid = localStorage.getItem("userUid");
-                  const isRegistered = card.registrants.includes(user_uid!);
-                  return (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      lg={3}
-                      justifyContent="center"
+            displayedEvents
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+              .map((card: Event, index) => {
+                const user_uid = localStorage.getItem("userUid");
+                const isRegistered = card.registrants.includes(user_uid!);
+                return (
+                  <div className="event-card-wrapper" key={index}>
+                    <EventCard
+                      isValid={true}
+                      id={card.id}
                       key={index}
-                      style={{
-                        maxWidth: 384,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <EventCard
-                        isValid={true}
-                        id={card.id}
-                        key={index}
-                        title={card.title}
-                        description={card.description}
-                        date={card.date}
-                        time={card.time}
-                        tags={card.tags}
-                        host={card.host}
-                        isDashboard={false}
-                        image={card.banner}
-                        isRegistered={isRegistered}
-                        hostName={card.hostName}
-                      />
-                    </Grid>
-                  );
-                })}
-            </Grid>
+                      title={card.title}
+                      description={card.description}
+                      date={card.date}
+                      time={card.time}
+                      tags={card.tags}
+                      host={card.host}
+                      isDashboard={false}
+                      image={card.banner}
+                      isRegistered={isRegistered}
+                      hostName={card.hostName}
+                      lastEdited={card.lastEdited}
+                    />
+                  </div>
+                );
+              })
           )}
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((_, i) => (

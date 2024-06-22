@@ -2,6 +2,10 @@
   border-radius: 10px;
   position: relative;
 }
+.event-detailcontainer {
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
 .card-image {
   pointer-events: none;
   border-radius: 10px 10px 10px 10px;

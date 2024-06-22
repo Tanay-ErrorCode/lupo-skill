@@ -6,7 +6,6 @@ import ProfilePage from "../ProfilePage/ProfilePage";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import "./DashBoard.css";
 import EventCard from "../Cards/EventCard/EventCard";
-import { Grid } from "@mui/material";
 
 import {
   auth,
@@ -24,6 +23,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { reload } from "firebase/auth";
+import PageTitle from "../../utils/PageTitle";
 
 interface Event {
   banner: string;
@@ -37,6 +37,7 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
 }
 
 const Dashboard = () => {
@@ -49,7 +50,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
-      toast.warn("You are not signed in", { transition: Zoom });
     }
 
     const fetchData = async () => {
@@ -115,7 +115,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingTop: "6.5em",
+      }}
+    >
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
@@ -130,59 +134,42 @@ const Dashboard = () => {
           >
             Created Events
           </h1>
-          <Grid container spacing={2} justifyContent="center">
-            {eventCardsData
-              .slice(
-                (currentPage - 1) * itemsPerPage,
-                currentPage * itemsPerPage
+
+          {eventCardsData
+            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+            .map(
+              (
+                card: {
+                  id: string;
+                  title: string;
+                  description: string;
+                  date: string;
+                  time: string;
+                  tags: string;
+                  banner: string;
+                  host: string;
+                  hostName: string;
+                  lastEdited?: number;
+                },
+                index
+              ) => (
+                <EventCard
+                  isValid={false}
+                  id={card.id}
+                  key={index}
+                  title={card.title}
+                  description={card.description}
+                  date={card.date}
+                  time={card.time}
+                  tags={card.tags}
+                  host={card.host}
+                  isDashboard={true}
+                  image={card.banner}
+                  hostName={card.hostName}
+                  lastEdited={card.lastEdited}
+                />
               )
-              .map(
-                (
-                  card: {
-                    id: string;
-                    title: string;
-                    description: string;
-                    date: string;
-                    time: string;
-                    tags: string;
-                    banner: string;
-                    host: string;
-                    hostName: string;
-                  },
-                  index
-                ) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
-                    justifyContent="center"
-                    key={index}
-                    style={{
-                      maxWidth: 384,
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <EventCard
-                      isValid={false}
-                      id={card.id}
-                      key={index}
-                      title={card.title}
-                      description={card.description}
-                      date={card.date}
-                      time={card.time}
-                      tags={card.tags}
-                      host={card.host}
-                      isDashboard={true}
-                      image={card.banner}
-                      hostName={card.hostName}
-                    />
-                  </Grid>
-                )
-              )}
-          </Grid>
+            )}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Pagination>
               {[...Array(totalPages)].map((_, i) => (

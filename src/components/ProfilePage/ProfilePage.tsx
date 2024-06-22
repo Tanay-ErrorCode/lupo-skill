@@ -13,16 +13,19 @@ import default_user from "../image_assets/default_user.png";
 import bannerImage from "../image_assets/bannerImage.png";
 import EventCard from "../Cards/EventCard/EventCard";
 import EditProfile from "../Cards/EditProfile/EditProfile";
-
+import EditEventModal from "../Cards/EditEventModal/EditEventModal";
 import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
-import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+// import { Instagram, Twitter, Facebook } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import { X } from "@mui/icons-material";
-import { Grid } from "@mui/material";
+import PageTitle from "../../utils/PageTitle";
+import { classifyLink } from "../../utils/InputLink";
 
 const currentUserUid = localStorage.getItem("userUid");
+
 interface Event {
   banner: string;
   createdAt: number;
@@ -35,6 +38,10 @@ interface Event {
   tags: string;
   time: string;
   title: string;
+  lastEdited?: number;
+}
+interface Link {
+  [key: string]: string;
 }
 
 const ProfilePage = () => {
@@ -44,11 +51,14 @@ const ProfilePage = () => {
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
   const [isJLoading, setIsJLoading] = useState(true);
-
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [joinedEventCardsData, setJoinedEventCardsData] = useState<Event[]>([]);
   const [createdEventCardsData, setCreatedEventCardsData] = useState<Event[]>(
     []
   );
+  const [banner, setBanner] = useState<string | null>(null);
+  const [links, setLinks] = useState<Link>({});
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
 
@@ -56,6 +66,10 @@ const ProfilePage = () => {
   if (userUid === null) {
     window.location.href = "#/";
   }
+  const openEditModal = (event: Event) => {
+    setCurrentEvent(event);
+    setShowEditModal(true);
+  };
 
   useEffect(() => {
     if (!userUid) {
@@ -117,11 +131,7 @@ const ProfilePage = () => {
       ) as HTMLParagraphElement;
       const tags = document.getElementById("tags") as HTMLElement;
       const website = document.getElementById("website") as HTMLSpanElement;
-      const instagram = document.getElementById(
-        "instagram"
-      ) as HTMLAnchorElement;
-      const twitter = document.getElementById("twitter") as HTMLAnchorElement;
-      const facebook = document.getElementById("facebook") as HTMLAnchorElement;
+
       const userName = document.getElementById(
         "user-name"
       ) as HTMLHeadingElement;
@@ -139,50 +149,10 @@ const ProfilePage = () => {
       const isValidUrl = (url: string) => {
         return url.startsWith("https://");
       };
+      setLinks(userData.links || {});
 
-      if (
-        userData.instagram &&
-        isValidUrl(userData.instagram.trim()) &&
-        userData.instagram != "https://" &&
-        userData.instagram != ""
-      ) {
-        instagram.href = userData.instagram;
-        instagram.style.opacity = "1.0";
-        instagram.style.pointerEvents = "auto";
-      } else {
-        instagram.style.opacity = "0.5";
-        instagram.style.pointerEvents = "none";
-      }
+      setBanner(userData.banner);
 
-      if (
-        userData.twitter &&
-        isValidUrl(userData.twitter.trim()) &&
-        userData.twitter != "https://" &&
-        userData.twitter != ""
-      ) {
-        twitter.href = userData.twitter;
-        twitter.style.opacity = "1.0";
-        twitter.style.pointerEvents = "auto";
-      } else {
-        twitter.style.opacity = "0.5";
-        twitter.style.pointerEvents = "none";
-      }
-
-      if (
-        userData.facebook &&
-        isValidUrl(userData.facebook.trim()) &&
-        userData.facebook != "https://" &&
-        userData.facebook != ""
-      ) {
-        facebook.href = userData.facebook;
-        facebook.style.opacity = "1.0";
-        facebook.style.pointerEvents = "auto";
-      } else {
-        facebook.style.opacity = "0.5";
-        facebook.style.pointerEvents = "none";
-      }
-
-      profileBanner.src = userData.banner || bannerImage;
       profileImage.src = userData.pic || default_user;
 
       const tagsArray = userData.tags ? userData.tags.split(",") : ["none"];
@@ -206,137 +176,132 @@ const ProfilePage = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="gutters-sm">
-        <Col md={4} className="mb-3">
-          <div className="card">
-            <div className="card-body">
-              <div className="profile-banner-wrapper position-relative">
-                <Image
-                  src={bannerImage}
-                  alt="Banner"
-                  className="profile-banner"
-                  fluid
-                  id="profile-banner"
-                  style={{ pointerEvents: "none", borderRadius: "16px" }}
-                />
-                <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
-                  <Image
-                    src={default_user}
-                    alt="Admin"
-                    className="profile-round"
-                    width={150}
-                    id="profile-image"
-                  />
-                </div>
-              </div>
-              <div className="mt-5 text-center">
-                <h4 id="user-name">Sample User</h4>
-                <p className="text-secondary mb-1" id="headline">
-                  Developer
-                </p>
-                <div id="tags">
-                  {["dev", "designer", "react", "angular", "vue"].map(
-                    (tag, index) => (
-                      <span key={index} className="tag badge me-2">
-                        {tag}
-                      </span>
-                    )
+    <>
+      <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
+      <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
+        <Row className="gutters-sm">
+          <Col md={4} className="mb-3">
+            <div className="card">
+              <div className="card-body">
+                <div className="profile-banner-wrapper position-relative">
+                  {banner && !banner.startsWith("#") ? (
+                    <Image
+                      src={banner}
+                      alt="Banner"
+                      className="profile-banner"
+                      fluid
+                      id="profile-banner"
+                      style={{ pointerEvents: "none", borderRadius: "16px" }}
+                    />
+                  ) : (
+                    <div
+                      className="profile-banner-color"
+                      style={{
+                        backgroundColor: `${banner}`, // Use backgroundColor instead of background
+                        borderRadius: "16px",
+                        height: "200px", // Example height, you can adjust as needed
+                      }}
+                    ></div>
                   )}
+                  <div className="profile-image-overlay position-absolute top-100 start-50 translate-middle">
+                    <Image
+                      src={default_user}
+                      alt="Admin"
+                      className="profile-round"
+                      width={150}
+                      id="profile-image"
+                    />
+                  </div>
                 </div>
-              </div>
+                <div className="mt-5 text-center">
+                  <h4 id="user-name">Sample User</h4>
+                  <p className="text-secondary mb-1" id="headline">
+                    Developer
+                  </p>
+                  <div id="tags">
+                    {["dev", "designer", "react", "angular", "vue"].map(
+                      (tag, index) => (
+                        <span key={index} className="tag badge me-2">
+                          {tag}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
 
-              <div className="d-flex justify-content-center mt-2">
-                {currentUserUid === id && <EditProfile />}
+                <div className="d-flex justify-content-center mt-2">
+                  {currentUserUid === id && <EditProfile />}
+                </div>
               </div>
             </div>
-          </div>
-          <Card className="mt-3">
-            <Card.Body>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-globe mr-2 icon-inline"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="2" y1="12" x2="22" y2="12"></line>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path>
-                    </svg>
-                    Website
-                  </h6>
-                  <span className="text-secondary" id="website">
-                    NAN
-                  </span>
-                  <div className="social-media-list d-flex justify-content-center align-items-center flex-wrap">
-                    <div className="social-media-item">
-                      <a
-                        id="instagram"
-                        href=""
-                        target="_blank"
-                        rel="noopener noreferrer"
+            <Card className="mt-3">
+              <Card.Body>
+                <ul className="list-group list-group-flush">
+                  <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 className="mb-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="feather feather-globe mr-2 icon-inline"
                       >
-                        <Instagram className="instagram-icon" />
-                      </a>
-                      <span className="social-media-label" />
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path>
+                      </svg>
+                      Website
+                    </h6>
+                    <span className="text-secondary" id="website">
+                      NAN
+                    </span>
+                    <div className=" d-flex justify-content-center align-items-center flex-wrap ">
+                      {Object.keys(links).map((key, index) => {
+                        const linkInfo = classifyLink(links[key]);
+                        const IconComponent = linkInfo.icon;
+                        return (
+                          <div className="mb-2" key={index}>
+                            <a
+                              href={links[key]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="d-flex align-items-center text-black text-decoration-none"
+                            >
+                              <IconComponent size={24} className="me-2" />
+                            </a>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <div className="social-media-item">
-                      <a
-                        id="twitter"
-                        href=""
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <X className="x-icon" />
-                      </a>
-                      <span className="social-media-label" />
-                    </div>
-                    <div className="social-media-item">
-                      <a
-                        id="facebook"
-                        href=""
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Facebook className="facebook-icon" />
-                      </a>
-                      <span className="social-media-label" />
-                    </div>
+                  </li>
+                </ul>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={8}>
+            <Card className="mb-3">
+              <Card.Body>
+                <Row>
+                  <Col sm={3}>
+                    <h6 className="mb-0">Created Events</h6>
+                  </Col>
+                </Row>
+                <hr />
+                {isCLoading ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" />
                   </div>
-                </li>
-              </ul>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={8}>
-          <Card className="mb-3">
-            <Card.Body>
-              <Row>
-                <Col sm={3}>
-                  <h6 className="mb-0">Created Events</h6>
-                </Col>
-              </Row>
-              <hr />
-              {isCLoading ? (
-                <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
-                </div>
-              ) : (
-                <div>
-                  {createdEventCardsData.length === 0 ? (
-                    <p className="text-center">No Events created</p>
-                  ) : (
-                    <Grid container spacing={1} justifyContent="center">
-                      {createdEventCardsData
+                ) : (
+                  <div>
+                    {createdEventCardsData.length === 0 ? (
+                      <p className="text-center">No Events created</p>
+                    ) : (
+                      createdEventCardsData
                         .slice(
                           (currentCreatedPage - 1) * itemsPerPage,
                           currentCreatedPage * itemsPerPage
@@ -348,20 +313,7 @@ const ProfilePage = () => {
                             isRegistered = true;
                           }
                           return (
-                            <Grid
-                              item
-                              xs={12}
-                              sm={12}
-                              md={6}
-                              lg={6}
-                              justifyContent="center"
-                              key={index}
-                              style={{
-                                maxWidth: 384,
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
+                            <div style={{ display: "flex" }}>
                               <EventCard
                                 isValid={true}
                                 isRegistered={isRegistered}
@@ -376,110 +328,122 @@ const ProfilePage = () => {
                                 isDashboard={false}
                                 image={card.banner}
                                 hostName={card.hostName}
+                                showEditIcon={true} // Pass showEditIcon prop as true
+                                showDeleteIcon={true}
+                                onEditEvent={() => openEditModal(card)}
+                                lastEdited={card.lastEdited} // Pass the last edited timestamp
                               />
-                            </Grid>
+                            </div>
                           );
-                        })}
-                    </Grid>
-                  )}
+                        })
+                    )}
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Pagination>
+                    {[...Array(totalCreatedPages)].map((_, i) => (
+                      <Pagination.Item
+                        key={i + 1}
+                        active={i + 1 === currentCreatedPage}
+                        onClick={() => {
+                          handleCreatedPageChange(i + 1);
+                          window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: "smooth",
+                          });
+                        }}
+                      >
+                        {i + 1}
+                      </Pagination.Item>
+                    ))}
+                  </Pagination>
                 </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination>
-                  {[...Array(totalCreatedPages)].map((_, i) => (
-                    <Pagination.Item
-                      key={i + 1}
-                      active={i + 1 === currentCreatedPage}
-                      onClick={() => {
-                        handleCreatedPageChange(i + 1);
-                        window.scrollTo({
-                          top: 0,
-                          left: 0,
-                          behavior: "smooth",
-                        });
-                      }}
-                    >
-                      {i + 1}
-                    </Pagination.Item>
-                  ))}
-                </Pagination>
-              </div>
-            </Card.Body>
-          </Card>
-          <Card className="mb-3">
-            <Card.Body>
-              <Row>
-                <Col sm={3}>
-                  <h6 className="mb-0">Joined Events</h6>
-                </Col>
-              </Row>
-              <hr />
-              {isJLoading ? (
-                <div className="d-flex justify-content-center align-items-center">
-                  <Spinner animation="border" />
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Row>
+                  <Col sm={3}>
+                    <h6 className="mb-0">Joined Events</h6>
+                  </Col>
+                </Row>
+                <hr />
+                {isJLoading ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" />
+                  </div>
+                ) : (
+                  <div>
+                    {joinedEventCardsData.length === 0 ? (
+                      <p className="text-center">No Events joined</p>
+                    ) : (
+                      joinedEventCardsData
+                        .slice(
+                          (currentJoinedPage - 1) * itemsPerPage,
+                          currentJoinedPage * itemsPerPage
+                        )
+                        .map((card: Event, index) => {
+                          const user_uid = localStorage.getItem("userUid");
+                          let isRegistered = false;
+                          if (card.registrants.includes(user_uid!)) {
+                            isRegistered = true;
+                          }
+                          return (
+                            <EventCard
+                              isValid={true}
+                              isRegistered={isRegistered}
+                              id={card.id}
+                              key={index}
+                              title={card.title}
+                              description={card.description}
+                              date={card.date}
+                              time={card.time}
+                              tags={card.tags}
+                              host={card.host}
+                              isDashboard={false}
+                              image={card.banner}
+                              hostName={card.hostName}
+                            />
+                          );
+                        })
+                    )}
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Pagination>
+                    {[...Array(totalJoinedPages)].map((_, i) => (
+                      <Pagination.Item
+                        key={i + 1}
+                        active={i + 1 === currentJoinedPage}
+                        onClick={() => {
+                          handleJoinedPageChange(i + 1);
+                          window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: "smooth",
+                          });
+                        }}
+                      >
+                        {i + 1}
+                      </Pagination.Item>
+                    ))}
+                  </Pagination>
                 </div>
-              ) : (
-                <div>
-                  {joinedEventCardsData.length === 0 ? (
-                    <p className="text-center">No Events joined</p>
-                  ) : (
-                    joinedEventCardsData
-                      .slice(
-                        (currentJoinedPage - 1) * itemsPerPage,
-                        currentJoinedPage * itemsPerPage
-                      )
-                      .map((card: Event, index) => {
-                        const user_uid = localStorage.getItem("userUid");
-                        let isRegistered = false;
-                        if (card.registrants.includes(user_uid!)) {
-                          isRegistered = true;
-                        }
-                        return (
-                          <EventCard
-                            isValid={true}
-                            isRegistered={isRegistered}
-                            id={card.id}
-                            key={index}
-                            title={card.title}
-                            description={card.description}
-                            date={card.date}
-                            time={card.time}
-                            tags={card.tags}
-                            host={card.host}
-                            isDashboard={false}
-                            image={card.banner}
-                            hostName={card.hostName}
-                          />
-                        );
-                      })
-                  )}
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Pagination>
-                  {[...Array(totalJoinedPages)].map((_, i) => (
-                    <Pagination.Item
-                      key={i + 1}
-                      active={i + 1 === currentJoinedPage}
-                      onClick={() => {
-                        handleJoinedPageChange(i + 1);
-                        window.scrollTo({
-                          top: 0,
-                          left: 0,
-                          behavior: "smooth",
-                        });
-                      }}
-                    >
-                      {i + 1}
-                    </Pagination.Item>
-                  ))}
-                </Pagination>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <EditEventModal
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          event={currentEvent}
+          refreshEvents={() => {
+            // Function to refresh events after editing
+          }}
+        />
+      </Container>
+    </>
   );
 };
 

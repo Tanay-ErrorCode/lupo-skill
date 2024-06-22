@@ -1,0 +1,119 @@
+.happy {
+  text-align: center;
+  color: white;
+  margin: 50px 0px;
+  font-weight: bold;
+}
+.box {
+  background-color: white;
+}
+.carousel-item {
+  transition: transform 1.5s ease, opacity 1.5s ease !important;
+  padding: 20px;
+}
+
+.testimonial-card:hover {
+  transform: scale(1.02);
+  background: repeating-conic-gradient(
+    from var(--a),
+    rgb(255, 242, 0) 30%,
+    rgb(255, 242, 0) 40%,
+    rgb(0, 172, 249) 70%
+  );
+  animation: animate 1.5s linear infinite;
+}
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes animate {
+  0% {
+    --a: 0deg;
+  }
+  100% {
+    --a: 360deg;
+  }
+}
+
+.testimonial-image {
+  animation: none !important;
+  transition: none !important;
+}
+.testimonial-image:hover {
+  animation: none !important;
+  transition: none !important;
+}
+
+@keyframes rotate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  /* 100% {
+    filter: hue-rotate(360deg);
+  } */
+}
+
+.carousel-indicators {
+  transform: translateY(4rem);
+  gap: 1rem;
+  margin: 0px 0px 0px 0px !important;
+  width: 100% !important;
+}
+.carousel-indicators button {
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50%;
+}
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  display: none !important;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  display: none !important;
+}
+@media (max-width: 800) {
+  .happy {
+    margin: 60px 0px;
+  }
+}
+/* testimonial.css */
+.testimonial-card {
+  max-width: 323;
+  margin-bottom: 20px;
+  height: 300px; /* Ensure all cards have the same height */
+  background-color: white;
+}
+
+@media (max-width: 1240px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 1060px) {
+  .testimonial-card {
+    height: 440px;
+  }
+}
+@media (max-width: 900px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+@media (max-width: 678px) {
+  .testimonial-card {
+    height: 350px;
+  }
+}
+
+@media (max-width: 598px) {
+  .testimonial-card {
+    height: 250px;
+  }
+}
+@media (max-width: 450px) {
+  .testimonial-card {
+    height: 400px;
+  }
+}
