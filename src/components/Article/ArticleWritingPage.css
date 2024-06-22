@@ -2,12 +2,8 @@
 .article-write {
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  margin-top: 100px;
+  margin: 10rem;
   padding: 40px;
-  min-height: 100vh;
-  box-sizing: border-box;
 }
 
 .article-form {
