@@ -122,7 +122,7 @@ const HomePage = () => {
             lg={6}
             style={{
               color: "#ffffff",
-              paddingTop: "5.5rem",
+              paddingTop: "10rem",
             }}
           >
             <Grid container direction="column" spacing={2}>
