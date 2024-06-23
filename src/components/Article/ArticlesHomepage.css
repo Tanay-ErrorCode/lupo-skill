@@ -1,6 +1,7 @@
 .articlehomepage-div {
   margin-top: 100px !important;
   padding: 20px;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
 }
 .Articlehead {
