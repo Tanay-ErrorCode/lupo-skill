@@ -1,7 +1,7 @@
 ![gssoc](https://github.com/Tanay-ErrorCode/lupo-skill/assets/90561803/f76d8b71-4cb9-4fe5-9b6a-7ce2f73b7dbc)
 ![github-header-image](https://github.com/Tanay-ErrorCode/lupo-skill/assets/90561803/4a4493cb-5896-4b7a-9847-76187f46f40a)
 
-<div align="center">
+<div align="center"> .
   <a href="https://github.com/Tanay-ErrorCode/lupo-skill" >
     <img src="https://img.shields.io/github/commit-activity/w/Tanay-ErrorCode/lupo-skill" alt="GitHub commit activity">
   </a>
