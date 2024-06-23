@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { Card, Button, Container, Row, Col, Dropdown } from "react-bootstrap";
 import "./EventCard.css";
 import { Link } from "@mui/material";
 import {
@@ -13,9 +13,15 @@ import GoogleButton from "react-google-button";
 import { ref, get, child, set, update, remove } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
+import ShareIcon from "@mui/icons-material/Share";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PageTitle from "../../../utils/PageTitle";
 import moment from "moment";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import EmailIcon from "@mui/icons-material/Email";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 interface EventCardProps {
   title: string;
@@ -39,6 +45,9 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = (props) => {
   const [registerData, setRegisterData] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | SVGSVGElement | null>(
+    null
+  );
 
   useEffect(() => {
     fetchUserData();
@@ -212,6 +221,22 @@ const EventCard: React.FC<EventCardProps> = (props) => {
       toast.error("Failed to delete event", { transition: Zoom });
     }
   };
+  const handleShareClick = (event: React.MouseEvent<SVGSVGElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const shareUrl = window.location.href;
+  const shareText = `${props.title}\n${props.description}\n${shareUrl}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Link copied to clipboard", { transition: Zoom });
+    handleClose();
+  };
 
   const date = new Date(props.date);
   const year = date.getFullYear();
@@ -237,7 +262,78 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                   className="card_image"
                 />
                 <Card.Body style={{ position: "relative" }}>
-                  <Card.Title>{props.title}</Card.Title>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Card.Title>{props.title}</Card.Title>
+                    <div>
+                      <ShareIcon
+                        style={{ width: "22px", cursor: "pointer" }}
+                        onClick={handleShareClick} // Correct type for the event
+                      />
+                      <Dropdown.Menu
+                        show={Boolean(anchorEl)}
+                        onClick={handleClose}
+                      >
+                        <Dropdown.Item onClick={handleClose}>
+                          <span style={{ marginRight: "auto" }}>X</span>{" "}
+                          {/* Replace with your close icon */}
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            window.open(
+                              `https://wa.me/?text=${encodeURIComponent(
+                                shareText
+                              )}`,
+                              "_blank"
+                            );
+                            handleClose();
+                          }}
+                        >
+                          <WhatsAppIcon style={{ color: "#25D366" }} /> WhatsApp
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            window.open(
+                              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                shareUrl
+                              )}`,
+                              "_blank"
+                            );
+                            handleClose();
+                          }}
+                        >
+                          <LinkedInIcon style={{ color: "#0A66C2" }} /> LinkedIn
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            window.open(
+                              `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                                shareText
+                              )}`,
+                              "_blank"
+                            );
+                            handleClose();
+                          }}
+                        >
+                          <TwitterIcon /> Twitter
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            window.location.href = `mailto:?subject=${encodeURIComponent(
+                              props.title
+                            )}&body=${encodeURIComponent(shareText)}`;
+                            handleClose();
+                          }}
+                        >
+                          <EmailIcon style={{ color: "#EA4335" }} /> Email
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={copyToClipboard}>
+                          <ContentCopyIcon /> Copy Link
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </div>
+                  </div>
                   <Card.Text>
                     <div className="d-flex align-items-center mb-2">
                       <i className="bi bi-calendar"></i>{" "}
