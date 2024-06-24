@@ -20,12 +20,21 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Person2Icon from "@mui/icons-material/Person2";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { Brightness4, Brightness7, Height } from "@mui/icons-material";
 import NotificationsPanel from "../Notification/NotificationsPanel";
 import { Switch } from "@mui/material";
 
@@ -117,75 +126,59 @@ const NavBar = () => {
 
   const mobileMenuItems = (
     <>
-      <MenuItem
-        component={Link}
-        to="/"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+      <List>
+        {[
+          {
+            route: "/",
+            text: "Home",
+            img: "https://cdn-icons-png.flaticon.com/128/69/69524.png",
           },
-        }}
-      >
-        Home
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/dashboard"
-        onClick={() => {
-          handleMobileMenuClose();
-          handleDashboard();
-        }}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/dashboard",
+            text: "DashBoard",
+            img: "https://cdn-icons-png.flaticon.com/128/1828/1828791.png",
           },
-        }}
-      >
-        Dashboard
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/events"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/events",
+            text: "Events",
+            img: "https://cdn-icons-png.flaticon.com/128/2886/2886665.png",
           },
-        }}
-      >
-        Events
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/article"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/article",
+            text: "Articles",
+            img: "https://cdn-icons-png.flaticon.com/128/10549/10549582.png",
           },
-        }}
-      >
-        Articles
-      </MenuItem>
+          {
+            route: "/createEvent",
+            text: "Create Event",
+            img: "https://cdn-icons-png.flaticon.com/128/9751/9751919.png",
+          },
+        ].map((item, index) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={item.route}
+              onClick={handleMobileMenuClose}
+            >
+              <ListItemIcon>
+                <img
+                  src={item.img}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    filter: "invert(1)",
+                    cursor: "pointer",
+                  }}
+                  alt={item.text}
+                />
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
       <StyledMenuItem onClick={toggleTheme}>
-        Mode:{" "}
+        Mode
         <CustomSwitch
           checked={mode}
           onChange={toggleTheme}
@@ -194,22 +187,6 @@ const NavBar = () => {
           color="default"
         />
       </StyledMenuItem>
-      <MenuItem
-        component={Link}
-        to="/createEvent"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
-          },
-        }}
-      >
-        Create Event
-      </MenuItem>
     </>
   );
 
@@ -277,7 +254,7 @@ const NavBar = () => {
                     : theme.fontSize.subheading,
                 }}
               >
-                Lupo Skill
+                Drawer Lupo Skill
               </Typography>
             </Box>
 
@@ -628,10 +605,21 @@ const NavBar = () => {
                   },
                 }}
               >
-                {" "}
-                <Box sx={{ backgroundColor: "#0F0F0F", width: "100%" }}>
-                  {mobileMenuItems}
-                </Box>
+                <Drawer
+                  anchor="top"
+                  open={true}
+                  onClose={() => setExpanded(false)}
+                >
+                  <Box
+                    sx={{
+                      backgroundColor: "#0F0F0F",
+                      width: "auto",
+                      color: "white",
+                    }}
+                  >
+                    {mobileMenuItems}
+                  </Box>
+                </Drawer>
               </Menu>
             )}
           </Box>
