@@ -13,15 +13,7 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAL2YcjHFi9fu3oQO8-5Xu8nPuqL50_PK8",
-  authDomain: "blog-21e12.firebaseapp.com",
-  projectId: "blog-21e12",
-  storageBucket: "blog-21e12.appspot.com",
-  messagingSenderId: "443276828992",
-  appId: "1:443276828992:web:a3cdce97c651b20c7e1aa5",
-  measurementId: "G-KBYX3DQ740",
-};
+const firebaseConfig = {};
 
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
