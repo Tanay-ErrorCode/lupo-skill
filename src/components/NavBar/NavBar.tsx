@@ -34,7 +34,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Person2Icon from "@mui/icons-material/Person2";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Brightness4, Brightness7, Height } from "@mui/icons-material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 import NotificationsPanel from "../Notification/NotificationsPanel";
 import { Switch } from "@mui/material";
 
@@ -254,7 +254,7 @@ const NavBar = () => {
                     : theme.fontSize.subheading,
                 }}
               >
-                Drawer Lupo Skill
+                Lupo Skill
               </Typography>
             </Box>
 
@@ -606,15 +606,15 @@ const NavBar = () => {
                 }}
               >
                 <Drawer
-                  anchor="top"
+                  anchor="right"
                   open={true}
                   onClose={() => setExpanded(false)}
                 >
                   <Box
                     sx={{
-                      backgroundColor: "#0F0F0F",
-                      width: "auto",
-                      color: "white",
+                      color: theme.colors.lightBackground,
+                      background: theme.colors.darkBackground,
+                      height: "100%",
                     }}
                   >
                     {mobileMenuItems}
