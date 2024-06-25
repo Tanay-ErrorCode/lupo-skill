@@ -38,6 +38,9 @@ const ArticlePage: React.FC = () => {
 
   useEffect(() => {
     const fetchArticle = async () => {
+      if (localStorage.getItem("userUid") == null) {
+        window.location.href = "#/";
+      }
       try {
         const articleRef = ref(database, `articles/${id}`);
         const snapshot = await get(articleRef);

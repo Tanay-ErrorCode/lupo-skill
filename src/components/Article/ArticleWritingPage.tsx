@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { TextField, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import "./ArticleWritingPage.css";
@@ -44,6 +44,11 @@ const ArticleWritingPage: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("userUid") == null) {
+      window.location.href = "#/";
+    }
+  });
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
