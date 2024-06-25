@@ -18,6 +18,7 @@ import { ScrollToTop } from "./components/Scrolltotop";
 import CreateEvent from "./components/Cards/CreateEvent/CreateEvent";
 import ArticlesHomepage from "./components/Article/ArticlesHomepage";
 import ArticleWritingPage from "./components/Article/ArticleWritingPage";
+import ArticlePage from "./components/Article/ArticlePage";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="*" element={<ErrorPage />} />
           <Route path="/article" element={<ArticlesHomepage />} />
           <Route path="/article/write" element={<ArticleWritingPage />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </HashRouter>
       <Footer />

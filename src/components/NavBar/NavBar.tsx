@@ -171,7 +171,10 @@ const NavBar = () => {
       <MenuItem
         component={Link}
         to="/article"
-        onClick={handleMobileMenuClose}
+        onClick={() => {
+          handleMobileMenuClose();
+          handleDashboard();
+        }}
         sx={{
           fontWeight: 700,
           color: "white",
@@ -417,7 +420,7 @@ const NavBar = () => {
               </Button>
               <Button
                 href="#/article"
-                onClick={handleMobileMenuClose}
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,

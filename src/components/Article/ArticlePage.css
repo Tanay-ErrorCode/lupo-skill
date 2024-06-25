@@ -1,0 +1,30 @@
+.article-container {
+  padding: 2rem 0;
+  margin-top: 100px;
+}
+
+.article-paper {
+  padding: 2rem;
+}
+
+.article-avatar {
+  width: 50px;
+  height: 50px;
+}
+.articlepage-title {
+  font-weight: 600 !important;
+}
+.article-content {
+  margin-top: 2rem;
+}
+
+.article-content h2 {
+  margin-top: 1.5rem;
+}
+.artcle-page-up {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.189);
+}
+
+.article-content p {
+  margin-bottom: 1rem;
+}

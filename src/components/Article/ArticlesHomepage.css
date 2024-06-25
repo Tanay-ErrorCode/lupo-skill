@@ -32,6 +32,7 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #fff;
+  cursor: pointer;
 }
 
 .author-section {
@@ -53,6 +54,12 @@
   font-size: 20px;
   margin: 0;
   color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .article-title a {
@@ -77,6 +84,12 @@
   font-size: 14px;
   color: #666;
   margin: 10px 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .meta-info {
