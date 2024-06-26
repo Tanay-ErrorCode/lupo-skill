@@ -265,7 +265,7 @@ const NavBar = () => {
                 variant="h6"
                 noWrap
                 component="a"
-                href="#/"
+                href="/"
                 sx={{
                   fontWeight: 700,
                   color: "inherit",
@@ -301,7 +301,7 @@ const NavBar = () => {
               }}
             >
               <Button
-                href="#/"
+                href="/"
                 sx={{
                   boxSizing: "border-box",
                   fontWeight: 700,
@@ -340,7 +340,7 @@ const NavBar = () => {
                 Home
               </Button>
               <Button
-                href="#/dashboard"
+                href="/dashboard"
                 onClick={handleDashboard}
                 sx={{
                   boxSizing: "border-box",
@@ -378,7 +378,7 @@ const NavBar = () => {
                 Dashboard
               </Button>
               <Button
-                href="#/events"
+                href="/events"
                 onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
@@ -416,7 +416,7 @@ const NavBar = () => {
                 Events
               </Button>
               <Button
-                href="#/article"
+                href="/article"
                 onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
@@ -455,7 +455,7 @@ const NavBar = () => {
               </Button>
 
               <Button
-                href="#/createEvent"
+                href="/createEvent"
                 onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
