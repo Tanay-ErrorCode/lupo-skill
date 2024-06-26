@@ -16,7 +16,8 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import ImageCropper from "../../../utils/ImageCropper";
 import DropZone from "../../../utils/DropZone";
-import { Box, Container, TextField, Typography } from "@mui/material";
+import { Box, Card, CardHeader, Container, TextField, Typography } from "@mui/material";
+import theme from "../../../theme";
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -286,9 +287,9 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
       )}
 
-      <Container className="container">
+      <Container className="containerCreate">
         <Box className="Create_event_box">
-          <Box className="box1">
+          <Card className="box1" >
             <Typography variant="h5" className="font-bold">
               Event Info
             </Typography>
@@ -323,6 +324,28 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   }
                 />
               </Box>
+          <Form.Group controlId="formDate" style={{zIndex:100}}>
+            <Form.Label>Date</Form.Label>
+            <br />
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date) => setStartDate(date)}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formTime" style={{zIndex:100}}>
+            <Form.Label>Time</Form.Label>
+            <br />
+            <DatePicker
+              selected={startTime}
+              onChange={(date: Date) => setStartTime(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="h:mm aa"
+            />
+          </Form.Group>
               <Box className="mt-3">
                 <Typography className="create-event-label">
                   Event Tags
@@ -351,9 +374,9 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 </Stack>
               </Box>
             </form>
-          </Box>
+          </Card>
           <Box className="left-create">
-            <Box className="publish-box">
+            <Card className="publish-box">
               <Typography
                 variant="h6"
                 className="create-publish"
@@ -373,8 +396,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   Preview
                 </Button>
               </Box>
-            </Box>
-            <Box className="upload-box">
+            </Card>
+            <Card className="upload-box">
               <Typography variant="h6" className="upload-box-head">
                 Upload Event Banner
               </Typography>
@@ -393,7 +416,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   />
                 )}
               </Box>
-            </Box>
+            </Card>
           </Box>
         </Box>
 
