@@ -1,5 +1,77 @@
-.mainTitle {
-  color: #ffffff;
+.explore-card {
+  border-radius: 4px;
+  box-shadow: 0 0px 8px rgba(212, 212, 212, 0.5);
+  max-width: 300px;
+  padding: 15px;
+  padding-top: 25px;
+  text-align: center;
+  transition: 0.3s;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: 0.8s;
+  z-index: 5;
+}
+
+.explore-card::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: scale(1);
+  transition: opacity 0.6s, transform 0.8s;
+  z-index: -1;
+}
+.explore-card:nth-of-type(1)::before {
+  background-color: #ffffff;
+}
+.explore-card:nth-of-type(2)::before {
+  background-color: #caf4ff;
+}
+.explore-card:nth-of-type(3)::before {
+  background-color: #a0deff;
+}
+.explore-card:nth-of-type(4)::before {
+  background-color: #5ab2ff;
+}
+.explore-card:hover {
+  color: #1b4f69;
+}
+
+.explore-card:hover::before {
+  opacity: 1;
+  transform: scale(10);
+}
+.explore-card i {
+  font-size: 50px;
+}
+
+.explore-card h3 {
+  font-size: 1.2em;
   font-weight: bold;
-  font-size: 2.18rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  margin: 15px 0;
+  padding-bottom: 10px;
+}
+
+.explore-card h3::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 25px);
+  bottom: 0;
+  width: 50px;
+  transition: 0.8s;
+  height: 4px;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+.explore-card:hover h3::after {
+  background-color: #1b4f69;
 }
