@@ -254,22 +254,18 @@ const NavBar = () => {
                 justifyContent: "center",
               }}
             >
-              <img
-                src={logo}
-                width={isSmallScreen ? "42px" : "48px"}
-                height={isSmallScreen ? "42px" : "48px"}
-                alt="Lupo Skill logo"
-                style={{ pointerEvents: "none", marginRight: "10px" }}
-              />
               <Typography
                 variant="h6"
                 noWrap
                 component="a"
-                href="#/"
+                onClick={() => {
+                  window.location.reload();
+                }}
                 sx={{
                   fontWeight: 700,
                   color: "inherit",
                   textDecoration: "none",
+                  cursor: "pointer",
                   fontSize: isSmallScreen
                     ? "1.3rem"
                     : isMediumScreen
@@ -277,6 +273,16 @@ const NavBar = () => {
                     : theme.fontSize.subheading,
                 }}
               >
+                <img
+                  src={logo}
+                  width={isSmallScreen ? "42px" : "48px"}
+                  height={isSmallScreen ? "42px" : "48px"}
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                  alt="Lupo Skill logo"
+                  style={{ pointerEvents: "none", marginRight: "10px" }}
+                />
                 Lupo Skill
               </Typography>
             </Box>

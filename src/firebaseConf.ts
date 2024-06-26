@@ -15,6 +15,7 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase config
+  
 };
 
 const app = firebase.initializeApp(firebaseConfig);
