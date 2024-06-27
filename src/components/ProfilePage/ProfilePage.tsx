@@ -47,6 +47,7 @@ interface Link {
 const ProfilePage = () => {
   const [currentJoinedPage, setCurrentJoinedPage] = useState(1);
   const [currentCreatedPage, setCurrentCreatedPage] = useState(1);
+  const username = localStorage.getItem("username");
   const itemsPerPage = 3;
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
@@ -177,7 +178,9 @@ const ProfilePage = () => {
 
   return (
     <>
-      <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
+      <PageTitle
+        title={username ? `${username} | Lupo Skill` : "Profile | Lupo Skill"}
+      />
       <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
