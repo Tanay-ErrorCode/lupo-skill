@@ -26,6 +26,7 @@ import Drawer from "@mui/material/Drawer";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
@@ -131,27 +132,22 @@ const NavBar = () => {
           {
             route: "/",
             text: "Home",
-            img: "https://cdn-icons-png.flaticon.com/128/69/69524.png",
           },
           {
             route: "/dashboard",
             text: "DashBoard",
-            img: "https://cdn-icons-png.flaticon.com/128/1828/1828791.png",
           },
           {
             route: "/events",
             text: "Events",
-            img: "https://cdn-icons-png.flaticon.com/128/2886/2886665.png",
           },
           {
             route: "/article",
             text: "Articles",
-            img: "https://cdn-icons-png.flaticon.com/128/10549/10549582.png",
           },
           {
             route: "/createEvent",
             text: "Create Event",
-            img: "https://cdn-icons-png.flaticon.com/128/9751/9751919.png",
           },
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
@@ -160,18 +156,6 @@ const NavBar = () => {
               to={item.route}
               onClick={handleMobileMenuClose}
             >
-              <ListItemIcon>
-                <img
-                  src={item.img}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    filter: "invert(1)",
-                    cursor: "pointer",
-                  }}
-                  alt={item.text}
-                />
-              </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
@@ -605,21 +589,23 @@ const NavBar = () => {
                   },
                 }}
               >
-                <Drawer
+                <SwipeableDrawer
                   anchor="right"
                   open={true}
                   onClose={() => setExpanded(false)}
+                  onOpen={() => setExpanded(true)}
                 >
                   <Box
                     sx={{
                       color: theme.colors.lightBackground,
                       background: theme.colors.darkBackground,
                       height: "100%",
+                      width: "300px",
                     }}
                   >
                     {mobileMenuItems}
                   </Box>
-                </Drawer>
+                </SwipeableDrawer>
               </Menu>
             )}
           </Box>
