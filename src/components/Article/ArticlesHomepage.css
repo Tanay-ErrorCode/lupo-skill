@@ -51,7 +51,7 @@
 }
 
 .article-title {
-  font-size: 20px;
+  font-size: var(--font-size-heading);
   margin: 0;
   color: #333;
   display: -webkit-box;
@@ -65,23 +65,23 @@
 .article-title a {
   font-weight: 800;
   text-decoration: none;
-  color: #333;
+  color: var(--color-dark-background);
 }
 
 .article-author {
-  font-size: 14px;
+  font-size: var(--font-size-small-font);
   color: #555;
 }
 
 .article-date,
 .read-time {
-  font-size: 12px;
+  font-size: var(--font-size-small-font);
   color: #777;
 }
 
 .article-description {
   font-weight: 600 !important;
-  font-size: 14px;
+  font-size: var(  --font-size-normal-font  );
   color: #666;
   margin: 10px 0 !important;
   display: -webkit-box;
@@ -99,7 +99,7 @@
 }
 
 .time-ago {
-  font-size: 12px;
+  font-size: var(--font-size-small-font);
   color: #777;
 }
 
@@ -118,7 +118,7 @@
 }
 .clap-count,
 .comment-count {
-  font-size: 12px;
+  font-size: var(--font-size-small-font);
   color: #999;
 }
 .comment-icon,
