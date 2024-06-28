@@ -140,14 +140,14 @@ const NavBar = () => {
           {
             route: "/events",
             text: "Events",
-          },
+          }, 
           {
             route: "/article",
             text: "Articles",
           },
           {
             route: "/createEvent",
-            text: "Create Event",
+            text: "Create Event", 
           },
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
@@ -378,7 +378,7 @@ const NavBar = () => {
               </Button>
               <Button
                 href="#/article"
-                onClick={handleMobileMenuClose}
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,
