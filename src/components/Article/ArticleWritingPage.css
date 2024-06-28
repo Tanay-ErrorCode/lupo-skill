@@ -1,4 +1,3 @@
-
 .article-write {
   display: flex;
   flex-direction: column;
@@ -51,7 +50,7 @@
 
 .submit-button {
   padding: 10px 20px;
-  font-size:  var(--font-size-normal-font);
+  font-size: var(--font-size-normal-font);
   color: #fff;
   background-color: #007bff;
   border: none;

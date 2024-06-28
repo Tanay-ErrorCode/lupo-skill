@@ -57,9 +57,25 @@ function App() {
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="*" element={<ErrorPage />} />
-          <Route path="/article" element={<ArticlesHomepage />} />
-          <Route path="/article/write" element={<ArticleWritingPage />} />
+
           <Route path="/article/:id" element={<ArticlePage />} />
+          <Route
+            path="/article"
+            element={
+              <>
+                <ArticlesHomepage /> <PageTitle title="Articles | Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/article/write"
+            element={
+              <>
+                <ArticleWritingPage />{" "}
+                <PageTitle title="Create Article | Lupo Skill" />
+              </>
+            }
+          />
         </Routes>
       </HashRouter>
       <Footer />

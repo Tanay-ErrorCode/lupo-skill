@@ -81,7 +81,7 @@
 
 .article-description {
   font-weight: 600 !important;
-  font-size: var(  --font-size-normal-font  );
+  font-size: var(--font-size-normal-font);
   color: #666;
   margin: 10px 0 !important;
   display: -webkit-box;

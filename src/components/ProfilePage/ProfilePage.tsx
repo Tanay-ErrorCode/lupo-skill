@@ -47,6 +47,7 @@ interface Link {
 const ProfilePage = () => {
   const [currentJoinedPage, setCurrentJoinedPage] = useState(1);
   const [currentCreatedPage, setCurrentCreatedPage] = useState(1);
+
   const itemsPerPage = 3;
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
@@ -61,7 +62,7 @@ const ProfilePage = () => {
   const [links, setLinks] = useState<Link>({});
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
-
+  const [username, setUsername] = useState<string>("");
   const userUid = localStorage.getItem("userUid");
   if (userUid === null) {
     window.location.href = "#/";
@@ -162,6 +163,7 @@ const ProfilePage = () => {
             `<span key=${index} class="tag badge me-2">${tag}</span>`
         )
         .join("");
+      setUsername(userData.name || "Profile");
     };
 
     fetchData();
@@ -177,7 +179,9 @@ const ProfilePage = () => {
 
   return (
     <>
-      <PageTitle title={`${localStorage.getItem("username")} | Lupo Skill`} />
+      <PageTitle
+        title={username ? `${username} | Lupo Skill` : "Profile | Lupo Skill"}
+      />
       <Container className="mt-5" style={{ paddingTop: "6.5em" }}>
         <Row className="gutters-sm">
           <Col md={4} className="mb-3">
