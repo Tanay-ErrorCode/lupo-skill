@@ -23,7 +23,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import Person2Icon from "@mui/icons-material/Person2";
+import PersonIcon from "@mui/icons-material/Person";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import NotificationsPanel from "../Notification/NotificationsPanel";
@@ -74,9 +74,9 @@ const NavBar = () => {
   };
 
   const userPic = localStorage.getItem("userPic");
-  const is_signup = userPic ? true : false;
+  
   const userUid = localStorage.getItem("userUid");
-
+  const is_signup = userUid ? true : false;
   const handleDashboard = () => {
     if (!is_signup) setShow(!show);
     handleMobileMenuClose();
@@ -557,7 +557,7 @@ const NavBar = () => {
                         : "transparent",
                     }}
                   >
-                    <Person2Icon />
+                    <PersonIcon />
                   </IconButton>
                 ) : (
                   <div>
