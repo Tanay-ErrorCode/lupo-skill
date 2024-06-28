@@ -65,7 +65,7 @@ const ArticleWritingPage: React.FC = () => {
         if (userSnapshot.exists()) {
           const userData = userSnapshot.val();
           const author = userData.name || "Anonymous";
-          const pic = userData.pic || "";
+          const pic = userData.pic || userData.profile || "";
 
           const newArticle = {
             id: articleId,
