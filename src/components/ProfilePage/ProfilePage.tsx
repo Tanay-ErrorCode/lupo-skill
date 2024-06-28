@@ -47,7 +47,7 @@ interface Link {
 const ProfilePage = () => {
   const [currentJoinedPage, setCurrentJoinedPage] = useState(1);
   const [currentCreatedPage, setCurrentCreatedPage] = useState(1);
-  const username = localStorage.getItem("username");
+
   const itemsPerPage = 3;
   const { id } = useParams();
   const [isCLoading, setIsCLoading] = useState(true);
@@ -62,7 +62,7 @@ const ProfilePage = () => {
   const [links, setLinks] = useState<Link>({});
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
-
+  const [username, setUsername] = useState<string>("");
   const userUid = localStorage.getItem("userUid");
   if (userUid === null) {
     window.location.href = "#/";
@@ -163,6 +163,7 @@ const ProfilePage = () => {
             `<span key=${index} class="tag badge me-2">${tag}</span>`
         )
         .join("");
+      setUsername(userData.name || "Profile");
     };
 
     fetchData();

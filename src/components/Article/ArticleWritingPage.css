@@ -1,8 +1,9 @@
-/* General styling for the whole page */
 .article-write {
   display: flex;
   flex-direction: column;
-  margin: 10rem;
+
+  margin: 10vw;
+  margin-top: 15vh;
   padding: 40px;
 }
 
@@ -31,12 +32,12 @@
   width: 100%;
   padding: 15px;
   border: none;
-  font-size: 18px !important;
+  font-size: var(--font-size-normal-font) !important;
   font-family: "Arial, sans-serif";
 }
 
 .title-input {
-  font-size: 36px !important;
+  font-size: var(--font-size-subheading) !important;
   font-weight: bold !important;
   border-left: 2px solid #ccc;
 }
@@ -49,7 +50,7 @@
 
 .submit-button {
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: var(--font-size-normal-font);
   color: #fff;
   background-color: #007bff;
   border: none;
