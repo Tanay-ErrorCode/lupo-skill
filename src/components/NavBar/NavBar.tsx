@@ -140,14 +140,14 @@ const NavBar = () => {
           {
             route: "/events",
             text: "Events",
-          }, 
+          },
           {
             route: "/article",
             text: "Articles",
           },
           {
             route: "/createEvent",
-            text: "Create Event", 
+            text: "Create Event",
           },
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
@@ -609,7 +609,7 @@ const NavBar = () => {
               </Menu>
             )}
           </Box>
-        </Container>{" "}
+        </Container>
       </Toolbar>
     </AppBar>
   );
