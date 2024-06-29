@@ -1,128 +1,165 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardMedia,
   Typography,
   IconButton,
   Avatar,
   CardHeader,
-  CardActionArea,
   CardActions,
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import { Spinner } from "react-bootstrap";
+import moment from "moment";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
 import ClapIcon from "./clap.svg";
 import "./ArticlesHomepage.css";
-import { red } from "@mui/material/colors";
-import { CardTitle } from "react-bootstrap";
+import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
+import { ref, get } from "firebase/database";
+import { toast, Zoom } from "react-toastify";
 
 interface Article {
   id: string;
   title: string;
-  authorName: string;
-  authorProfileImage: string;
-  publicationDate: Date;
-  description: string;
-  readTime: string;
-  clapCount: number;
-  commentCount: number;
-  timeAgo: string;
+  author: string;
+  pic: string;
+  createdAt: number;
+  content: string;
+  readtime: string;
+  likes: number;
+  comments: number;
 }
 
-const dummyArticles: Article[] = [
-  {
-    id: "1",
-    title: "Navigating the World of AI: A Beginner’s Guide to Development",
-    authorName: "Myself",
-    authorProfileImage: "https://via.placeholder.com/50",
-    publicationDate: new Date(),
-    description:
-      "Introduction Artificial Intelligence (AI) is revolutionizing the way we interact with technology. From virtual assistants to predictive...",
-    readTime: "2 min read",
-    clapCount: 10,
-    commentCount: 5,
-    timeAgo: "18 hours ago",
-  },
-  {
-    id: "2",
-    title: "Game Development 101: Crafting Your First Game",
-    authorName: "Myself",
-    authorProfileImage: "https://via.placeholder.com/50",
-    publicationDate: new Date(),
-    description:
-      "Learn the basics of game development and start creating your own games. This guide will walk you through the essential steps...",
-    readTime: "3 min read",
-    clapCount: 20,
-    commentCount: 15,
-    timeAgo: "20 hours ago",
-  },
-];
-
 const ArticlesHomepage: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (localStorage.getItem("userUid") == null) {
+      window.location.href = "#/";
+    }
+    const fetchArticles = async () => {
+      const articlesRef = ref(database, "articles");
+      const userUid = localStorage.getItem("userUid");
+
+      if (!userUid) {
+        console.error("User is not logged In.");
+        return;
+      }
+      try {
+        const snapshot = await get(articlesRef);
+        if (snapshot.exists()) {
+          const articlesData = snapshot.val();
+          const articlesList = Object.keys(articlesData).map((key) => {
+            const article = articlesData[key];
+            return {
+              ...article,
+              id: key,
+              createdAt: article.createdAt,
+            };
+          });
+          setArticles(articlesList);
+        }
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+        toast.error("Failed to fetch articles", { transition: Zoom });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  const stripMarkdown = (content: string) => {
+    const cleanHtml = DOMPurify.sanitize(marked(content) as string);
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = cleanHtml;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
   return (
     <div className="articlehomepage-div">
-      <div className="Articlehead">
-        <Typography variant="h4" component="h1" fontWeight={600} gutterBottom>
-          Articles
-        </Typography>
-        <Link to="/article/write" className="create-article-button">
-          Create Article
-        </Link>
-      </div>
-      <div className="articles-container">
-        {dummyArticles.map((article) => (
-          <Card key={article.id} className="article-card">
-            <CardHeader
-              avatar={
-                <Avatar
-                  alt={article.authorName}
-                  src={article.authorProfileImage}
-                />
-              }
-              title={article.authorName}
-              subheader={article.timeAgo}
-            />
-
-            <CardContent className="article-details">
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center spinner-container">
+          <Spinner animation="border" />
+        </div>
+      ) : (
+        <>
+          <div className="Articlehead">
+            <Typography
+              variant="h4"
+              component="h1"
+              fontWeight={600}
+              gutterBottom
+            >
+              Articles
+            </Typography>
+            <Link to="/article/write" className="create-article-button">
+              Create Article
+            </Link>
+          </div>
+          <div className="articles-container">
+            {articles.length === 0 ? (
               <Typography
-                variant="h5"
+                variant="h4"
                 component="div"
-                className="article-title"
+                className="no-articles-message"
+                style={{ textAlign: "center", marginTop: "20px" }}
               >
-                <Link to={`/article/${article.id}`}>{article.title}</Link>
+                No Articles For Now
               </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                className="article-description"
-              >
-                {article.description}
-              </Typography>
-              <div className="meta-info">
-                <Typography variant="body2" className="read-time">
-                  {article.readTime}
-                </Typography>
-              </div>
-            </CardContent>
-
-            <CardActions>
-              <IconButton size="small" className="comment-icon">
-                <ChatBubbleOutlineIcon />
-                <span className="comment-count">{article.commentCount}</span>
-              </IconButton>
-              <IconButton size="small" className="clap-icon">
-                <img
-                  src={ClapIcon}
-                  alt="Clap icon"
-                  style={{ width: "1.3rem" }}
-                />
-                <span className="clap-count">{article.clapCount}</span>
-              </IconButton>
-            </CardActions>
-          </Card>
-        ))}
-      </div>
+            ) : (
+              articles.map((article) => (
+                <Card key={article.id} className="article-card">
+                  <CardHeader
+                    avatar={<Avatar alt={article.author} src={article.pic} />}
+                    title={`By ${article.author}`}
+                    subheader={moment(article.createdAt).fromNow()}
+                  />
+                  <CardContent className="article-details">
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      className="article-title"
+                    >
+                      <Link to={`/article/${article.id}`}>{article.title}</Link>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      className="article-description"
+                    >
+                      {stripMarkdown(article.content)}
+                    </Typography>
+                    <div className="meta-info">
+                      <Typography variant="body2" className="read-time">
+                        {article.readtime} read
+                      </Typography>
+                    </div>
+                  </CardContent>
+                  <CardActions>
+                    <IconButton size="small" className="comment-icon">
+                      <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
+                      <span className="comment-count">{article.comments}</span>
+                    </IconButton>
+                    <IconButton size="small" className="clap-icon">
+                      <img
+                        src={ClapIcon}
+                        alt="Clap icon"
+                        style={{ width: "1.3rem" }}
+                      />
+                      <span className="clap-count">{article.likes}</span>
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              ))
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
