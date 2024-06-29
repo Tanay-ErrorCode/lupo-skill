@@ -117,7 +117,11 @@ const ArticlePage: React.FC = () => {
             <span className="comment-count">{article.comments}</span>
           </IconButton>
           <IconButton size="small" className="clap-icon">
-            <img src={ClapIcon} alt="Clap icon" style={{ width: "1.3rem" }} />
+            <img
+              src={ClapIcon}
+              alt="Clap icon"
+              style={{ width: "1.3rem", userSelect: "none" }}
+            />
             <span className="clap-count">{article.likes}</span>
           </IconButton>
         </CardActions>

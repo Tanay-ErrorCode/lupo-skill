@@ -149,7 +149,7 @@ const ArticlesHomepage: React.FC = () => {
                       <img
                         src={ClapIcon}
                         alt="Clap icon"
-                        style={{ width: "1.3rem" }}
+                        style={{ width: "1.3rem", userSelect: "none" }}
                       />
                       <span className="clap-count">{article.likes}</span>
                     </IconButton>
