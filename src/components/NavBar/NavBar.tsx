@@ -20,6 +20,16 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
@@ -117,78 +127,42 @@ const NavBar = () => {
 
   const mobileMenuItems = (
     <>
-      <MenuItem
-        component={Link}
-        to="/"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+      <List>
+        {[
+          {
+            route: "/",
+            text: "Home",
           },
-        }}
-      >
-        Home
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/dashboard"
-        onClick={() => {
-          handleMobileMenuClose();
-          handleDashboard();
-        }}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/dashboard",
+            text: "DashBoard",
           },
-        }}
-      >
-        Dashboard
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/events"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/events",
+            text: "Events",
           },
-        }}
-      >
-        Events
-      </MenuItem>
-      <MenuItem
-        component={Link}
-        to="/article"
-        onClick={() => {
-          handleMobileMenuClose();
-          handleDashboard();
-        }}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
+          {
+            route: "/article",
+            text: "Articles",
           },
-        }}
-      >
-        Articles
-      </MenuItem>
+          {
+            route: "/createEvent",
+            text: "Create Event",
+          },
+        ].map((item, index) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={item.route}
+              onClick={handleMobileMenuClose}
+            >
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
       <StyledMenuItem onClick={toggleTheme}>
-        Mode:{" "}
+        Mode
         <CustomSwitch
           checked={mode}
           onChange={toggleTheme}
@@ -197,22 +171,6 @@ const NavBar = () => {
           color="default"
         />
       </StyledMenuItem>
-      <MenuItem
-        component={Link}
-        to="/createEvent"
-        onClick={handleMobileMenuClose}
-        sx={{
-          fontWeight: 700,
-          color: "white",
-
-          "&:hover": {
-            backgroundColor: theme.colors.primary,
-            color: "black",
-          },
-        }}
-      >
-        Create Event
-      </MenuItem>
     </>
   );
 
@@ -631,14 +589,27 @@ const NavBar = () => {
                   },
                 }}
               >
-                {" "}
-                <Box sx={{ backgroundColor: "#0F0F0F", width: "100%" }}>
-                  {mobileMenuItems}
-                </Box>
+                <SwipeableDrawer
+                  anchor="right"
+                  open={true}
+                  onClose={() => setExpanded(false)}
+                  onOpen={() => setExpanded(true)}
+                >
+                  <Box
+                    sx={{
+                      color: theme.colors.lightBackground,
+                      background: theme.colors.darkBackground,
+                      height: "100%",
+                      width: "300px",
+                    }}
+                  >
+                    {mobileMenuItems}
+                  </Box>
+                </SwipeableDrawer>
               </Menu>
             )}
           </Box>
-        </Container>{" "}
+        </Container>
       </Toolbar>
     </AppBar>
   );
