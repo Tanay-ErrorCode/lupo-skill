@@ -18,6 +18,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import "./ArticlePage.css";
 import moment from "moment";
+import PageTitle from "../../utils/PageTitle";
 
 interface Article {
   id: string;
@@ -66,71 +67,79 @@ const ArticlePage: React.FC = () => {
 
   if (!article) {
     return (
-      <Container maxWidth="md" className="article-container">
-        <Typography
-          variant="h4"
-          component="div"
-          style={{ textAlign: "center", marginTop: "20px" }}
-        >
-          Article not found
-        </Typography>
-      </Container>
+      <>
+        <PageTitle title="Article | Lupo Skill" />
+        <Container maxWidth="md" className="article-container">
+          <Typography
+            variant="h4"
+            component="div"
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
+            Article not found
+          </Typography>
+        </Container>
+      </>
     );
   }
 
   return (
-    <Container maxWidth="md" className="article-container">
-      <Paper elevation={3} className="article-paper">
-        <Typography
-          variant="h3"
-          component="h1"
-          gutterBottom
-          className="articlepage-title"
-          sx={{
-            fontSize: { xs: "1.5rem", md: "3rem" }, // Adjust font sizes as needed
-          }}
-        >
-          {article.title}
-        </Typography>
-        <Box display="flex" alignItems="center" mt={4} mb={2}>
-          <Avatar
-            alt={article.author}
-            src={article.pic}
-            className="article-avatar"
-          />
-          <Box ml={2}>
-            <Typography variant="subtitle1" component="div">
-              {article.author}
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              component="div"
-            >
-              {article.readtime} · {moment(article.createdAt).fromNow()}
-            </Typography>
-          </Box>
-        </Box>
-        <CardActions className="artcle-page-up">
-          <IconButton size="small" className="comment-icon">
-            <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-            <span className="comment-count">{article.comments}</span>
-          </IconButton>
-          <IconButton size="small" className="clap-icon">
-            <img
-              src={ClapIcon}
-              alt="Clap icon"
-              style={{ width: "1.3rem", userSelect: "none" }}
+    <>
+      <PageTitle
+        title={`${article.title} | by ${article.author} | Lupo Skill`}
+      />
+      <Container maxWidth="md" className="article-container">
+        <Paper elevation={3} className="article-paper">
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            className="articlepage-title"
+            sx={{
+              fontSize: { xs: "1.5rem", md: "3rem" }, // Adjust font sizes as needed
+            }}
+          >
+            {article.title}
+          </Typography>
+          <Box display="flex" alignItems="center" mt={4} mb={2}>
+            <Avatar
+              alt={article.author}
+              src={article.pic}
+              className="article-avatar"
             />
-            <span className="clap-count">{article.likes}</span>
-          </IconButton>
-        </CardActions>
-        <Box
-          className="article-content"
-          dangerouslySetInnerHTML={createMarkup(article.content)}
-        />
-      </Paper>
-    </Container>
+            <Box ml={2}>
+              <Typography variant="subtitle1" component="div">
+                {article.author}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                component="div"
+              >
+                {article.readtime} · {moment(article.createdAt).fromNow()}
+              </Typography>
+            </Box>
+          </Box>
+          <CardActions className="artcle-page-up">
+            <IconButton size="small" className="comment-icon">
+              <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
+              <span className="comment-count">{article.comments}</span>
+            </IconButton>
+            <IconButton size="small" className="clap-icon">
+              <img
+                src={ClapIcon}
+                alt="Clap icon"
+                style={{ width: "1.3rem", userSelect: "none" }}
+              />
+              <span className="clap-count">{article.likes}</span>
+            </IconButton>
+          </CardActions>
+          <Box
+            className="article-content"
+            dangerouslySetInnerHTML={createMarkup(article.content)}
+          />
+        </Paper>
+      </Container>
+    </>
   );
 };
 
