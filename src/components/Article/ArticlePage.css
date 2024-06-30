@@ -11,9 +11,11 @@
   width: 50px;
   height: 50px;
 }
+
 .articlepage-title {
   font-weight: 600 !important;
 }
+
 .article-content {
   margin-top: 2rem;
 }
@@ -21,10 +23,19 @@
 .article-content h2 {
   margin-top: 1.5rem;
 }
+
 .artcle-page-up {
   border-bottom: 1px solid rgba(0, 0, 0, 0.189);
 }
 
 .article-content p {
   margin-bottom: 1rem;
+}
+
+/* New CSS to handle image overflow */
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
