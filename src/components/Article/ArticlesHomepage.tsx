@@ -15,9 +15,10 @@ import moment from "moment";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import ClapIcon from "./clap.svg";
+import ClapIconFilled from "./fillclap.svg"; // Add a filled clap icon for liked state
 import "./ArticlesHomepage.css";
 import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
-import { ref, get } from "firebase/database";
+import { ref, get, set, update } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 
 interface Article {
@@ -35,6 +36,7 @@ interface Article {
 const ArticlesHomepage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [likedArticles, setLikedArticles] = useState<string[]>([]);
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
@@ -45,9 +47,10 @@ const ArticlesHomepage: React.FC = () => {
       const userUid = localStorage.getItem("userUid");
 
       if (!userUid) {
-        console.error("User is not logged In.");
+        console.error("User is not logged in.");
         return;
       }
+
       try {
         const snapshot = await get(articlesRef);
         if (snapshot.exists()) {
@@ -61,6 +64,17 @@ const ArticlesHomepage: React.FC = () => {
             };
           });
           setArticles(articlesList);
+
+          // Fetch liked articles
+          const likedArticlesRef = ref(
+            database,
+            `users/${userUid}/likedArticles`
+          );
+          const likedArticlesSnapshot = await get(likedArticlesRef);
+          if (likedArticlesSnapshot.exists()) {
+            const likedArticlesString = likedArticlesSnapshot.val();
+            setLikedArticles(likedArticlesString.split(","));
+          }
         }
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -72,6 +86,60 @@ const ArticlesHomepage: React.FC = () => {
 
     fetchArticles();
   }, []);
+
+  const handleLike = async (articleId: string) => {
+    const userUid = localStorage.getItem("userUid");
+    if (!userUid) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+    try {
+      const articleRef = ref(database, `articles/${articleId}`);
+      const articleSnapshot = await get(articleRef);
+
+      if (articleSnapshot.exists()) {
+        const articleData = articleSnapshot.val();
+        let newLikesCount = articleData.likes || 0;
+
+        let updatedLikedArticles = [...likedArticles];
+        if (likedArticles.includes(articleId)) {
+          // If already liked, unlike it
+          newLikesCount -= 1;
+          updatedLikedArticles = updatedLikedArticles.filter(
+            (id) => id !== articleId
+          );
+        } else {
+          // If not liked, like it
+          newLikesCount += 1;
+          updatedLikedArticles.push(articleId);
+        }
+
+        // Update likes count in the article
+        await update(articleRef, { likes: newLikesCount });
+
+        // Update the list of liked articles for the user as a comma-separated string
+        const likedArticlesRef = ref(
+          database,
+          `users/${userUid}/likedArticles`
+        );
+        await set(likedArticlesRef, updatedLikedArticles.join(","));
+
+        // Update local state
+        setArticles((prevArticles) =>
+          prevArticles.map((article) =>
+            article.id === articleId
+              ? { ...article, likes: newLikesCount }
+              : article
+          )
+        );
+        setLikedArticles(updatedLikedArticles);
+      }
+    } catch (error) {
+      console.error("Error updating likes:", error);
+      toast.error("Failed to update likes", { transition: Zoom });
+    }
+  };
 
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
@@ -145,9 +213,17 @@ const ArticlesHomepage: React.FC = () => {
                       <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                       <span className="comment-count">{article.comments}</span>
                     </IconButton>
-                    <IconButton size="small" className="clap-icon">
+                    <IconButton
+                      size="small"
+                      className="clap-icon"
+                      onClick={() => handleLike(article.id)}
+                    >
                       <img
-                        src={ClapIcon}
+                        src={
+                          likedArticles.includes(article.id)
+                            ? ClapIconFilled
+                            : ClapIcon
+                        }
                         alt="Clap icon"
                         style={{ width: "1.3rem", userSelect: "none" }}
                       />
