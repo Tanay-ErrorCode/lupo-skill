@@ -9,7 +9,7 @@ import {
   CardActions,
   IconButton,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ref, get } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -30,6 +30,7 @@ interface Article {
   readtime: string;
   likes: number;
   comments: number;
+  createdBy: string;
 }
 
 const ArticlePage: React.FC = () => {
@@ -101,15 +102,23 @@ const ArticlePage: React.FC = () => {
             {article.title}
           </Typography>
           <Box display="flex" alignItems="center" mt={4} mb={2}>
-            <Avatar
-              alt={article.author}
-              src={article.pic}
-              className="article-avatar"
-            />
+            <Link to={`/profile/${article.createdBy}`}>
+              <Avatar
+                alt={article.author}
+                src={article.pic}
+                className="article-avatar"
+              />
+            </Link>
             <Box ml={2}>
-              <Typography variant="subtitle1" component="div">
-                {article.author}
-              </Typography>
+              <Link
+                to={`/profile/${article.createdBy}`}
+                className="article_link"
+              >
+                {" "}
+                <Typography variant="subtitle1" component="div">
+                  {article.author}
+                </Typography>
+              </Link>
               <Typography
                 variant="subtitle2"
                 color="textSecondary"
