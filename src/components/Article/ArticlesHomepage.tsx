@@ -31,6 +31,7 @@ interface Article {
   readtime: string;
   likes: number;
   comments: number;
+  createdBy: string;
 }
 
 const ArticlesHomepage: React.FC = () => {
@@ -183,8 +184,19 @@ const ArticlesHomepage: React.FC = () => {
               articles.map((article) => (
                 <Card key={article.id} className="article-card">
                   <CardHeader
-                    avatar={<Avatar alt={article.author} src={article.pic} />}
-                    title={`By ${article.author}`}
+                    avatar={
+                      <Link to={`/profile/${article.createdBy}`}>
+                        <Avatar alt={article.author} src={article.pic} />
+                      </Link>
+                    }
+                    title={
+                      <Link
+                        className="article_link"
+                        to={`/profile/${article.createdBy}`}
+                      >
+                        By {article.author}
+                      </Link>
+                    }
                     subheader={moment(article.createdAt).fromNow()}
                   />
                   <CardContent className="article-details">
