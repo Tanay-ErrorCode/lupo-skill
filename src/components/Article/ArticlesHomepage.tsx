@@ -38,6 +38,7 @@ const ArticlesHomepage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
+  const [isLiking, setIsLiking] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
@@ -89,11 +90,15 @@ const ArticlesHomepage: React.FC = () => {
   }, []);
 
   const handleLike = async (articleId: string) => {
+    if (isLiking[articleId]) return; // Prevent multiple clicks
+
     const userUid = localStorage.getItem("userUid");
     if (!userUid) {
       console.error("User is not logged in.");
       return;
     }
+
+    setIsLiking((prev) => ({ ...prev, [articleId]: true }));
 
     try {
       const articleRef = ref(database, `articles/${articleId}`);
@@ -106,7 +111,7 @@ const ArticlesHomepage: React.FC = () => {
         let updatedLikedArticles = [...likedArticles];
         if (likedArticles.includes(articleId)) {
           // If already liked, unlike it
-          newLikesCount -= 1;
+          newLikesCount = Math.max(newLikesCount - 1, 0);
           updatedLikedArticles = updatedLikedArticles.filter(
             (id) => id !== articleId
           );
@@ -139,6 +144,8 @@ const ArticlesHomepage: React.FC = () => {
     } catch (error) {
       console.error("Error updating likes:", error);
       toast.error("Failed to update likes", { transition: Zoom });
+    } finally {
+      setIsLiking((prev) => ({ ...prev, [articleId]: false }));
     }
   };
 
@@ -229,6 +236,7 @@ const ArticlesHomepage: React.FC = () => {
                       size="small"
                       className="clap-icon"
                       onClick={() => handleLike(article.id)}
+                      disabled={isLiking[article.id]}
                     >
                       <img
                         src={

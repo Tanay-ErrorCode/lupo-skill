@@ -10,7 +10,6 @@ import {
   CardActions,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-
 import { ref, get, update, set } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -41,6 +40,7 @@ const ArticlePage: React.FC = () => {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
+  const [isLiking, setIsLiking] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -79,13 +79,15 @@ const ArticlePage: React.FC = () => {
   }, [id]);
 
   const handleLike = async () => {
-    if (!article) return;
+    if (isLiking || !article) return; // Prevent multiple clicks and check if article is loaded
 
     const userUid = localStorage.getItem("userUid");
     if (!userUid) {
       console.error("User is not logged in.");
       return;
     }
+
+    setIsLiking(true);
 
     try {
       const articleRef = ref(database, `articles/${id}`);
@@ -98,7 +100,7 @@ const ArticlePage: React.FC = () => {
         let updatedLikedArticles = [...likedArticles];
         if (likedArticles.includes(id!)) {
           // If already liked, unlike it
-          newLikesCount -= 1;
+          newLikesCount = Math.max(newLikesCount - 1, 0);
           updatedLikedArticles = updatedLikedArticles.filter(
             (articleId) => articleId !== id
           );
@@ -125,6 +127,8 @@ const ArticlePage: React.FC = () => {
     } catch (error) {
       console.error("Error updating likes:", error);
       toast.error("Failed to update likes", { transition: Zoom });
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -189,7 +193,6 @@ const ArticlePage: React.FC = () => {
                 to={`/profile/${article.createdBy}`}
                 className="article_link"
               >
-                {" "}
                 <Typography variant="subtitle1" component="div">
                   {article.author}
                 </Typography>
@@ -208,7 +211,12 @@ const ArticlePage: React.FC = () => {
               <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
               <span className="comment-count">{article.comments}</span>
             </IconButton>
-            <IconButton size="small" className="clap-icon" onClick={handleLike}>
+            <IconButton
+              size="small"
+              className="clap-icon"
+              onClick={handleLike}
+              disabled={isLiking}
+            >
               <img
                 src={
                   likedArticles.includes(article.id) ? ClapIconFilled : ClapIcon
