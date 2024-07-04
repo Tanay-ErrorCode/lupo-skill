@@ -41,7 +41,7 @@ const ArticlesHomepage: React.FC = () => {
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
-      window.location.href = "#/";
+      window.location.href = "/";
     }
     const fetchArticles = async () => {
       const articlesRef = ref(database, "articles");
