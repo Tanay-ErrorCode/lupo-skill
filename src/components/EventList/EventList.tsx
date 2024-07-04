@@ -32,67 +32,7 @@ const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(false);
-  const [eventCardsData, setEventCardsData] = useState<Event[]>([
-    {
-      banner: "https://example.com/event1.jpg",
-      createdAt: 1657036800000,
-      date: "2024-07-20",
-      description: "A workshop on modern JavaScript frameworks and libraries.",
-      host: "js_dev_conference",
-      hostName: "JS Dev Conference",
-      id: "event1",
-      registrants: ["user1", "user2", "user3"],
-      tags: "javascript, development, workshop",
-      time: "10:00 AM - 4:00 PM",
-      title: "Modern JavaScript Workshop",
-      lastEdited: 1659648000000,
-    },
-    {
-      banner: "https://example.com/event2.jpg",
-      createdAt: 1657123200000,
-      date: "2024-08-05",
-      description:
-        "An introductory seminar on blockchain technology and its applications.",
-      host: "blockchain_hub",
-      hostName: "Blockchain Hub",
-      id: "event2",
-      registrants: ["user4", "user5", "user6"],
-      tags: "blockchain, seminar, technology",
-      time: "1:00 PM - 5:00 PM",
-      title: "Blockchain Basics Seminar",
-      lastEdited: 1659734400000,
-    },
-    {
-      banner: "https://example.com/event3.jpg",
-      createdAt: 1657209600000,
-      date: "2024-09-10",
-      description:
-        "A conference on the latest trends and innovations in AI and machine learning.",
-      host: "ai_conference",
-      hostName: "AI Conference",
-      id: "event3",
-      registrants: ["user7", "user8", "user9"],
-      tags: "AI, machine learning, conference",
-      time: "9:00 AM - 6:00 PM",
-      title: "AI and Machine Learning Conference",
-      lastEdited: 1659820800000,
-    },
-    {
-      banner: "https://example.com/event4.jpg",
-      createdAt: 1657296000000,
-      date: "2024-10-15",
-      description:
-        "A hands-on hackathon for building innovative solutions using MERN stack.",
-      host: "mern_hackathon",
-      hostName: "MERN Hackathon",
-      id: "event4",
-      registrants: ["user10", "user11", "user12"],
-      tags: "hackathon, MERN, coding",
-      time: "8:00 AM - 8:00 PM",
-      title: "MERN Stack Hackathon",
-      lastEdited: 1659907200000,
-    },
-  ]);
+  const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
   const [sortOption, setSortOption] = useState<
