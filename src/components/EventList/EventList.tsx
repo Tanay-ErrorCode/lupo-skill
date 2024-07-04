@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
-import {
-  Pagination,
-  Spinner,
-  DropdownButton,
-  Dropdown,
-  Button,
-} from "react-bootstrap";
+import { Pagination, Spinner, DropdownButton, Dropdown } from "react-bootstrap";
 import "./EventList.css";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { TextField } from "@mui/material";
 import { ref, get } from "firebase/database";
 import { database } from "../../firebaseConf";
 
@@ -20,7 +13,6 @@ interface Event {
   description: string;
   host: string;
   hostName: string;
-
   id: string;
   registrants: string[];
   tags: string;
@@ -32,7 +24,7 @@ interface Event {
 const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
@@ -81,16 +73,13 @@ const EventList = () => {
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-  };
-
-  const handleSearch = () => {
-    const trimmedQuery = searchQuery.trim();
+    const trimmedQuery = e.target.value.trim();
     const filteredEvents = filterEventsByTitle(eventCardsData, trimmedQuery);
     const sortedFilteredEvents = sortEvents(filteredEvents, sortOption);
     setSortedEvents(sortedFilteredEvents);
     setDisplayedEvents(sortedFilteredEvents);
     setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
-    setCurrentPage(1); // Reset to first page when search is performed
+    setCurrentPage(1); // Reset to first page when search query changes
   };
 
   useEffect(() => {
@@ -139,19 +128,11 @@ const EventList = () => {
         return "No events found";
     }
   };
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
+
   return (
-    <div
-      style={{
-        paddingTop: "6.5em",
-      }}
-    >
+    <div style={{ paddingTop: "6.5em" }}>
       {isLoading ? (
-        <div className=" d-flex justify-content-center align-items-center spinner-container">
+        <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
@@ -171,22 +152,7 @@ const EventList = () => {
                   fullWidth
                   onChange={handleSearchInputChange}
                   className="search-input"
-                  onKeyDown={handleKeyPress}
                 />
-              </div>
-              <div className="search-button-container">
-                <Button
-                  variant="dark"
-                  style={{
-                    backgroundColor: "#5AB2FF",
-                    color: "white",
-                    borderColor: "#5AB2FF",
-                  }}
-                  className="search-button"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon />
-                </Button>
               </div>
             </div>
           </div>
