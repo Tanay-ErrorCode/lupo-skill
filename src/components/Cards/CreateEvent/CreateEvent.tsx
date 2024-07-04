@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Nav } from "react-bootstrap";
 import "./CreateEvent.css";
 import DatePicker from "react-datepicker";
@@ -16,7 +16,14 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import ImageCropper from "../../../utils/ImageCropper";
 import DropZone from "../../../utils/DropZone";
-import { Box, Card, CardHeader, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardHeader,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import theme from "../../../theme";
 
 function generateUUID() {
@@ -47,6 +54,12 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
 
+  useEffect(() => {
+    if (localStorage.getItem("userUid") == null) {
+      // toast.error("Please Login first", { transition: Zoom });
+      window.location.href = "#/";
+    }
+  }, []);
   const handleClose = () => setShow(false);
 
   const handleShow = () => {
@@ -247,7 +260,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         });
     } else {
       if (!userUid) {
-        toast.error("Please Login first", { transition: Zoom });
+        // toast.error("Please Login first", { transition: Zoom });
+        window.location.href = "#/";
       } else {
         toast.error("Fill all the required details first", {
           transition: Zoom,
@@ -289,7 +303,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
 
       <Container className="containerCreate">
         <Box className="Create_event_box">
-          <Card className="box1" >
+          <Card className="box1">
             <Typography variant="h5" className="font-bold">
               Event Info
             </Typography>
@@ -324,28 +338,28 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   }
                 />
               </Box>
-          <Form.Group controlId="formDate" style={{zIndex:100}}>
-            <Form.Label>Date</Form.Label>
-            <br />
-            <DatePicker
-              selected={startDate}
-              onChange={(date: Date) => setStartDate(date)}
-            />
-          </Form.Group>
+              <Form.Group controlId="formDate" style={{ zIndex: 100 }}>
+                <Form.Label>Date</Form.Label>
+                <br />
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date: Date) => setStartDate(date)}
+                />
+              </Form.Group>
 
-          <Form.Group controlId="formTime" style={{zIndex:100}}>
-            <Form.Label>Time</Form.Label>
-            <br />
-            <DatePicker
-              selected={startTime}
-              onChange={(date: Date) => setStartTime(date)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="Time"
-              dateFormat="h:mm aa"
-            />
-          </Form.Group>
+              <Form.Group controlId="formTime" style={{ zIndex: 100 }}>
+                <Form.Label>Time</Form.Label>
+                <br />
+                <DatePicker
+                  selected={startTime}
+                  onChange={(date: Date) => setStartTime(date)}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Time"
+                  dateFormat="h:mm aa"
+                />
+              </Form.Group>
               <Box className="mt-3">
                 <Typography className="create-event-label">
                   Event Tags

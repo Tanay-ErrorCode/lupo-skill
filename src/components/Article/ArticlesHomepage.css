@@ -18,6 +18,10 @@
   text-decoration: none;
   border-radius: 5px;
 }
+.article_link {
+  text-decoration: none;
+  color: #333;
+}
 
 .articles-container {
   display: flex;
