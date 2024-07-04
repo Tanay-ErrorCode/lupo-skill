@@ -84,7 +84,7 @@ const NavBar = () => {
   };
 
   const userPic = localStorage.getItem("userPic");
-  
+
   const userUid = localStorage.getItem("userUid");
   const is_signup = userUid ? true : false;
   const handleDashboard = () => {
@@ -417,7 +417,7 @@ const NavBar = () => {
 
               <Button
                 href="#/createEvent"
-                onClick={handleMobileMenuClose}
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,
