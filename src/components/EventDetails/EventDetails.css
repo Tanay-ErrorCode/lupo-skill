@@ -9,22 +9,20 @@
 .card-image {
   pointer-events: none;
   border-radius: 10px 10px 10px 10px;
-  /* height: 450px; */
   object-fit: cover;
 }
 @media (min-width: 1024px) {
-  .card_image {
+  .card-image {
     height: 450px;
   }
 }
 @media (min-width: 768px) {
-  .card_image {
+  .card-image {
     height: 200px;
   }
 }
-
 @media (max-width: 767px) {
-  .card_image {
+  .card-image {
     height: 150px;
   }
 }

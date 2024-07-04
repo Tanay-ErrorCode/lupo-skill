@@ -1,23 +1,21 @@
+import { initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/database";
-import "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  // firebase config
+  // Your firebase config
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+
 // Initialize Firebase authentication
 const auth = getAuth(app);
 
@@ -32,11 +30,13 @@ const storage = getStorage(app);
 
 const provider = new GoogleAuthProvider();
 
-// whenever a user interacts with the provider, we force them to select an account
+// Whenever a user interacts with the provider, we force them to select an account
 provider.setCustomParameters({
-  prompt: "select_account ",
+  prompt: "select_account",
 });
+
 const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
 const signOutUser = () => {
   signOut(auth)
     .then(() => {
@@ -50,6 +50,7 @@ const signOutUser = () => {
       console.error(error);
     });
 };
+
 export {
   auth,
   firestore,

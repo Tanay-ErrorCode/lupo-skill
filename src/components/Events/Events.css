@@ -1,0 +1,26 @@
+.event-card {
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .event-card img {
+    height: 200px;
+    object-fit: cover;
+  }
+  .event-card-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .tag {
+    background-color: rgb(233, 255, 199) !important;
+    border-radius: 100px !important;
+    border: 1px solid green;
+    color: #555 !important;
+    transition: 200ms;
+  }
+  .tag:hover {
+    cursor: pointer;
+    background-color: rgb(201, 255, 121) !important;
+  }
+  
