@@ -49,7 +49,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
-      window.location.href = "#/";
+      window.location.href = "/";
     }
 
     const fetchData = async () => {

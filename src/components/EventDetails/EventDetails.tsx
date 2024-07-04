@@ -25,8 +25,14 @@ const EventDetails = () => {
   const [googleMeetLink, setGoogleMeetLink] = useState("Nothing yet, ask the host to add one");
 
   useEffect(() => {
+
     if (!userUid) {
       window.location.href = "#/dashboard";
+
+    if (userUid == null) {
+      window.location.href = "/dashboard";
+      toast.warn("You are not signed in", { transition: Zoom });
+
     }
     const fetchData = async () => {
       const eventRef = ref(database, `events/${id}`);
@@ -48,8 +54,21 @@ const EventDetails = () => {
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
+
           if (!eventData.registrants.split(",").includes(userUid) && userUid !== eventData.host) {
             window.location.href = "#/dashboard";
+
+
+          if (
+            (!eventData.registrants.split(",").includes(userUid) ||
+              userUid == null) &&
+            userUid !== eventData.host
+          ) {
+            window.location.href = "/dashboard";
+            toast.warn("You are not registered for this event", {
+              transition: Zoom,
+            });
+
           }
         }
         if (eventData.googleMeetLink) {
@@ -91,7 +110,14 @@ const EventDetails = () => {
                       </Row>
                       <Row>
                         <Col>
+
                           Host: <a href={`#/profile/${host}`} className="link-primary">{hostName}</a>
+
+                          Host:{" "}
+                          <a href={"/profile/" + host} className="link-primary">
+                            {hostName}
+                          </a>
+
                         </Col>
                       </Row>
                       <Row>

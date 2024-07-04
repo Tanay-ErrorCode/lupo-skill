@@ -46,7 +46,7 @@ const ArticleWritingPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
-      window.location.href = "#/";
+      window.location.href = "/";
     }
   });
   const handleSubmit = async (e: FormEvent) => {
