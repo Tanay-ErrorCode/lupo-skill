@@ -1,11 +1,5 @@
 import { Container, Typography, Grid, Box } from "@mui/material";
-import {
-  Article as ArticleIcon,
-  Event as EventIcon,
-  GitHub as GitHubIcon,
-  Login as JoinIcon,
-  Send as ShareIcon,
-} from "@mui/icons-material";
+import { GitHub as GitHubIcon } from "@mui/icons-material";
 import CustomButton from "../Button/Button";
 import back from "../image_assets/back-v.png";
 import theme from "../../theme";
@@ -25,7 +19,6 @@ import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import { Link } from "react-router-dom";
 import TestimonialsCarousel from "../testimonial/TestimonialsCarousel";
-import "./HomePage.css";
 
 const HomePage = () => {
   const loggedIn = localStorage.getItem("userUid");
@@ -247,100 +240,240 @@ const HomePage = () => {
             xs={12}
             style={{ padding: "2rem", marginTop: "4rem", marginBottom: "4rem" }}
           >
-            <Container maxWidth="xl">
-              <Grid container alignItems="center">
-                <Grid item xs={12} textAlign={"center"}>
-                  <motion.div
-                    initial={{ opacity: 0, y: -50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 1,
-                      type: "spring",
-                      stiffness: 100,
-                      delay: 0.5,
-                    }}
-                  >
-                    <Typography
-                      variant="h4"
-                      fontWeight="Bold"
-                      style={{
-                        marginBottom: "1rem",
-                        marginLeft: ".3rem",
-                        color: "#ffffff",
-                      }}
-                    >
-                      Explore Learning Opportunities
-                    </Typography>
-                  </motion.div>
-                </Grid>
+            <Grid container alignItems="center">
+              <Grid item xs={12} sm={6} textAlign={"center"}>
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
+                  initial={{ opacity: 0, x: -150 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{
                     duration: 1,
                     type: "spring",
                     stiffness: 100,
-                    delay: 1,
-                  }}
-                  style={{
-                    display: "flex",
-                    marginTop: "50px",
-                    width: "100%",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    gap: "20px",
+                    delay: 0.5,
                   }}
                 >
-                  <Grid className="explore-card">
-                    <JoinIcon fontSize="large" />
-                    <Typography variant="h3" fontWeight={600}>
-                      Join Online Events
-                    </Typography>
-                    <Typography fontSize={"1rem"}>
-                      Learn from Industry Experts and Expand Your Skillset.
-                    </Typography>
-                  </Grid>
-                  <Grid className="explore-card">
-                    <ShareIcon fontSize="large" />
-                    <Typography variant="h3" fontWeight={600}>
-                      Share Resources
-                    </Typography>
-                    <Typography fontSize={"1rem"}>
-                      Contribute to the Learning Community by Sharing Your
-                      Knowledge.
-                    </Typography>
-                  </Grid>
-                  <Grid className="explore-card">
-                    <EventIcon fontSize="large" />
-                    <Typography variant="h3" fontWeight={600}>
-                      Host Online Events
-                    </Typography>
-                    <Typography fontSize={"1rem"}>
-                      Share Your Expertise and Connect with Learners Worldwide.
-                    </Typography>
-                  </Grid>
-                  <Grid className="explore-card">
-                    <ArticleIcon fontSize="large" />
-                    <Typography variant="h3" fontWeight={600}>
-                      Read Articles
-                    </Typography>
-                    <Typography fontSize={"1rem"}>
-                      Access Valuable Resources and Stay Updated on Latest
-                      Trends.
-                    </Typography>
-                  </Grid>
+                  <Typography
+                    fontWeight={"bold"}
+                    variant="h3"
+                    style={{ color: "#ffffff" }}
+                  >
+                    Explore Learning Opportunities
+                  </Typography>
                 </motion.div>
               </Grid>
-            </Container>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  marginTop: "1rem",
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 2,
+                    type: "spring",
+                    stiffness: 50,
+                    delay: 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 0.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 0.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Join Online Events: Learn from Industry Experts and Expand
+                      Your Skillset.
+                    </motion.span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 1.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 1.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Share Resources: Contribute to the Learning Community by
+                      Sharing Your Knowledge.
+                    </motion.span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 2.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 2.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Host Online Events: Share Your Expertise and Connect with
+                      Learners Worldwide.
+                    </motion.span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: ".5rem",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="30"
+                      height="30"
+                      style={{
+                        color: theme.colors.primary,
+                        marginRight: "1rem",
+                      }}
+                    >
+                      <motion.path
+                        d="M7 10 L12 15 L22 5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 0.2, delay: 3.5 }}
+                      />
+                    </svg>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        duration: 1,
+                        stiffness: 100,
+                        delay: 3.5,
+                      }}
+                      style={{
+                        color: "#ffffff",
+                        fontSize: theme.fontSize.textBody,
+                      }}
+                    >
+                      Read Articles: Access Valuable Resources and Stay Updated
+                      on Latest Trends.
+                    </motion.span>
+                  </div>
+                </motion.div>
+              </Grid>
+            </Grid>
             {/* testimonial */}
             <Container maxWidth="xl">
               <Grid
                 container
                 justifyContent="center"
                 alignItems="center"
-                marginTop="100px"
+                marginTop="180px"
               >
                 <Grid item xs={12} textAlign={"center"}>
                   <motion.div
