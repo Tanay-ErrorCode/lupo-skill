@@ -13,6 +13,7 @@
   font-size: 18px !important;
   font-weight: 600 !important;
 }
+
 .box1 {
   padding: 20px;
   border-radius: 20px;
@@ -128,4 +129,18 @@
   .left-create {
     width: 100%;
   }
+}
+
+/* Style the scrollbar */
+.MuiMultiSectionDigitalClockSection-root::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+.MuiMultiSectionDigitalClockSection-root::-webkit-scrollbar-thumb {
+  background-color: #d8d5d5 !important;
+  border-radius: 2px !important;
+}
+
+.MuiMultiSectionDigitalClockSection-root::-webkit-scrollbar-thumb:hover {
+  background-color: #c2c2c2 !important;
 }
