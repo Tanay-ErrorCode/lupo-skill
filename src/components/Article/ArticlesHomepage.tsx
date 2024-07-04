@@ -38,7 +38,6 @@ const ArticlesHomepage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
-  const [isLiking, setIsLiking] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
@@ -88,66 +87,6 @@ const ArticlesHomepage: React.FC = () => {
 
     fetchArticles();
   }, []);
-
-  const handleLike = async (articleId: string) => {
-    if (isLiking[articleId]) return; // Prevent multiple clicks
-
-    const userUid = localStorage.getItem("userUid");
-    if (!userUid) {
-      console.error("User is not logged in.");
-      return;
-    }
-
-    setIsLiking((prev) => ({ ...prev, [articleId]: true }));
-
-    try {
-      const articleRef = ref(database, `articles/${articleId}`);
-      const articleSnapshot = await get(articleRef);
-
-      if (articleSnapshot.exists()) {
-        const articleData = articleSnapshot.val();
-        let newLikesCount = articleData.likes || 0;
-
-        let updatedLikedArticles = [...likedArticles];
-        if (likedArticles.includes(articleId)) {
-          // If already liked, unlike it
-          newLikesCount = Math.max(newLikesCount - 1, 0);
-          updatedLikedArticles = updatedLikedArticles.filter(
-            (id) => id !== articleId
-          );
-        } else {
-          // If not liked, like it
-          newLikesCount += 1;
-          updatedLikedArticles.push(articleId);
-        }
-
-        // Update likes count in the article
-        await update(articleRef, { likes: newLikesCount });
-
-        // Update the list of liked articles for the user as a comma-separated string
-        const likedArticlesRef = ref(
-          database,
-          `users/${userUid}/likedArticles`
-        );
-        await set(likedArticlesRef, updatedLikedArticles.join(","));
-
-        // Update local state
-        setArticles((prevArticles) =>
-          prevArticles.map((article) =>
-            article.id === articleId
-              ? { ...article, likes: newLikesCount }
-              : article
-          )
-        );
-        setLikedArticles(updatedLikedArticles);
-      }
-    } catch (error) {
-      console.error("Error updating likes:", error);
-      toast.error("Failed to update likes", { transition: Zoom });
-    } finally {
-      setIsLiking((prev) => ({ ...prev, [articleId]: false }));
-    }
-  };
 
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
@@ -228,15 +167,13 @@ const ArticlesHomepage: React.FC = () => {
                     </div>
                   </CardContent>
                   <CardActions>
-                    <IconButton size="small" className="comment-icon">
+                    <Typography className="comment-icon">
                       <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                       <span className="comment-count">{article.comments}</span>
-                    </IconButton>
-                    <IconButton
-                      size="small"
+                    </Typography>
+                    <Typography
                       className="clap-icon"
-                      onClick={() => handleLike(article.id)}
-                      disabled={isLiking[article.id]}
+                      style={{userSelect: "none"}}
                     >
                       <img
                         src={
@@ -248,7 +185,7 @@ const ArticlesHomepage: React.FC = () => {
                         style={{ width: "1.3rem", userSelect: "none" }}
                       />
                       <span className="clap-count">{article.likes}</span>
-                    </IconButton>
+                    </Typography>
                   </CardActions>
                 </Card>
               ))
