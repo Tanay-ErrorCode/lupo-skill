@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Nav } from "react-bootstrap";
 import "./CreateEvent.css";
 import {
@@ -59,6 +59,12 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
 
+  useEffect(() => {
+    if (localStorage.getItem("userUid") == null) {
+      // toast.error("Please Login first", { transition: Zoom });
+      window.location.href = "#/";
+    }
+  }, []);
   const handleClose = () => setShow(false);
 
   const handleShow = () => {
@@ -259,7 +265,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         });
     } else {
       if (!userUid) {
-        toast.error("Please Login first", { transition: Zoom });
+        // toast.error("Please Login first", { transition: Zoom });
+        window.location.href = "#/";
       } else {
         toast.error("Fill all the required details first", {
           transition: Zoom,

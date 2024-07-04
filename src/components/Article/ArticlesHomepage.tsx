@@ -15,9 +15,9 @@ import moment from "moment";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import ClapIcon from "./clap.svg";
-import ClapIconFilled from "./fillclap.svg"; // Add a filled clap icon for liked state
+import ClapIconFilled from "./fillclap.svg";
 import "./ArticlesHomepage.css";
-import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
+import { database } from "../../firebaseConf";
 import { ref, get, set, update } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 
@@ -41,7 +41,7 @@ const ArticlesHomepage: React.FC = () => {
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
-      window.location.href = "#/";
+      window.location.href = "/";
     }
     const fetchArticles = async () => {
       const articlesRef = ref(database, "articles");
@@ -66,7 +66,6 @@ const ArticlesHomepage: React.FC = () => {
           });
           setArticles(articlesList);
 
-          // Fetch liked articles
           const likedArticlesRef = ref(
             database,
             `users/${userUid}/likedArticles`
@@ -128,66 +127,74 @@ const ArticlesHomepage: React.FC = () => {
               </Typography>
             ) : (
               articles.map((article) => (
-                <Card key={article.id} className="article-card">
-                  <CardHeader
-                    avatar={
-                      <Link to={`/profile/${article.createdBy}`}>
-                        <Avatar alt={article.author} src={article.pic} />
-                      </Link>
-                    }
-                    title={
-                      <Link
-                        className="article_link"
-                        to={`/profile/${article.createdBy}`}
+                <Link
+                  key={article.id}
+                  to={`/article/${article.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Card className="article-card">
+                    <CardHeader
+                      avatar={
+                        <Link to={`/profile/${article.createdBy}`}>
+                          <Avatar alt={article.author} src={article.pic} />
+                        </Link>
+                      }
+                      title={
+                        <Link
+                          className="article_link"
+                          to={`/profile/${article.createdBy}`}
+                        >
+                          By {article.author}
+                        </Link>
+                      }
+                      subheader={moment(article.createdAt).fromNow()}
+                    />
+                    <CardContent className="article-details">
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        className="article-title"
                       >
-                        By {article.author}
-                      </Link>
-                    }
-                    subheader={moment(article.createdAt).fromNow()}
-                  />
-                  <CardContent className="article-details">
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      className="article-title"
-                    >
-                      <Link to={`/article/${article.id}`}>{article.title}</Link>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="article-description"
-                    >
-                      {stripMarkdown(article.content)}
-                    </Typography>
-                    <div className="meta-info">
-                      <Typography variant="body2" className="read-time">
-                        {article.readtime} read
+                        {article.title}
                       </Typography>
-                    </div>
-                  </CardContent>
-                  <CardActions>
-                    <Typography className="comment-icon">
-                      <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-                      <span className="comment-count">{article.comments}</span>
-                    </Typography>
-                    <Typography
-                      className="clap-icon"
-                      style={{userSelect: "none"}}
-                    >
-                      <img
-                        src={
-                          likedArticles.includes(article.id)
-                            ? ClapIconFilled
-                            : ClapIcon
-                        }
-                        alt="Clap icon"
-                        style={{ width: "1.3rem", userSelect: "none" }}
-                      />
-                      <span className="clap-count">{article.likes}</span>
-                    </Typography>
-                  </CardActions>
-                </Card>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        className="article-description"
+                      >
+                        {stripMarkdown(article.content)}
+                      </Typography>
+                      <div className="meta-info">
+                        <Typography variant="body2" className="read-time">
+                          {article.readtime} read
+                        </Typography>
+                      </div>
+                    </CardContent>
+                    <CardActions>
+                      <Typography className="comment-icon">
+                        <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
+                        <span className="comment-count">
+                          {article.comments}
+                        </span>
+                      </Typography>
+                      <Typography
+                        className="clap-icon"
+                        style={{ userSelect: "none" }}
+                      >
+                        <img
+                          src={
+                            likedArticles.includes(article.id)
+                              ? ClapIconFilled
+                              : ClapIcon
+                          }
+                          alt="Clap icon"
+                          style={{ width: "1.3rem", userSelect: "none" }}
+                        />
+                        <span className="clap-count">{article.likes}</span>
+                      </Typography>
+                    </CardActions>
+                  </Card>
+                </Link>
               ))
             )}
           </div>
