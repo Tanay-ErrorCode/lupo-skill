@@ -8,10 +8,8 @@ import {
   Button,
 } from "react-bootstrap";
 import "./EventList.css";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { ref, get } from "firebase/database";
-import { database } from "../../firebaseConf";
 
 interface Event {
   banner: string;
@@ -20,7 +18,6 @@ interface Event {
   description: string;
   host: string;
   hostName: string;
-
   id: string;
   registrants: string[];
   tags: string;
@@ -41,6 +38,58 @@ const EventList = () => {
   >("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
+
+  // Sample event data
+  const sampleEvents: Event[] = [
+    {
+      banner: "https://example.com/banner1.jpg",
+      createdAt: Date.now(),
+      date: "2024-07-10",
+      description: "Event 1 Description",
+      host: "Host 1",
+      hostName: "Host Name 1",
+      id: "1",
+      registrants: ["user1", "user2"],
+      tags: "workshop",
+      time: "10:00 AM",
+      title: "Event 1",
+    },
+    {
+      banner: "https://example.com/banner2.jpg",
+      createdAt: Date.now(),
+      date: "2024-08-15",
+      description: "Event 2 Description",
+      host: "Host 2",
+      hostName: "Host Name 2",
+      id: "2",
+      registrants: ["user3", "user4"],
+      tags: "conference",
+      time: "2:00 PM",
+      title: "Event 2",
+    },
+    {
+      banner: "https://example.com/banner3.jpg",
+      createdAt: Date.now(),
+      date: "2024-09-20",
+      description: "Event 3 Description",
+      host: "Host 3",
+      hostName: "Host Name 3",
+      id: "3",
+      registrants: ["user5", "user6"],
+      tags: "meetup",
+      time: "6:00 PM",
+      title: "Event 3",
+    },
+  ];
+
+  useEffect(() => {
+    // Set sample events data
+    setEventCardsData(sampleEvents);
+    setSortedEvents(sampleEvents);
+    setDisplayedEvents(sampleEvents);
+    setTotalPages(Math.ceil(sampleEvents.length / itemsPerPage));
+    setIsLoading(false);
+  }, []);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -73,10 +122,15 @@ const EventList = () => {
     }
   };
 
-  const filterEventsByTitle = (events: Event[], query: string): Event[] => {
-    return events.filter((event) =>
-      event.title.toLowerCase().includes(query.toLowerCase())
-    );
+  const filterEvents = (events: Event[], query: string): Event[] => {
+    const trimmedQuery = query.trim().toLowerCase();
+    return events.filter((event) => {
+      const eventDate = new Date(event.date).toISOString().slice(0, 10);
+      return (
+        event.tags.toLowerCase().includes(trimmedQuery) ||
+        eventDate.includes(trimmedQuery)
+      );
+    });
   };
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,38 +138,13 @@ const EventList = () => {
   };
 
   const handleSearch = () => {
-    const trimmedQuery = searchQuery.trim();
-    const filteredEvents = filterEventsByTitle(eventCardsData, trimmedQuery);
+    const filteredEvents = filterEvents(eventCardsData, searchQuery);
     const sortedFilteredEvents = sortEvents(filteredEvents, sortOption);
     setSortedEvents(sortedFilteredEvents);
     setDisplayedEvents(sortedFilteredEvents);
     setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
     setCurrentPage(1); // Reset to first page when search is performed
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const dbRef = ref(database, "events");
-      const snapshot = await get(dbRef);
-      if (snapshot.exists()) {
-        const snapshotValue = snapshot.val();
-        if (snapshotValue !== null && typeof snapshotValue === "object") {
-          const res: Event[] = Object.values(snapshotValue) as Event[];
-          res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
-          setEventCardsData(res);
-          setSortedEvents(res);
-          setDisplayedEvents(res);
-          setTotalPages(Math.ceil(res.length / itemsPerPage));
-          setIsLoading(false);
-        }
-      } else {
-        console.log("No data available");
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const sortedFilteredEvents = sortEvents(eventCardsData, sortOption);
@@ -139,11 +168,13 @@ const EventList = () => {
         return "No events found";
     }
   };
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
+
   return (
     <div
       style={{
@@ -151,7 +182,7 @@ const EventList = () => {
       }}
     >
       {isLoading ? (
-        <div className=" d-flex justify-content-center align-items-center spinner-container">
+        <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
@@ -165,7 +196,7 @@ const EventList = () => {
               <div className="search-input-container">
                 <TextField
                   type="text"
-                  placeholder="Search by title..."
+                  placeholder="Search by tags or date..."
                   value={searchQuery}
                   variant="outlined"
                   fullWidth

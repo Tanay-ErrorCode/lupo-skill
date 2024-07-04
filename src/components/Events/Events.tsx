@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Container, InputGroup, FormControl, Button, Spinner, Pagination } from "react-bootstrap";
+import {
+  Container,
+  InputGroup,
+  FormControl,
+  Button,
+  Spinner,
+  Pagination,
+} from "react-bootstrap";
 import { getDatabase, ref, get } from "firebase/database";
 import PageTitle from "../../utils/PageTitle";
 import EventCard from "../Cards/EventCard/EventCard";
@@ -46,7 +53,9 @@ const Events: React.FC = () => {
       const filteredEvents = Object.keys(eventsData)
         .map((key) => ({ id: key, ...eventsData[key] }))
         .filter((event) => {
-          const matchesTags = !searchTags || event.tags.toLowerCase().includes(searchTags.toLowerCase());
+          const matchesTags =
+            !searchTags ||
+            event.tags.toLowerCase().includes(searchTags.toLowerCase());
           const matchesDate = !searchDate || event.date === searchDate;
           return matchesTags && matchesDate;
         });
@@ -88,24 +97,39 @@ const Events: React.FC = () => {
         ) : (
           <div>
             {eventCardsData
-              .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+              .slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
               .map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.id} {...event} />
               ))}
             <Pagination className="justify-content-center mt-4">
-              <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-              <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-              {[...Array(totalPages).keys()].map((number) => (
+              <Pagination.First
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+              />
+              <Pagination.Prev
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+              {Array.from({ length: totalPages }, (_, index) => (
                 <Pagination.Item
-                  key={number + 1}
-                  active={number + 1 === currentPage}
-                  onClick={() => handlePageChange(number + 1)}
+                  key={index + 1}
+                  active={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
                 >
-                  {number + 1}
+                  {index + 1}
                 </Pagination.Item>
               ))}
-              <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-              <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+              <Pagination.Next
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
+              <Pagination.Last
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+              />
             </Pagination>
           </div>
         )}
