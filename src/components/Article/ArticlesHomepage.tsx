@@ -109,7 +109,7 @@ const ArticlesHomepage: React.FC = () => {
               fontWeight={600}
               gutterBottom
             >
-              Article
+              Articles
             </Typography>
             <Link to="/article/write" className="create-article-button">
               Create Article
