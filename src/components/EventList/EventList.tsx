@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import EventCard from "../Cards/EventCard/EventCard";
 import {
   Pagination,
   Spinner,
@@ -127,6 +126,7 @@ const EventList = () => {
     return events.filter((event) => {
       const eventDate = new Date(event.date).toISOString().slice(0, 10);
       return (
+        event.title.toLowerCase().includes(trimmedQuery) ||
         event.tags.toLowerCase().includes(trimmedQuery) ||
         eventDate.includes(trimmedQuery)
       );
@@ -196,7 +196,7 @@ const EventList = () => {
               <div className="search-input-container">
                 <TextField
                   type="text"
-                  placeholder="Search by tags or date..."
+                  placeholder="Search by title, tags or date..."
                   value={searchQuery}
                   variant="outlined"
                   fullWidth
@@ -258,52 +258,54 @@ const EventList = () => {
                 (currentPage - 1) * itemsPerPage,
                 currentPage * itemsPerPage
               )
-              .map((card: Event, index) => {
-                const user_uid = localStorage.getItem("userUid");
-                const isRegistered = card.registrants.includes(user_uid!);
-                return (
-                  <div className="event-card-wrapper" key={index}>
-                    <EventCard
-                      isValid={true}
-                      id={card.id}
-                      key={index}
-                      title={card.title}
-                      description={card.description}
-                      date={card.date}
-                      time={card.time}
-                      tags={card.tags}
-                      host={card.host}
-                      isDashboard={false}
-                      image={card.banner}
-                      isRegistered={isRegistered}
-                      hostName={card.hostName}
-                      lastEdited={card.lastEdited}
-                    />
+              .map((event: Event, index) => (
+                <div className="event-card-wrapper" key={index}>
+                  {/* Event card content can go here, customize as needed */}
+                  <div className="event-card">
+                    <img src={event.banner} alt={event.title} />
+                    <h2>{event.title}</h2>
+                    <p>{event.description}</p>
+                    <p>{event.date}</p>
+                    <p>{event.time}</p>
+                    <p>{event.tags}</p>
                   </div>
-                );
-              })
+                </div>
+              ))
           )}
-
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Pagination>
-              {[...Array(totalPages)].map((_, i) => (
-                <Pagination.Item
-                  key={i + 1}
-                  active={i + 1 === currentPage}
-                  onClick={() => {
-                    handlePageChange(i + 1);
-                    window.scrollTo({
-                      top: 0,
-                      left: 0,
-                      behavior: "smooth",
-                    });
-                  }}
-                >
-                  {i + 1}
-                </Pagination.Item>
-              ))}
-            </Pagination>
-          </div>
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center">
+              <Pagination
+                className="mt-3"
+                style={{ backgroundColor: "#5AB2FF" }}
+              >
+                <Pagination.First
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                />
+                <Pagination.Prev
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+                {[...Array(totalPages)].map((_, pageIndex) => (
+                  <Pagination.Item
+                    key={pageIndex + 1}
+                    active={pageIndex + 1 === currentPage}
+                    onClick={() => handlePageChange(pageIndex + 1)}
+                  >
+                    {pageIndex + 1}
+                  </Pagination.Item>
+                ))}
+                <Pagination.Next
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                />
+                <Pagination.Last
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
+            </div>
+          )}
         </>
       )}
     </div>

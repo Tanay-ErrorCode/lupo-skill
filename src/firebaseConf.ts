@@ -10,16 +10,7 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCMYeQ0FuZp5bzFOtxH_pF5Nd3cAaTPpj8",
-  authDomain: "chintu-d2cf6.firebaseapp.com",
-  databaseURL: "https://chintu-d2cf6-default-rtdb.firebaseio.com",
-  projectId: "chintu-d2cf6",
-  storageBucket: "chintu-d2cf6.appspot.com",
-  messagingSenderId: "332922368810",
-  appId: "1:332922368810:web:745a2927f1af5068092453",
-  measurementId: "G-R2QSYCZM23",
-};
+const firebaseConfig = {};
 
 const app = initializeApp(firebaseConfig);
 

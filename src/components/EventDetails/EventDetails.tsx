@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Card, FormControl, InputGroup, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  FormControl,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { ref, get, update } from "firebase/database";
 import { database } from "../../firebaseConf";
@@ -22,7 +31,9 @@ const EventDetails = () => {
   const [hostName, setHostName] = useState("");
   const [lastEdited, setLastEdited] = useState(null);
   const [registeredUsers, setRegisteredUsers] = useState([]);
-  const [googleMeetLink, setGoogleMeetLink] = useState("Nothing yet, ask the host to add one");
+  const [googleMeetLink, setGoogleMeetLink] = useState(
+    "Nothing yet, ask the host to add one"
+  );
 
   useEffect(() => {
     if (!userUid) {
@@ -48,7 +59,10 @@ const EventDetails = () => {
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
-          if (!eventData.registrants.split(",").includes(userUid) && userUid !== eventData.host) {
+          if (
+            !eventData.registrants.split(",").includes(userUid) &&
+            userUid !== eventData.host
+          ) {
             window.location.href = "#/dashboard";
           }
         }
@@ -71,7 +85,10 @@ const EventDetails = () => {
       <PageTitle title={`${title} | Lupo Skill`} />
       <div>
         {isLoading ? (
-          <div className="d-flex justify-content-center align-items-center" style={{ paddingTop: "9.5em" }}>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ paddingTop: "9.5em" }}
+          >
             <Spinner animation="border" />
           </div>
         ) : (
@@ -79,19 +96,34 @@ const EventDetails = () => {
             <Row>
               <Col>
                 <Card className="p-3 shadow mt-2">
-                  <Card.Img variant="top" src={banner_Image} alt="Event Header" className="card-image" />
+                  <Card.Img
+                    variant="top"
+                    src={banner_Image}
+                    alt="Event Header"
+                    className="card_image"
+                  />
                   <Card.Body>
                     <Card.Title>{title}</Card.Title>
                     <Container>
                       <Row className="align-items-center mb-2">
-                        <Col xs="auto"><i className="bi bi-calendar"></i></Col>
+                        <Col xs="auto">
+                          <i className="bi bi-calendar"></i>
+                        </Col>
                         <Col xs="auto">{date}</Col>
-                        <Col xs="auto"><i className="bi bi-clock"></i></Col>
+                        <Col xs="auto">
+                          <i className="bi bi-clock"></i>
+                        </Col>
                         <Col xs="auto">{time}</Col>
                       </Row>
                       <Row>
                         <Col>
-                          Host: <a href={`#/profile/${host}`} className="link-primary">{hostName}</a>
+                          Host:{" "}
+                          <a
+                            href={`#/profile/${host}`}
+                            className="link-primary"
+                          >
+                            {hostName}
+                          </a>
                         </Col>
                       </Row>
                       <Row>
@@ -100,7 +132,9 @@ const EventDetails = () => {
                       <Row>
                         <Col>
                           {tags.map((tag, index) => (
-                            <span key={index} className="tag badge me-2">{tag}</span>
+                            <span key={index} className="tag badge me-2">
+                              {tag}
+                            </span>
                           ))}
                         </Col>
                       </Row>
@@ -118,13 +152,26 @@ const EventDetails = () => {
                       {isHost ? (
                         <InputGroup className="mb-3">
                           <InputGroup.Text>Google Meet link :</InputGroup.Text>
-                          <FormControl type="text" value={googleMeetLink} onChange={(e) => setGoogleMeetLink(e.target.value)} />
-                          <Button onClick={addMeetingLink} variant="primary">Add Link</Button>
+                          <FormControl
+                            type="text"
+                            value={googleMeetLink}
+                            onChange={(e) => setGoogleMeetLink(e.target.value)}
+                          />
+                          <Button onClick={addMeetingLink} variant="primary">
+                            Add Link
+                          </Button>
                         </InputGroup>
                       ) : (
                         <span>
                           Google Meet link :{" "}
-                          {googleMeetLink === "Nothing yet, ask the host to add one" ? googleMeetLink : <a href={googleMeetLink} className="link-primary">{googleMeetLink}</a>}
+                          {googleMeetLink ===
+                          "Nothing yet, ask the host to add one" ? (
+                            googleMeetLink
+                          ) : (
+                            <a href={googleMeetLink} className="link-primary">
+                              {googleMeetLink}
+                            </a>
+                          )}
                         </span>
                       )}
                     </div>
