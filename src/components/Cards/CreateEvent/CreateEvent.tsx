@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Nav } from "react-bootstrap";
 import "./CreateEvent.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import {
+  LocalizationProvider,
+  DatePicker,
+  TimePicker,
+} from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Signup from "../../Signup/Signup";
 import { auth, database, storage } from "../../../firebaseConf";
 import { ref, get, child, set } from "firebase/database";
@@ -77,8 +82,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [popTags, setPopTags] = useState<string>("");
   const [listTags, setListTags] = useState<string[]>([]);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [startTime, setStartTime] = useState(new Date());
+  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
+  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs());
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -231,8 +236,8 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     title: title,
                     description: description,
                     tags: tags,
-                    date: startDate.toDateString(),
-                    time: startTime.toTimeString(),
+                    date: startDate.toDate().toDateString(),
+                    time: startTime.format("hh:mm A"),
                     id: newEventId,
                     host: userUid,
                     registrants: "",
@@ -338,27 +343,37 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   }
                 />
               </Box>
-              <Form.Group controlId="formDate" style={{ zIndex: 100 }}>
-                <Form.Label>Date</Form.Label>
+              <Form.Group
+                controlId="formDate"
+                style={{ zIndex: 100 }}
+                className="mt-3"
+              >
+                <Typography className="create-event-label">Date</Typography>
                 <br />
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date: Date) => setStartDate(date)}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Select Date"
+                    value={startDate}
+                    onChange={(newValue) => setStartDate(newValue)}
+                  />
+                </LocalizationProvider>
               </Form.Group>
 
-              <Form.Group controlId="formTime" style={{ zIndex: 100 }}>
-                <Form.Label>Time</Form.Label>
+              <Form.Group
+                controlId="formTime"
+                style={{ zIndex: 100 }}
+                className="mt-3"
+              >
+                <Typography className="create-event-label">Time</Typography>
                 <br />
-                <DatePicker
-                  selected={startTime}
-                  onChange={(date: Date) => setStartTime(date)}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="Time"
-                  dateFormat="h:mm aa"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    label="Select Time"
+                    value={startTime}
+                    onChange={(newValue) => setStartTime(newValue)}
+                    className="custom-timepicker"
+                  />
+                </LocalizationProvider>
               </Form.Group>
               <Box className="mt-3">
                 <Typography className="create-event-label">
