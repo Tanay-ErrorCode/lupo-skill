@@ -308,7 +308,10 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
 
       <Container className="containerCreate">
         <Box className="Create_event_box">
-          <Card className="box1">
+          <Card
+            className="box1"
+            style={{ borderRadius: theme.borderRadius.large }}
+          >
             <Typography variant="h5" className="font-bold">
               Event Info
             </Typography>
@@ -405,7 +408,10 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
             </form>
           </Card>
           <Box className="left-create">
-            <Card className="publish-box">
+            <Card
+              className="publish-box"
+              style={{ borderRadius: theme.borderRadius.large }}
+            >
               <Typography
                 variant="h6"
                 className="create-publish"
@@ -426,7 +432,10 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 </Button>
               </Box>
             </Card>
-            <Card className="upload-box">
+            <Card
+              className="upload-box"
+              style={{ borderRadius: theme.borderRadius.large }}
+            >
               <Typography variant="h6" className="upload-box-head">
                 Upload Event Banner
               </Typography>
