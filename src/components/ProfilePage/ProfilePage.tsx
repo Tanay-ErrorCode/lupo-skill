@@ -65,7 +65,7 @@ const ProfilePage = () => {
   const [username, setUsername] = useState<string>("");
   const userUid = localStorage.getItem("userUid");
   if (userUid === null) {
-    window.location.href = "/";
+    window.location.href = "#/";
   }
   const openEditModal = (event: Event) => {
     setCurrentEvent(event);
@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!userUid) {
-      window.location.href = "/";
+      window.location.href = "#/";
       toast.warn("You are not signed in", { transition: Zoom });
       return;
     }

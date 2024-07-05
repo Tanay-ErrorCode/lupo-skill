@@ -87,12 +87,8 @@ const NavBar = () => {
 
   const userUid = localStorage.getItem("userUid");
   const is_signup = userUid ? true : false;
-  const handleDashboard = (where: string) => () => {
-    if (!is_signup) {
-      setShow(true);
-    } else {
-      window.location.href = `/${where}`;
-    }
+  const handleDashboard = () => {
+    if (!is_signup) setShow(!show);
     handleMobileMenuClose();
   };
 
@@ -185,7 +181,6 @@ const NavBar = () => {
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
-
   return (
     <AppBar
       position="fixed"
@@ -231,7 +226,7 @@ const NavBar = () => {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                href="#/"
                 sx={{
                   fontWeight: 700,
                   color: "inherit",
@@ -267,7 +262,7 @@ const NavBar = () => {
               }}
             >
               <Button
-                href="/"
+                href="#/"
                 sx={{
                   boxSizing: "border-box",
                   fontWeight: 700,
@@ -306,7 +301,8 @@ const NavBar = () => {
                 Home
               </Button>
               <Button
-                onClick={handleDashboard("dashboard")}
+                href="#/dashboard"
+                onClick={handleDashboard}
                 sx={{
                   boxSizing: "border-box",
                   display: "block",
@@ -343,7 +339,7 @@ const NavBar = () => {
                 Dashboard
               </Button>
               <Button
-                href="/events"
+                href="#/events"
                 onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
@@ -381,7 +377,8 @@ const NavBar = () => {
                 Events
               </Button>
               <Button
-                onClick={handleDashboard("article")}
+                href="#/article"
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -419,7 +416,8 @@ const NavBar = () => {
               </Button>
 
               <Button
-                onClick={handleDashboard("createEvent")}
+                href="#/createEvent"
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -502,7 +500,7 @@ const NavBar = () => {
                   // <Signup />
 
                   <IconButton
-                    onClick={handleDashboard("")}
+                    onClick={handleDashboard}
                     color="inherit"
                     sx={{
                       border: isHome ? "1px solid" : "none",

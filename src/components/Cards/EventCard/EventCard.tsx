@@ -246,7 +246,10 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       <span className="ms-2">{props.time}</span>
                     </div>
                     Host:{" "}
-                    <a href={"/profile/" + props.host} className="link-primary">
+                    <a
+                      href={"#/profile/" + props.host}
+                      className="link-primary"
+                    >
                       {props.hostName}
                     </a>
                     <br />
@@ -317,7 +320,10 @@ const EventCard: React.FC<EventCardProps> = (props) => {
         ) : (
           <Row className="justify-content-md-center">
             <Col xs={12} md={8} lg={6}>
-              <Link href={"/eventDetails/" + props.id} className="link-nothing">
+              <Link
+                href={"#/eventDetails/" + props.id}
+                className="link-nothing"
+              >
                 <Card className="mt-2 mb-2 shadow card card-background">
                   <Card.Img
                     src={props.image}
@@ -336,7 +342,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       </div>
                       Host:{" "}
                       <a
-                        href={"/profile/" + props.host}
+                        href={"#/profile/" + props.host}
                         className="link-primary"
                       >
                         {props.hostName}
