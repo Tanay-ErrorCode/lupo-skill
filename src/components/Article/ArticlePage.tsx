@@ -46,7 +46,7 @@ const ArticlePage: React.FC = () => {
     const fetchArticle = async () => {
       const userUid = localStorage.getItem("userUid");
       if (userUid == null) {
-        window.location.href = "/";
+        window.location.href = "#/";
         return;
       }
       try {

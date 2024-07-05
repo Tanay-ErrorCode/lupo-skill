@@ -41,7 +41,7 @@ const EventDetails = () => {
 
   useEffect(() => {
     if (userUid == null) {
-      window.location.href = "/dashboard";
+      window.location.href = "#/dashboard";
       toast.warn("You are not signed in", { transition: Zoom });
     }
     const fetchData = async () => {
@@ -71,7 +71,7 @@ const EventDetails = () => {
               userUid == null) &&
             userUid !== eventData.host
           ) {
-            window.location.href = "/dashboard";
+            window.location.href = "#/dashboard";
             toast.warn("You are not registered for this event", {
               transition: Zoom,
             });
@@ -136,7 +136,10 @@ const EventDetails = () => {
                       <Row>
                         <Col>
                           Host:{" "}
-                          <a href={"/profile/" + host} className="link-primary">
+                          <a
+                            href={"#/profile/" + host}
+                            className="link-primary"
+                          >
                             {hostName}
                           </a>
                         </Col>
