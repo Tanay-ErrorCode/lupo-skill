@@ -9,9 +9,10 @@ import {
 } from "firebase/storage";
 import ImageCropper from "../../../utils/ImageCropper";
 import { Zoom, toast } from "react-toastify";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import differenceInMinutes from "date-fns/differenceInMinutes"; // Import from date-fns library
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 
 interface EditEventModalProps {
   show: boolean;
@@ -40,16 +41,16 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   const [image, setImage] = useState<File | null>(null);
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [formData, setFormData] = useState<Event | null>(null);
 
   useEffect(() => {
     if (event) {
       setFormData(event);
-      const eventDate = new Date(event.date);
+      const eventDate = dayjs(event.date);
       const [timeString, timezone] = event.time.split(" ");
-      const eventTime = new Date(`1970-01-01T${timeString}Z`);
+      const eventTime = dayjs(`1970-01-01T${timeString}Z`);
       setStartDate(eventDate);
       setStartTime(eventTime);
     }
@@ -166,19 +167,22 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
     e.preventDefault();
     if (event && formData && startDate && startTime) {
       // Ensure startDate and startTime are valid
-      if (isNaN(startDate.getTime()) || isNaN(startTime.getTime())) {
+      if (
+        isNaN(startDate.toDate().getTime()) ||
+        isNaN(startTime.toDate().getTime())
+      ) {
         toast.error("Invalid date or time", {
           transition: Zoom,
         });
         return;
       }
 
-      const formattedDate = startDate.toDateString();
-      const formattedTime = startTime.toTimeString().split(" ")[0];
-      const timezoneOffset =
-        startTime.toTimeString().match(/\((.*)\)/)?.[1] || "";
+      const formattedDate = startDate.format("YYYY-MM-DD");
+      const formattedTime = startTime.format("hh:mm A");
+      // const timezoneOffset =
+      //   startTime.toDate().toTimeString().match(/\((.*)\)/)?.[1] || "";
 
-      const formattedTimeWithTimezone = `${formattedTime} GMT+0530 (${timezoneOffset})`;
+      // const formattedTimeWithTimezone = `${formattedTime} GMT+0530 (${timezoneOffset})`;
 
       // Upload image if a new one is provided
       let bannerUrl = formData.banner;
@@ -204,7 +208,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
         await update(eventRef, {
           ...formData,
           date: formattedDate, // e.g., "Tue Jun 04 2024"
-          time: formattedTimeWithTimezone, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
+          time: formattedTime, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
           banner: bannerUrl,
           lastEdited: Date.now(),
         });
@@ -269,26 +273,26 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
             <Form.Group controlId="formDate">
               <Form.Label>Date</Form.Label>
               <br />
-              <DatePicker
-                selected={startDate}
-                onChange={(date: Date) => setStartDate(date)}
-                dateFormat="yyyy-MM-dd"
-                disabled={!isEventStartTimeValid()} // Disable date picker if event starts in less than one hour
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Date"
+                  value={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  disabled={!isEventStartTimeValid()}
+                />
+              </LocalizationProvider>
             </Form.Group>
             <Form.Group controlId="formTime">
               <Form.Label>Time</Form.Label>
               <br />
-              <DatePicker
-                selected={startTime}
-                onChange={(date: Date) => setStartTime(date)}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={15}
-                timeCaption="Time"
-                dateFormat="HH:mm:ss"
-                disabled={!isEventStartTimeValid()} // Disable time picker if event starts in less than one hour
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="Time"
+                  value={startTime}
+                  onChange={(time) => setStartTime(time)}
+                  disabled={!isEventStartTimeValid()}
+                />
+              </LocalizationProvider>
             </Form.Group>
             <Form.Group controlId="formImageUpload">
               <Form.Label>Image</Form.Label>
