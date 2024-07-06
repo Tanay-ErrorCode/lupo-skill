@@ -56,14 +56,25 @@ const ArticlesHomepage: React.FC = () => {
         const snapshot = await get(articlesRef);
         if (snapshot.exists()) {
           const articlesData = snapshot.val();
-          const articlesList = Object.keys(articlesData).map((key) => {
-            const article = articlesData[key];
-            return {
-              ...article,
-              id: key,
-              createdAt: article.createdAt,
-            };
-          });
+          const articleKeys = Object.keys(articlesData);
+          const articlesList = await Promise.all(
+            articleKeys.map(async (key) => {
+              const article = articlesData[key];
+              const userDetailsRef = ref(
+                database,
+                `users/${article.createdBy}`
+              );
+              const userDetailsSnapshot = await get(userDetailsRef);
+              const userDetails = userDetailsSnapshot.val();
+              return {
+                ...article,
+                id: key,
+                author: userDetails.name,
+                pic: userDetails.pic,
+                createdAt: article.createdAt,
+              };
+            })
+          );
           setArticles(articlesList);
 
           const likedArticlesRef = ref(

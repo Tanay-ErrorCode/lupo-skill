@@ -10,11 +10,11 @@ import {
   CardActions,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { ref, get, update, set } from "firebase/database";
+import { ref, get, update, set, onValue } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ClapIcon from "./clap.svg";
-import ClapIconFilled from "./fillclap.svg"; // Add the filled clap icon for liked state
+import ClapIconFilled from "./fillclap.svg";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import "./ArticlePage.css";
@@ -51,23 +51,37 @@ const ArticlePage: React.FC = () => {
       }
       try {
         const articleRef = ref(database, `articles/${id}`);
-        const snapshot = await get(articleRef);
-        if (snapshot.exists()) {
-          setArticle(snapshot.val());
-        } else {
-          console.error("No article found");
-        }
+        onValue(articleRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const articleData = snapshot.val();
+            const userDetailsRef = ref(
+              database,
+              `users/${articleData.createdBy}`
+            );
+            get(userDetailsRef).then((userDetailsSnapshot) => {
+              const userDetails = userDetailsSnapshot.val();
+              setArticle({
+                ...articleData,
+                author: userDetails.name,
+                pic: userDetails.pic,
+                id: snapshot.key!,
+              });
+            });
+          } else {
+            console.error("No article found");
+          }
+        });
 
-        // Fetch liked articles
         const likedArticlesRef = ref(
           database,
           `users/${userUid}/likedArticles`
         );
-        const likedArticlesSnapshot = await get(likedArticlesRef);
-        if (likedArticlesSnapshot.exists()) {
-          const likedArticlesString = likedArticlesSnapshot.val();
-          setLikedArticles(likedArticlesString.split(","));
-        }
+        get(likedArticlesRef).then((likedArticlesSnapshot) => {
+          if (likedArticlesSnapshot.exists()) {
+            const likedArticlesString = likedArticlesSnapshot.val();
+            setLikedArticles(likedArticlesString.split(","));
+          }
+        });
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -79,7 +93,7 @@ const ArticlePage: React.FC = () => {
   }, [id]);
 
   const handleLike = async () => {
-    if (isLiking || !article) return; // Prevent multiple clicks and check if article is loaded
+    if (isLiking || !article) return;
 
     const userUid = localStorage.getItem("userUid");
     if (!userUid) {
@@ -99,28 +113,23 @@ const ArticlePage: React.FC = () => {
 
         let updatedLikedArticles = [...likedArticles];
         if (likedArticles.includes(id!)) {
-          // If already liked, unlike it
           newLikesCount = Math.max(newLikesCount - 1, 0);
           updatedLikedArticles = updatedLikedArticles.filter(
             (articleId) => articleId !== id
           );
         } else {
-          // If not liked, like it
           newLikesCount += 1;
           updatedLikedArticles.push(id!);
         }
 
-        // Update likes count in the article
         await update(articleRef, { likes: newLikesCount });
 
-        // Update the list of liked articles for the user as a comma-separated string
         const likedArticlesRef = ref(
           database,
           `users/${userUid}/likedArticles`
         );
         await set(likedArticlesRef, updatedLikedArticles.join(","));
 
-        // Update local state
         setArticle({ ...article, likes: newLikesCount });
         setLikedArticles(updatedLikedArticles);
       }
@@ -175,7 +184,7 @@ const ArticlePage: React.FC = () => {
             gutterBottom
             className="articlepage-title"
             sx={{
-              fontSize: { xs: "1.5rem", md: "3rem" }, // Adjust font sizes as needed
+              fontSize: { xs: "1.5rem", md: "3rem" },
             }}
           >
             {article.title}
