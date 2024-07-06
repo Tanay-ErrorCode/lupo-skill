@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import EventCard from "../Cards/EventCard/EventCard";
 import {
   Pagination,
@@ -8,9 +8,9 @@ import {
   Button,
 } from "react-bootstrap";
 import "./EventList.css";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { ref, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { database } from "../../firebaseConf";
 
 interface Event {
@@ -20,7 +20,6 @@ interface Event {
   description: string;
   host: string;
   hostName: string;
-
   id: string;
   registrants: string[];
   tags: string;
@@ -32,7 +31,7 @@ interface Event {
 const EventList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [eventCardsData, setEventCardsData] = useState<Event[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
@@ -41,6 +40,8 @@ const EventList = () => {
   >("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
+  const [showMessage, setShowMessage] = useState(false);
+  const searchTimeoutRef = useRef<number | null>(null);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -81,6 +82,30 @@ const EventList = () => {
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    if (e.target.value.length >= 3) {
+      setShowMessage(false);
+      searchTimeoutRef.current = window.setTimeout(() => {
+        const trimmedQuery = e.target.value.trim();
+        const filteredEvents = filterEventsByTitle(
+          eventCardsData,
+          trimmedQuery
+        );
+        const sortedFilteredEvents = sortEvents(filteredEvents, sortOption);
+        setSortedEvents(sortedFilteredEvents);
+        setDisplayedEvents(sortedFilteredEvents);
+        setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
+        setCurrentPage(1);
+      }, 1000);
+    } else {
+      setShowMessage(true);
+      setSortedEvents(eventCardsData);
+      setDisplayedEvents(eventCardsData);
+      setTotalPages(Math.ceil(eventCardsData.length / itemsPerPage));
+      setCurrentPage(1);
+    }
   };
 
   const handleSearch = () => {
@@ -90,7 +115,7 @@ const EventList = () => {
     setSortedEvents(sortedFilteredEvents);
     setDisplayedEvents(sortedFilteredEvents);
     setTotalPages(Math.ceil(sortedFilteredEvents.length / itemsPerPage));
-    setCurrentPage(1); // Reset to first page when search is performed
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -139,11 +164,13 @@ const EventList = () => {
         return "No events found";
     }
   };
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
+
   return (
     <div
       style={{
@@ -190,6 +217,15 @@ const EventList = () => {
               </div>
             </div>
           </div>
+
+          {showMessage && searchQuery.length > 0 && searchQuery.length < 3 && (
+            <div
+              style={{ textAlign: "center", marginTop: "1em", color: "red" }}
+            >
+              Please enter at least 3 characters to search
+            </div>
+          )}
+
           <div className="d-flex justify-content-center align-items-center">
             <DropdownButton
               id="dropdown-basic-button"
@@ -211,6 +247,7 @@ const EventList = () => {
               <Dropdown.Item eventKey="Past">Past</Dropdown.Item>
             </DropdownButton>
           </div>
+
           {displayedEvents.length === 0 ? (
             <div
               style={{
