@@ -20,7 +20,7 @@
     "cropperjs": "^1.6.2",
     "dayjs": "^1.11.11",
     "dompurify": "^3.1.5",
-    "firebase": "^10.12.2",
+    "firebase": "^10.12.3",
     "image-conversion": "^2.1.1",
     "install": "^0.13.0",
     "marked": "^13.0.1",
