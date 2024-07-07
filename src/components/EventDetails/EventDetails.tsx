@@ -9,6 +9,7 @@ import {
   FormControl,
   InputGroup,
   Spinner,
+  Modal,
 } from "react-bootstrap";
 import { Image as BootstrapImage } from "react-bootstrap";
 import "./EventDetails.css";
@@ -38,6 +39,7 @@ const EventDetails = () => {
   const [googleMeetLink, setGoogleMeetLink] = useState(
     "Nothing yet, ask the host to add one"
   );
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (userUid == null) {
@@ -96,6 +98,23 @@ const EventDetails = () => {
     toast.success("Google Meet link added successfully", { transition: Zoom });
   };
 
+  const handleShareClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  const handlecopytoclipboard = () => {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        toast.success("Copied!!");
+      })
+      .catch(err => {
+        toast.error("Failed to copy!");
+        console.error("Could not copy text: ", err);
+      });
+    }
   return (
     <>
       <PageTitle title={`${title} | Lupo Skill`} />
@@ -121,7 +140,13 @@ const EventDetails = () => {
                     className="card-image"
                   />
                   <Card.Body>
+                    <div className="share-event">
                     <Card.Title>{title}</Card.Title>
+                    <p onClick={handleShareClick} className="share-icon">
+                    <i className="bi bi-share-fill"></i>
+                </p>
+                    </div>
+                 
                     <Container>
                       <Row className="align-items-center mb-2">
                         <Col xs="auto">
@@ -211,11 +236,50 @@ const EventDetails = () => {
                     Number of registrants : {registeredUsers.length}
                   </Card.Body>
                 </Card>
+                
               </Col>
             </Row>
           </Container>
         )}
       </div>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Share Event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Container>
+            <Row>
+              <Col>
+              <img src={bannerImage} alt="Event Banner" width="100%" style={{ objectFit: 'cover' }} />
+              </Col>
+              <Col className="modal-event-detail">
+                <h5>{title}</h5>
+                <p>{description}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="icons-row-modal">
+                <Button variant="link" className="share-button-icons" href={`https://twitter.com/intent/tweet?url=${window.location.href}`}>
+                  <i className="bi bi-twitter" ></i>
+                </Button>
+                <Button variant="link" className="share-button-icons" href={`https://api.whatsapp.com/send?text=${window.location.href}`}>
+                  <i className="bi bi-whatsapp"></i> 
+                </Button>
+                <Button variant="link" className="share-button-icons" href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`}>
+                  <i className="bi bi-linkedin"></i>
+                </Button>
+                <Button variant="link" className="share-button-icons" href={`mailto:?subject=Check out this event&body=${window.location.href}`}>
+                  <i className="bi bi-envelope"></i>
+                </Button>
+                <Button variant="link" className="share-button-icons" onClick={() => {handlecopytoclipboard()}}>
+                  <i className="bi bi-clipboard"></i> 
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
