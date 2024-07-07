@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
     <Box component="footer" className="footer">
       <Box className="strip" />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 2, md: 6 }}>
+        <Grid container spacing={{ md: 24, xs: 8 }}>
           <Grid item xs={12} md={6}>
             <Typography
               variant="h6"
