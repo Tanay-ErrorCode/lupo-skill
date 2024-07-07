@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -36,23 +37,42 @@ interface Article {
 
 const ArticlesHomepage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [isUserSignedIn, MakeUserSignin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
 
   useEffect(() => {
-    if (localStorage.getItem("userUid") == null) {
-      window.location.href = "#/";
-    }
     const fetchArticles = async () => {
       const articlesRef = ref(database, "articles");
       const userUid = localStorage.getItem("userUid");
 
       if (!userUid) {
+        try {
+          const snapshot = await get(articlesRef);
+          if (snapshot.exists()) {
+            const articlesData = snapshot.val();
+            const articlesList = Object.keys(articlesData).map((key) => {
+              const article = articlesData[key];
+              return {
+                ...article,
+                id: key,
+                createdAt: article.createdAt,
+              };
+            });
+            setArticles(articlesList);
+          }
+        } catch (error) {
+          console.error("Error fetching articles:", error);
+          toast.error("Failed to fetch articles", { transition: Zoom });
+        } finally {
+          setIsLoading(false);
+        }
         console.error("User is not logged in.");
         return;
       }
 
       try {
+        MakeUserSignin(true);
         const snapshot = await get(articlesRef);
         if (snapshot.exists()) {
           const articlesData = snapshot.val();
@@ -87,6 +107,21 @@ const ArticlesHomepage: React.FC = () => {
     fetchArticles();
   }, []);
 
+  const handleArticleLinkClick = (e: any) => {
+    if (!isUserSignedIn) {
+      e.preventDefault();
+      toast.info("Please sign up to view the article", { transition: Zoom });
+    } else {
+    }
+  };
+  const handleCreateLinkClick = (e: any) => {
+    if (!isUserSignedIn) {
+      e.preventDefault();
+      toast.info("Please sign up to create an article", { transition: Zoom });
+    } else {
+    }
+  };
+
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
     const tempDiv = document.createElement("div");
@@ -111,9 +146,15 @@ const ArticlesHomepage: React.FC = () => {
             >
               Articles
             </Typography>
-            <Link to="/article/write" className="create-article-button">
-              Create Article
-            </Link>
+            {
+              <Link
+                to="/article/write"
+                className="create-article-button"
+                onClick={handleCreateLinkClick}
+              >
+                Create Article
+              </Link>
+            }
           </div>
           <div className="articles-container">
             {articles.length === 0 ? (
@@ -130,6 +171,7 @@ const ArticlesHomepage: React.FC = () => {
                 <Link
                   key={article.id}
                   to={`/article/${article.id}`}
+                  onClick={handleArticleLinkClick}
                   style={{ textDecoration: "none" }}
                 >
                   <Card className="article-card">
