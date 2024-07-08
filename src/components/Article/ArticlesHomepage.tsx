@@ -21,7 +21,7 @@ import "./ArticlesHomepage.css";
 import { database } from "../../firebaseConf";
 import { ref, get, set, update } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
-
+import Signup from "../Signup/Signup";
 interface Article {
   id: string;
   title: string;
@@ -40,6 +40,7 @@ const ArticlesHomepage: React.FC = () => {
   const [isUserSignedIn, MakeUserSignin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
+  const [show, setShow] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -107,17 +108,13 @@ const ArticlesHomepage: React.FC = () => {
     fetchArticles();
   }, []);
 
-  const handleArticleLinkClick = (e: any) => {
-    if (!isUserSignedIn) {
-      e.preventDefault();
-      toast.info("Please sign up to view the article", { transition: Zoom });
-    } else {
-    }
-  };
   const handleCreateLinkClick = (e: any) => {
     if (!isUserSignedIn) {
       e.preventDefault();
-      toast.info("Please sign up to create an article", { transition: Zoom });
+      if (isUserSignedIn == false) {
+        setShow(true);
+      }
+      // toast.info("Please sign up to create an article", { transition: Zoom });
     } else {
     }
   };
@@ -171,7 +168,6 @@ const ArticlesHomepage: React.FC = () => {
                 <Link
                   key={article.id}
                   to={`/article/${article.id}`}
-                  onClick={handleArticleLinkClick}
                   style={{ textDecoration: "none" }}
                 >
                   <Card className="article-card">
@@ -242,6 +238,7 @@ const ArticlesHomepage: React.FC = () => {
           </div>
         </>
       )}
+      <Signup isShow={show} returnShow={setShow} />
     </div>
   );
 };

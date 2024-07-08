@@ -46,8 +46,8 @@ const ArticlePage: React.FC = () => {
     const fetchArticle = async () => {
       const userUid = localStorage.getItem("userUid");
       if (userUid == null) {
-        window.location.href = "#/";
-        return;
+        // window.location.href = "#/";
+        // return;
       }
       try {
         const articleRef = ref(database, `articles/${id}`);
