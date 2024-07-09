@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { LinkedIn, GitHub, YouTube } from "@mui/icons-material";
 import "./Footer.css";
-
 const LinkedInLink: React.FC<{ url: string; name: string }> = ({
   url,
   name,
@@ -20,7 +19,11 @@ const LinkedInLink: React.FC<{ url: string; name: string }> = ({
     rel="noopener noreferrer"
     className="footer-link"
   >
-    <IconButton aria-label="LinkedIn" className="icon-button">
+    <IconButton
+      aria-label="LinkedIn"
+      className="icon-button"
+      style={{ color: "#0A66C2", transform: "scale(1.5)" }}
+    >
       <LinkedIn />
     </IconButton>
     {name}
@@ -34,12 +37,17 @@ const GitHubLink: React.FC<{ url: string; name: string }> = ({ url, name }) => (
     rel="noopener noreferrer"
     className="footer-link"
   >
-    <IconButton aria-label="GitHub" className="icon-button">
+    <IconButton
+      aria-label="GitHub"
+      className="icon-button"
+      style={{ color: "#181717", transform: "scale(1.5)" }}
+    >
       <GitHub />
     </IconButton>
     {name}
   </Link>
 );
+
 const YouTubeLink: React.FC<{ url: string; name: string }> = ({
   url,
   name,
@@ -50,7 +58,11 @@ const YouTubeLink: React.FC<{ url: string; name: string }> = ({
     rel="noopener noreferrer"
     className="footer-link"
   >
-    <IconButton aria-label="GitHub" className="icon-button">
+    <IconButton
+      aria-label="YouTube"
+      className="icon-button"
+      style={{ color: "#FF0000", transform: "scale(1.5)" }}
+    >
       <YouTube />
     </IconButton>
     {name}

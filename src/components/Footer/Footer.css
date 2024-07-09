@@ -22,24 +22,20 @@
 .footer-link {
   display: inline-flex;
   align-items: center;
-  color: var(--color-dark-background);
+  /* color: var(--color-dark-background); */
   text-decoration: none;
   transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .footer-link:hover {
   transform: scale(1.1);
-  color: var(--color-primary);
+  /* color: var(--color-primary); */
 }
 
 .footer-link .MuiIconButton-root {
   margin-right: var(--margin-small);
   color: var(--color-dark-background);
   transition: color 0.3s ease-in-out;
-}
-
-.footer-link:hover .MuiIconButton-root {
-  color: var(--color-primary);
 }
 
 .footer-text a {
