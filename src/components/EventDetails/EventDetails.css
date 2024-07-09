@@ -6,6 +6,36 @@
   margin-top: 100px;
   margin-bottom: 20px;
 }
+.share-event {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.share-icon {
+  min-width: 50px;
+  cursor: pointer;
+}
+.share-button-icons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 16px;
+}
+.icons-row-modal {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.modal-event-detail h5,
+p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .card-image {
   pointer-events: none;
   border-radius: 10px 10px 10px 10px;

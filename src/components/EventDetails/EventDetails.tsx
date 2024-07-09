@@ -4,21 +4,30 @@ import {
   Row,
   Col,
   Button,
-  Badge,
   Card,
-  FormControl,
-  InputGroup,
   Spinner,
+  Modal as BootstrapModal,
+  InputGroup,
+  FormControl,
 } from "react-bootstrap";
-import { Image as BootstrapImage } from "react-bootstrap";
-import "./EventDetails.css";
 import bannerImage from "../image_assets/bannerImage.png";
 import { Link, useParams } from "react-router-dom";
 import { ref, get, update } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { database } from "../../firebaseConf";
+import "./EventDetails.css";
 import PageTitle from "../../utils/PageTitle";
 import moment from "moment";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import EmailIcon from "@mui/icons-material/Email";
+import XIcon from "@mui/icons-material/X";
+import theme from "../../theme";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -38,6 +47,7 @@ const EventDetails = () => {
   const [googleMeetLink, setGoogleMeetLink] = useState(
     "Nothing yet, ask the host to add one"
   );
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (userUid == null) {
@@ -49,8 +59,7 @@ const EventDetails = () => {
       const snapshot = await get(eventRef);
       if (snapshot.exists()) {
         const eventData = snapshot.val();
-
-        setBannerImage(eventData.banner);
+        setBannerImage(eventData.banner || bannerImage);
         setTitle(eventData.title);
         setDescription(eventData.description);
         setTags(eventData.tags.split(","));
@@ -65,7 +74,6 @@ const EventDetails = () => {
         }
         if (eventData.registrants) {
           setRegisteredUsers(eventData.registrants.split(","));
-
           if (
             (!eventData.registrants.split(",").includes(userUid) ||
               userUid == null) &&
@@ -96,6 +104,41 @@ const EventDetails = () => {
     toast.success("Google Meet link added successfully", { transition: Zoom });
   };
 
+  const handleShareClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  console.log(window.location.href);
+  const handleCopyToClipboard = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        toast.success("Copied!!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy!");
+        console.error("Could not copy text: ", err);
+      });
+  };
+
+  const shareUrl = encodeURIComponent(window.location.href);
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+    textAlign: "center",
+  };
+
   return (
     <>
       <PageTitle title={`${title} | Lupo Skill`} />
@@ -103,9 +146,7 @@ const EventDetails = () => {
         {isLoading ? (
           <div
             className="d-flex justify-content-center align-items-center"
-            style={{
-              paddingTop: "9.5em",
-            }}
+            style={{ paddingTop: "9.5em" }}
           >
             <Spinner animation="border" />
           </div>
@@ -121,7 +162,12 @@ const EventDetails = () => {
                     className="card-image"
                   />
                   <Card.Body>
-                    <Card.Title>{title}</Card.Title>
+                    <div className="share-event">
+                      <Card.Title>{title}</Card.Title>
+                      <p onClick={handleShareClick} className="share-icon">
+                        <IosShareIcon />
+                      </p>
+                    </div>
                     <Container>
                       <Row className="align-items-center mb-2">
                         <Col xs="auto">
@@ -180,12 +226,7 @@ const EventDetails = () => {
                                 setGoogleMeetLink(e.target.value)
                               }
                             />
-                            <Button
-                              onClick={() => {
-                                addMeetingLink();
-                              }}
-                              variant="primary"
-                            >
+                            <Button onClick={addMeetingLink} variant="primary">
                               Add Link
                             </Button>
                           </InputGroup>
@@ -216,6 +257,57 @@ const EventDetails = () => {
           </Container>
         )}
       </div>
+
+      <Modal open={showModal} onClose={handleCloseModal} className="shadow">
+        <Box sx={style}>
+          <img
+            src={banner_Image}
+            alt="Event Banner"
+            width="100%"
+            style={{ objectFit: "cover", marginBottom: "16px", userSelect: "none", borderRadius:theme.borderRadius.small}}
+          />
+          <div className="modal-event-detail">
+            <h5>{title}</h5>
+            <p>{description}</p>
+          </div>
+          <div className="share-button-icons">
+            <IconButton
+              style={{ backgroundColor: "#000", color: "#fff" }}
+              href={`https://twitter.com/intent/tweet?url=${shareUrl}`}
+            >
+              <XIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#25D366", color: "#fff" }}
+              href={`https://api.whatsapp.com/send?text=${shareUrl}`}
+            >
+              <WhatsAppIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#0077B5", color: "#fff" }}
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}`}
+            >
+              <LinkedInIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#EA4335", color: "#fff" }}
+              href={`mailto:?subject=${encodeURIComponent('Check out this event')}&body=${shareUrl}`}
+            >
+              <EmailIcon />
+            </IconButton>
+            <IconButton
+              style={{
+                backgroundColor: "transparent",
+                color: "#000",
+                border: "1px solid #1c1c1c66",
+              }}
+              onClick={handleCopyToClipboard}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 };
