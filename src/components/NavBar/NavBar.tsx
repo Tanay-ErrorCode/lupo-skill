@@ -91,6 +91,9 @@ const NavBar = () => {
     if (!is_signup) setShow(!show);
     handleMobileMenuClose();
   };
+  const handleArticle = () => {
+    handleMobileMenuClose();
+  };
 
   const CustomSwitch = styled(Switch)(({ theme }) => ({
     "& .MuiSwitch-switchBase": {
@@ -378,7 +381,7 @@ const NavBar = () => {
               </Button>
               <Button
                 href="#/article"
-                onClick={handleDashboard}
+                onClick={handleArticle}
                 sx={{
                   display: "block",
                   fontWeight: 600,
