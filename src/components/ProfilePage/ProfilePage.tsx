@@ -303,7 +303,7 @@ const ProfilePage = () => {
                 ) : (
                   <div>
                     {createdEventCardsData.length === 0 ? (
-                      <p className="text-center">No Events created</p>
+                      <p className="text-center p-3">No Events created</p>
                     ) : (
                       createdEventCardsData
                         .slice(
@@ -382,7 +382,7 @@ const ProfilePage = () => {
                 ) : (
                   <div>
                     {joinedEventCardsData.length === 0 ? (
-                      <p className="text-center">No Events joined</p>
+                      <p className="text-center p-3">No Events joined</p>
                     ) : (
                       joinedEventCardsData
                         .slice(
