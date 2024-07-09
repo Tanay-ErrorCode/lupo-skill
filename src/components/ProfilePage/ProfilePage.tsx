@@ -303,7 +303,7 @@ const ProfilePage = () => {
                 ) : (
                   <div>
                     {createdEventCardsData.length === 0 ? (
-                      <p className="text-center">No Events created</p>
+                      <p className="text-center p-3">No Events created</p>
                     ) : (
                       createdEventCardsData
                         .slice(
@@ -343,26 +343,28 @@ const ProfilePage = () => {
                     )}
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Pagination>
-                    {[...Array(totalCreatedPages)].map((_, i) => (
-                      <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === currentCreatedPage}
-                        onClick={() => {
-                          handleCreatedPageChange(i + 1);
-                          window.scrollTo({
-                            top: 0,
-                            left: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
-                </div>
+                {createdEventCardsData.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination>
+                      {[...Array(totalCreatedPages)].map((_, i) => (
+                        <Pagination.Item
+                          key={i + 1}
+                          active={i + 1 === currentCreatedPage}
+                          onClick={() => {
+                            handleCreatedPageChange(i + 1);
+                            window.scrollTo({
+                              top: 0,
+                              left: 0,
+                              behavior: "smooth",
+                            });
+                          }}
+                        >
+                          {i + 1}
+                        </Pagination.Item>
+                      ))}
+                    </Pagination>
+                  </div>
+                )}
               </Card.Body>
             </Card>
             <Card className="mb-3">
@@ -380,7 +382,7 @@ const ProfilePage = () => {
                 ) : (
                   <div>
                     {joinedEventCardsData.length === 0 ? (
-                      <p className="text-center">No Events joined</p>
+                      <p className="text-center p-3">No Events joined</p>
                     ) : (
                       joinedEventCardsData
                         .slice(
@@ -414,26 +416,28 @@ const ProfilePage = () => {
                     )}
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Pagination>
-                    {[...Array(totalJoinedPages)].map((_, i) => (
-                      <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === currentJoinedPage}
-                        onClick={() => {
-                          handleJoinedPageChange(i + 1);
-                          window.scrollTo({
-                            top: 0,
-                            left: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
-                </div>
+                {joinedEventCardsData.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination>
+                      {[...Array(totalJoinedPages)].map((_, i) => (
+                        <Pagination.Item
+                          key={i + 1}
+                          active={i + 1 === currentJoinedPage}
+                          onClick={() => {
+                            handleJoinedPageChange(i + 1);
+                            window.scrollTo({
+                              top: 0,
+                              left: 0,
+                              behavior: "smooth",
+                            });
+                          }}
+                        >
+                          {i + 1}
+                        </Pagination.Item>
+                      ))}
+                    </Pagination>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </Col>
