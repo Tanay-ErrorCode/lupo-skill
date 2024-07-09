@@ -343,26 +343,28 @@ const ProfilePage = () => {
                     )}
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Pagination>
-                    {[...Array(totalCreatedPages)].map((_, i) => (
-                      <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === currentCreatedPage}
-                        onClick={() => {
-                          handleCreatedPageChange(i + 1);
-                          window.scrollTo({
-                            top: 0,
-                            left: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
-                </div>
+                {createdEventCardsData.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination>
+                      {[...Array(totalCreatedPages)].map((_, i) => (
+                        <Pagination.Item
+                          key={i + 1}
+                          active={i + 1 === currentCreatedPage}
+                          onClick={() => {
+                            handleCreatedPageChange(i + 1);
+                            window.scrollTo({
+                              top: 0,
+                              left: 0,
+                              behavior: "smooth",
+                            });
+                          }}
+                        >
+                          {i + 1}
+                        </Pagination.Item>
+                      ))}
+                    </Pagination>
+                  </div>
+                )}
               </Card.Body>
             </Card>
             <Card className="mb-3">
@@ -414,26 +416,28 @@ const ProfilePage = () => {
                     )}
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Pagination>
-                    {[...Array(totalJoinedPages)].map((_, i) => (
-                      <Pagination.Item
-                        key={i + 1}
-                        active={i + 1 === currentJoinedPage}
-                        onClick={() => {
-                          handleJoinedPageChange(i + 1);
-                          window.scrollTo({
-                            top: 0,
-                            left: 0,
-                            behavior: "smooth",
-                          });
-                        }}
-                      >
-                        {i + 1}
-                      </Pagination.Item>
-                    ))}
-                  </Pagination>
-                </div>
+                {joinedEventCardsData.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination>
+                      {[...Array(totalJoinedPages)].map((_, i) => (
+                        <Pagination.Item
+                          key={i + 1}
+                          active={i + 1 === currentJoinedPage}
+                          onClick={() => {
+                            handleJoinedPageChange(i + 1);
+                            window.scrollTo({
+                              top: 0,
+                              left: 0,
+                              behavior: "smooth",
+                            });
+                          }}
+                        >
+                          {i + 1}
+                        </Pagination.Item>
+                      ))}
+                    </Pagination>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </Col>
