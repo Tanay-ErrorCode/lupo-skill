@@ -79,9 +79,9 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
-  const toggleTheme = () => {
-    SetMode(!mode);
-  };
+  // const toggleTheme = () => {
+  //   SetMode(!mode);
+  // };
 
   const userPic = localStorage.getItem("userPic");
 
@@ -91,42 +91,39 @@ const NavBar = () => {
     if (!is_signup) setShow(!show);
     handleMobileMenuClose();
   };
-  const handleArticle = () => {
-    handleMobileMenuClose();
-  };
 
-  const CustomSwitch = styled(Switch)(({ theme }) => ({
-    "& .MuiSwitch-switchBase": {
-      "&:hover": {
-        "& .MuiSwitch-thumb": {
-          color: "black",
-        },
-        "& + .MuiSwitch-track": {
-          backgroundColor: "black",
-        },
-      },
-    },
-    "& .MuiSwitch-thumb": {
-      color: "#007fff",
-    },
-    "& .MuiSwitch-track": {
-      backgroundColor: "#007fff",
-    },
-  }));
-  const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-    fontWeight: 700,
-    color: "white",
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-      color: "black",
-      "& .MuiSwitch-track": {
-        backgroundColor: "black",
-      },
-      "& .MuiSwitch-thumb": {
-        color: "black",
-      },
-    },
-  }));
+  // const CustomSwitch = styled(Switch)(({ theme }) => ({
+  //   "& .MuiSwitch-switchBase": {
+  //     "&:hover": {
+  //       "& .MuiSwitch-thumb": {
+  //         color: "black",
+  //       },
+  //       "& + .MuiSwitch-track": {
+  //         backgroundColor: "black",
+  //       },
+  //     },
+  //   },
+  //   "& .MuiSwitch-thumb": {
+  //     color: "#007fff",
+  //   },
+  //   "& .MuiSwitch-track": {
+  //     backgroundColor: "#007fff",
+  //   },
+  // }));
+  // const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  //   fontWeight: 700,
+  //   color: "white",
+  //   "&:hover": {
+  //     backgroundColor: theme.palette.primary.main,
+  //     color: "black",
+  //     "& .MuiSwitch-track": {
+  //       backgroundColor: "black",
+  //     },
+  //     "& .MuiSwitch-thumb": {
+  //       color: "black",
+  //     },
+  //   },
+  // }));
 
   const mobileMenuItems = (
     <>
@@ -164,7 +161,7 @@ const NavBar = () => {
           </ListItem>
         ))}
       </List>
-      <StyledMenuItem onClick={toggleTheme}>
+      {/* <StyledMenuItem onClick={toggleTheme}>
         Mode
         <CustomSwitch
           checked={mode}
@@ -173,7 +170,7 @@ const NavBar = () => {
           checkedIcon={<Brightness7 />}
           color="default"
         />
-      </StyledMenuItem>
+      </StyledMenuItem> */}
     </>
   );
 
@@ -381,7 +378,7 @@ const NavBar = () => {
               </Button>
               <Button
                 href="#/article"
-                onClick={handleArticle}
+                onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -475,7 +472,7 @@ const NavBar = () => {
                   gap: mdGap,
                 }}
               >
-                {!isSmallScreen && (
+                {/* {!isSmallScreen && (
                   <IconButton
                     onClick={toggleTheme}
                     color="inherit"
@@ -494,7 +491,7 @@ const NavBar = () => {
                   >
                     {mode ? <Brightness4 /> : <Brightness7 />}
                   </IconButton>
-                )}
+                )} */}
                 <IconButton>
                   <NotificationsPanel />
                 </IconButton>

@@ -22,76 +22,86 @@ import TestimonialsCarousel from "../testimonial/TestimonialsCarousel";
 
 const HomePage = () => {
   const loggedIn = localStorage.getItem("userUid");
+
   const logGoogleUser = async () => {
-    const response = await signInWithGooglePopup();
-    const email = response.user.email;
-    const uid = response.user.uid;
-    const username = response.user.displayName;
-    const pic = response.user.photoURL;
+    try {
+      const response = await signInWithGooglePopup();
+      const { email, uid, displayName: username, photoURL } = response.user;
 
-    const usersRef = ref(database, "users");
-    const userRef = child(usersRef, uid);
+      const usersRef = ref(database, "users");
+      const userRef = child(usersRef, uid);
 
-    get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          localStorage.setItem("userUid", uid);
-          localStorage.setItem("userPic", pic ? pic : "");
-          window.location.reload();
-          toast.success("Logged in successfully", { transition: Zoom });
-        } else {
-          set(userRef, {
-            name: username,
-            email: response.user.email,
-            pic: pic,
-            tags: "",
-            banner: "",
-            uid: uid,
-          });
+      const snapshot = await get(userRef);
 
-          const bannerRef = storageRef(storage, `/user-banners/banner-${uid}`);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        localStorage.setItem("userUid", uid);
+        localStorage.setItem("username", `${username}`);
+        localStorage.setItem("userPic", userData.profile || userData.pic || "");
+        window.location.reload();
+        toast.success("Logged in successfully", { transition: Zoom });
+      } else {
+        const randomColors = [
+          "#FFEBEE",
+          "#E3F2FD",
+          "#E8F5E9",
+          "#FFFDE7",
+          "#F3E5F5",
+          "#FFF3E0",
+          "#E0F7FA",
+          "#FFF0E1",
+          "#F8F4FF",
+          "#E0F2F1",
+        ];
+        const randomColor =
+          randomColors[Math.floor(Math.random() * randomColors.length)];
+        const picURL = photoURL || "";
 
-          const images = [bannerImage, bannerImage2, bannerImage3];
-          const randomImage = images[Math.floor(Math.random() * images.length)];
-          fetch(randomImage)
-            .then((res) => res.blob())
-            .then((blob) => {
-              toast.promise(
-                uploadBytes(bannerRef, blob).then(() => {
-                  getDownloadURL(bannerRef).then(
-                    function (value) {
-                      console.log(value, "banner uploaded");
-                      localStorage.setItem("userUid", uid);
-                      localStorage.setItem("userPic", pic ? pic : "");
-                      set(userRef, {
-                        name: username,
-                        email: email,
-                        pic: pic,
-                        tags: "",
-                        banner: value,
-                        uid: uid,
-                      });
-                      window.location.reload();
-                    },
+        if (picURL) {
+          try {
+            const response = await fetch(picURL);
+            if (!response.ok) throw new Error("Failed to fetch the image");
 
-                    function (error) {
-                      console.log(error);
-                    }
-                  );
-                }),
-                {
-                  pending: "Signing up...",
-                  success: "Signed Up succesfully !",
-                  error: "Failed to sign up",
-                },
-                { transition: Zoom }
-              );
+            const imageBlob = await response.blob();
+
+            const profileImageRef = storageRef(
+              storage,
+              `user-profile-pics/user-profile-pic-${uid}`
+            );
+            await uploadBytes(profileImageRef, imageBlob);
+            const picURL_firebase = await getDownloadURL(profileImageRef);
+
+            await set(userRef, {
+              name: username,
+              email,
+              pic: picURL_firebase,
+              tags: "",
+              banner: randomColor,
+              uid,
             });
+
+            localStorage.setItem("userUid", uid);
+            localStorage.setItem("userPic", picURL);
+            window.location.reload();
+            toast.success("Signed up successfully", { transition: Zoom });
+          } catch (error) {
+            console.error("Error uploading image to Firebase Storage:", error);
+          }
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error && error.message.includes("popup")) {
+        // Handle pop-up closed by user
+        // toast.error("Sign up process was canceled", { transition: Zoom });
+      } else {
+        // Handle other authentication errors
+        toast.error("Failed to sign up. Please try again.", {
+          transition: Zoom,
+        });
+      }
+    }
   };
 
   return (

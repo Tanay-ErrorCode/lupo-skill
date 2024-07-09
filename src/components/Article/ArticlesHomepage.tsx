@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -22,6 +21,7 @@ import { database } from "../../firebaseConf";
 import { ref, get, set, update } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 import Signup from "../Signup/Signup";
+
 interface Article {
   id: string;
   title: string;
@@ -37,43 +37,15 @@ interface Article {
 
 const ArticlesHomepage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [isUserSignedIn, MakeUserSignin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState(false);
+  const userUid = localStorage.getItem("userUid");
 
   useEffect(() => {
     const fetchArticles = async () => {
       const articlesRef = ref(database, "articles");
-      const userUid = localStorage.getItem("userUid");
-
-      if (!userUid) {
-        try {
-          const snapshot = await get(articlesRef);
-          if (snapshot.exists()) {
-            const articlesData = snapshot.val();
-            const articlesList = Object.keys(articlesData).map((key) => {
-              const article = articlesData[key];
-              return {
-                ...article,
-                id: key,
-                createdAt: article.createdAt,
-              };
-            });
-            setArticles(articlesList);
-          }
-        } catch (error) {
-          console.error("Error fetching articles:", error);
-          toast.error("Failed to fetch articles", { transition: Zoom });
-        } finally {
-          setIsLoading(false);
-        }
-        console.error("User is not logged in.");
-        return;
-      }
-
       try {
-        MakeUserSignin(true);
         const snapshot = await get(articlesRef);
         if (snapshot.exists()) {
           const articlesData = snapshot.val();
@@ -86,15 +58,18 @@ const ArticlesHomepage: React.FC = () => {
             };
           });
           setArticles(articlesList);
-
-          const likedArticlesRef = ref(
-            database,
-            `users/${userUid}/likedArticles`
-          );
-          const likedArticlesSnapshot = await get(likedArticlesRef);
-          if (likedArticlesSnapshot.exists()) {
-            const likedArticlesString = likedArticlesSnapshot.val();
-            setLikedArticles(likedArticlesString.split(","));
+          if (userUid) {
+            const likedArticlesRef = ref(
+              database,
+              `users/${userUid}/likedArticles`
+            );
+            const likedArticlesSnapshot = await get(likedArticlesRef);
+            if (likedArticlesSnapshot.exists()) {
+              const likedArticlesString = likedArticlesSnapshot.val();
+              setLikedArticles(likedArticlesString.split(","));
+            }
+          } else {
+            setLikedArticles([]);
           }
         }
       } catch (error) {
@@ -108,17 +83,6 @@ const ArticlesHomepage: React.FC = () => {
     fetchArticles();
   }, []);
 
-  const handleCreateLinkClick = (e: any) => {
-    if (!isUserSignedIn) {
-      e.preventDefault();
-      if (isUserSignedIn == false) {
-        setShow(true);
-      }
-      // toast.info("Please sign up to create an article", { transition: Zoom });
-    } else {
-    }
-  };
-
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
     const tempDiv = document.createElement("div");
@@ -127,119 +91,127 @@ const ArticlesHomepage: React.FC = () => {
   };
 
   return (
-    <div className="articlehomepage-div">
-      {isLoading ? (
-        <div className="d-flex justify-content-center align-items-center spinner-container">
-          <Spinner animation="border" />
-        </div>
-      ) : (
-        <>
-          <div className="Articlehead">
-            <Typography
-              variant="h4"
-              component="h1"
-              fontWeight={600}
-              gutterBottom
-            >
-              Articles
-            </Typography>
-            {
-              <Link
-                to="/article/write"
-                className="create-article-button"
-                onClick={handleCreateLinkClick}
-              >
-                Create Article
-              </Link>
-            }
+    <>
+      <Signup isShow={show} returnShow={setShow} />
+      <div className="articlehomepage-div">
+        {isLoading ? (
+          <div className="d-flex justify-content-center align-items-center spinner-container">
+            <Spinner animation="border" />
           </div>
-          <div className="articles-container">
-            {articles.length === 0 ? (
+        ) : (
+          <>
+            <div className="Articlehead">
               <Typography
                 variant="h4"
-                component="div"
-                className="no-articles-message"
-                style={{ textAlign: "center", marginTop: "20px" }}
+                component="h1"
+                fontWeight={600}
+                gutterBottom
               >
-                No Articles For Now
+                Articles
               </Typography>
-            ) : (
-              articles.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/article/${article.id}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Card className="article-card">
-                    <CardHeader
-                      avatar={
-                        <Link to={`/profile/${article.createdBy}`}>
-                          <Avatar alt={article.author} src={article.pic} />
-                        </Link>
-                      }
-                      title={
-                        <Link
-                          className="article_link"
-                          to={`/profile/${article.createdBy}`}
-                        >
-                          By {article.author}
-                        </Link>
-                      }
-                      subheader={moment(article.createdAt).fromNow()}
-                    />
-                    <CardContent className="article-details">
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        className="article-title"
-                      >
-                        {article.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        className="article-description"
-                      >
-                        {stripMarkdown(article.content)}
-                      </Typography>
-                      <div className="meta-info">
-                        <Typography variant="body2" className="read-time">
-                          {article.readtime} read
-                        </Typography>
-                      </div>
-                    </CardContent>
-                    <CardActions>
-                      <Typography className="comment-icon">
-                        <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-                        <span className="comment-count">
-                          {article.comments}
-                        </span>
-                      </Typography>
-                      <Typography
-                        className="clap-icon"
-                        style={{ userSelect: "none" }}
-                      >
-                        <img
-                          src={
-                            likedArticles.includes(article.id)
-                              ? ClapIconFilled
-                              : ClapIcon
-                          }
-                          alt="Clap icon"
-                          style={{ width: "1.3rem", userSelect: "none" }}
-                        />
-                        <span className="clap-count">{article.likes}</span>
-                      </Typography>
-                    </CardActions>
-                  </Card>
+              {userUid ? (
+                <Link to="/article/write" className="create-article-button">
+                  Create Article
                 </Link>
-              ))
-            )}
-          </div>
-        </>
-      )}
-      <Signup isShow={show} returnShow={setShow} />
-    </div>
+              ) : (
+                <Link
+                  to="#"
+                  className="create-article-button"
+                  onClick={() => {
+                    setShow(true);
+                  }}
+                >
+                  Create Article
+                </Link>
+              )}
+            </div>
+            <div className="articles-container">
+              {articles.length === 0 ? (
+                <Typography
+                  variant="h4"
+                  component="div"
+                  className="no-articles-message"
+                  style={{ textAlign: "center", marginTop: "20px" }}
+                >
+                  No Articles For Now
+                </Typography>
+              ) : (
+                articles.map((article) => (
+                  <Link
+                    key={article.id}
+                    to={`/article/${article.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Card className="article-card">
+                      <CardHeader
+                        avatar={
+                          <Link to={`/profile/${article.createdBy}`}>
+                            <Avatar alt={article.author} src={article.pic} />
+                          </Link>
+                        }
+                        title={
+                          <Link
+                            className="article_link"
+                            to={`/profile/${article.createdBy}`}
+                          >
+                            By {article.author}
+                          </Link>
+                        }
+                        subheader={moment(article.createdAt).fromNow()}
+                      />
+                      <CardContent className="article-details">
+                        <Typography
+                          variant="h5"
+                          component="div"
+                          className="article-title"
+                        >
+                          {article.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          className="article-description"
+                        >
+                          {stripMarkdown(article.content)}
+                        </Typography>
+                        <div className="meta-info">
+                          <Typography variant="body2" className="read-time">
+                            {article.readtime} read
+                          </Typography>
+                        </div>
+                      </CardContent>
+                      <CardActions>
+                        <Typography className="comment-icon">
+                          <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
+                          <span className="comment-count">
+                            {article.comments}
+                          </span>
+                        </Typography>
+                        <Typography
+                          className="clap-icon"
+                          style={{ userSelect: "none" }}
+                        >
+                          <img
+                            src={
+                              likedArticles.includes(article.id)
+                                ? ClapIconFilled
+                                : ClapIcon
+                            }
+                            alt="Clap icon"
+                            style={{ width: "1.3rem", userSelect: "none" }}
+                          />
+                          <span className="clap-count">{article.likes}</span>
+                        </Typography>
+                      </CardActions>
+                    </Card>
+                  </Link>
+                ))
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

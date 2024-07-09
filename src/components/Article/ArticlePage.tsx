@@ -21,6 +21,7 @@ import "./ArticlePage.css";
 import moment from "moment";
 import PageTitle from "../../utils/PageTitle";
 import { toast, Zoom } from "react-toastify";
+import Signup from "../Signup/Signup";
 
 interface Article {
   id: string;
@@ -42,10 +43,12 @@ const ArticlePage: React.FC = () => {
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
   const [isLiking, setIsLiking] = useState<boolean>(false);
 
+  const [show, setShow] = useState(false);
+  const userUid = localStorage.getItem("userUid");
   useEffect(() => {
     const fetchArticle = async () => {
       const userUid = localStorage.getItem("userUid");
-     
+
       try {
         const articleRef = ref(database, `articles/${id}`);
         const snapshot = await get(articleRef);
@@ -54,16 +57,19 @@ const ArticlePage: React.FC = () => {
         } else {
           console.error("No article found");
         }
-
-        // Fetch liked articles
-        const likedArticlesRef = ref(
-          database,
-          `users/${userUid}/likedArticles`
-        );
-        const likedArticlesSnapshot = await get(likedArticlesRef);
-        if (likedArticlesSnapshot.exists()) {
-          const likedArticlesString = likedArticlesSnapshot.val();
-          setLikedArticles(likedArticlesString.split(","));
+        if (userUid) {
+          // Fetch liked articles
+          const likedArticlesRef = ref(
+            database,
+            `users/${userUid}/likedArticles`
+          );
+          const likedArticlesSnapshot = await get(likedArticlesRef);
+          if (likedArticlesSnapshot.exists()) {
+            const likedArticlesString = likedArticlesSnapshot.val();
+            setLikedArticles(likedArticlesString.split(","));
+          }
+        } else {
+          setLikedArticles([]);
         }
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -81,6 +87,7 @@ const ArticlePage: React.FC = () => {
     const userUid = localStorage.getItem("userUid");
     if (!userUid) {
       console.error("User is not logged in.");
+      setShow(true);
       return;
     }
 
@@ -161,6 +168,7 @@ const ArticlePage: React.FC = () => {
 
   return (
     <>
+      <Signup isShow={show} returnShow={setShow} />
       <PageTitle
         title={`${article.title} | by ${article.author} | Lupo Skill`}
       />
