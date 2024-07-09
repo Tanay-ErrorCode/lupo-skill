@@ -3,8 +3,14 @@ import { Modal } from "react-bootstrap";
 import GoogleButton from "react-google-button";
 import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import { database, signInWithGooglePopup } from "../../firebaseConf";
+import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import "./Signup.css";
+
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 
 interface SignupProps {
   isShow: boolean;
@@ -57,19 +63,37 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
           randomColors[Math.floor(Math.random() * randomColors.length)];
         const picURL = photoURL || "";
 
-        await set(userRef, {
-          name: username,
-          email,
-          pic: picURL,
-          tags: "",
-          banner: randomColor,
-          uid,
-        });
+        if (picURL) {
+          try {
+            const response = await fetch(picURL);
+            if (!response.ok) throw new Error("Failed to fetch the image");
 
-        localStorage.setItem("userUid", uid);
-        localStorage.setItem("userPic", picURL);
-        window.location.reload();
-        toast.success("Signed up successfully", { transition: Zoom });
+            const imageBlob = await response.blob();
+
+            const profileImageRef = storageRef(
+              storage,
+              `user-profile-pics/user-profile-pic-${uid}`
+            );
+            await uploadBytes(profileImageRef, imageBlob);
+            const picURL_firebase = await getDownloadURL(profileImageRef);
+
+            await set(userRef, {
+              name: username,
+              email,
+              pic: picURL_firebase,
+              tags: "",
+              banner: randomColor,
+              uid,
+            });
+
+            localStorage.setItem("userUid", uid);
+            localStorage.setItem("userPic", picURL);
+            window.location.reload();
+            toast.success("Signed up successfully", { transition: Zoom });
+          } catch (error) {
+            console.error("Error uploading image to Firebase Storage:", error);
+          }
+        }
       }
     } catch (error) {
       console.error(error);

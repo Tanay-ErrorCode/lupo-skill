@@ -269,22 +269,6 @@ const EditProfile = () => {
 
       localStorage.setItem("userPic", profileImageUrl);
 
-      // Update profile picture in all articles created by the user
-      const articlesRef = dbRef(database, "articles");
-      const articlesSnapshot = await get(articlesRef);
-      if (articlesSnapshot.exists()) {
-        const articlesData = articlesSnapshot.val();
-        const updates: Record<string, any> = {};
-        Object.keys(articlesData).forEach((key) => {
-          if (articlesData[key].createdBy === uid) {
-            updates[`articles/${key}/pic`] = profileImageUrl;
-          }
-        });
-        if (Object.keys(updates).length > 0) {
-          await update(dbRef(database), updates);
-        }
-      }
-
       toast.success("User details have been successfully updated");
       setIsLoading(false);
       handleClose();
