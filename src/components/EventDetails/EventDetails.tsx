@@ -27,6 +27,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EmailIcon from "@mui/icons-material/Email";
 import XIcon from "@mui/icons-material/X";
+import theme from "../../theme";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -123,7 +124,7 @@ const EventDetails = () => {
       });
   };
 
-  // const shareUrl = `http://localhost:3000/#/eventDetails/${id}`;
+  const shareUrl = encodeURIComponent(window.location.href);
 
   const style = {
     position: "absolute",
@@ -257,13 +258,13 @@ const EventDetails = () => {
         )}
       </div>
 
-      <Modal open={showModal} onClose={handleCloseModal}>
+      <Modal open={showModal} onClose={handleCloseModal} className="shadow">
         <Box sx={style}>
           <img
             src={banner_Image}
             alt="Event Banner"
             width="100%"
-            style={{ objectFit: "cover", marginBottom: "16px" }}
+            style={{ objectFit: "cover", marginBottom: "16px", userSelect: "none", borderRadius:theme.borderRadius.small}}
           />
           <div className="modal-event-detail">
             <h5>{title}</h5>
@@ -272,25 +273,25 @@ const EventDetails = () => {
           <div className="share-button-icons">
             <IconButton
               style={{ backgroundColor: "#000", color: "#fff" }}
-              href={`https://twitter.com/intent/tweet?url=${window.location.href}`}
+              href={`https://twitter.com/intent/tweet?url=${shareUrl}`}
             >
               <XIcon />
             </IconButton>
             <IconButton
               style={{ backgroundColor: "#25D366", color: "#fff" }}
-              href={`whatsapp://send?text=${window.location.href}`}
+              href={`https://api.whatsapp.com/send?text=${shareUrl}`}
             >
               <WhatsAppIcon />
             </IconButton>
             <IconButton
               style={{ backgroundColor: "#0077B5", color: "#fff" }}
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`}
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}`}
             >
               <LinkedInIcon />
             </IconButton>
             <IconButton
               style={{ backgroundColor: "#EA4335", color: "#fff" }}
-              href={`mailto:?subject=Check out this event&body=${window.location.href}`}
+              href={`mailto:?subject=${encodeURIComponent('Check out this event')}&body=${shareUrl}`}
             >
               <EmailIcon />
             </IconButton>
