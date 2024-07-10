@@ -263,28 +263,34 @@ const ArticlePage: React.FC = () => {
             </Box>
           </Box>
           <CardActions className="artcle-page-up">
-            <IconButton size="small" className="comment-icon">
-              <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-              <span className="comment-count">{article.comments}</span>
-            </IconButton>
-            <IconButton
-              size="small"
-              className="clap-icon"
-              onClick={handleLike}
-              disabled={isLiking}
-            >
-              <img
-                src={
-                  likedArticles.includes(article.id) ? ClapIconFilled : ClapIcon
-                }
-                alt="Clap icon"
-                style={{ width: "1.3rem", userSelect: "none" }}
-              />
-              <span className="clap-count">{article.likes}</span>
-            </IconButton>
-            <IconButton size="small" onClick={handleShareClick}>
-              <IosShareIcon style={{ color: "#d1d1d1" }} />
-            </IconButton>
+            <div>
+              <IconButton size="small" className="comment-icon">
+                <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
+                <span className="comment-count">{article.comments}</span>
+              </IconButton>
+              <IconButton
+                size="small"
+                className="clap-icon"
+                onClick={handleLike}
+                disabled={isLiking}
+              >
+                <img
+                  src={
+                    likedArticles.includes(article.id)
+                      ? ClapIconFilled
+                      : ClapIcon
+                  }
+                  alt="Clap icon"
+                  style={{ width: "1.3rem", userSelect: "none" }}
+                />
+                <span className="clap-count">{article.likes}</span>
+              </IconButton>
+            </div>
+            <div>
+              <IconButton size="small" onClick={handleShareClick}>
+                <IosShareIcon style={{ color: "#d1d1d1" }} />
+              </IconButton>
+            </div>
           </CardActions>
           <Box
             className="article-content"
