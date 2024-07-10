@@ -27,15 +27,20 @@
   justify-content: space-around;
   margin-top: 20px;
 }
-.modal-event-detail h5,
-p {
+.modal-event-detail h5 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+.modal-event-detail p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .card-image {
   pointer-events: none;
   border-radius: 10px 10px 10px 10px;
