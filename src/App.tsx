@@ -76,6 +76,10 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/editArticle/:articleId"
+            element={<ArticleWritingPage />}
+          />
         </Routes>
       </HashRouter>
       <Footer />

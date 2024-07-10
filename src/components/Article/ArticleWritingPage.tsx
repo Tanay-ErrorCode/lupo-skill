@@ -4,9 +4,9 @@ import { styled } from "@mui/material/styles";
 import "./ArticleWritingPage.css";
 import { Card } from "react-bootstrap";
 import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
-import { ref, get, child, set } from "firebase/database";
+import { ref, get, child, set, update } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const BoldTextField = styled(TextField)({
   "& .MuiInputBase-input": {
@@ -44,23 +44,45 @@ const ArticleWritingPage: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
+  const { articleId } = useParams<{ articleId: string }>();
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
     }
-  });
+
+    // adding content and title only when route contains some article Id
+    if (articleId) {
+      const fetchArticle = async () => {
+        try {
+          const articleRef = ref(database, `articles/${articleId}`);
+          const snapshot = await get(articleRef);
+          if (snapshot.exists()) {
+            const articleData = snapshot.val();
+            setTitle(articleData.title);
+            setContent(articleData.content);
+          } else {
+            console.error("Article not found");
+          }
+        } catch (error) {
+          console.error("Error fetching article:", error);
+        }
+      };
+
+      fetchArticle();
+    }
+  }, [articleId]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    const newarticleId = generateUUID();
     const userUid = localStorage.getItem("userUid");
     if (userUid) {
-      const articleId = generateUUID();
-
-      const articleRef = ref(database, `articles/${articleId}`);
+      const articleRef = articleId
+        ? ref(database, `articles/${articleId}`)
+        : ref(database, `articles/${newarticleId}`);
       const userRef = ref(database, `users/${userUid}`);
 
       try {
-        // Fetch user details
         const userSnapshot = await get(userRef);
         if (userSnapshot.exists()) {
           const userData = userSnapshot.val();
@@ -68,7 +90,6 @@ const ArticleWritingPage: React.FC = () => {
           const pic = userData.pic || userData.profile || "";
 
           const newArticle = {
-            id: articleId,
             title,
             content,
             author,
@@ -78,27 +99,35 @@ const ArticleWritingPage: React.FC = () => {
             readtime: "2 min",
             createdBy: userUid,
             createdAt: Date.now(),
+            id: articleId || newarticleId,
           };
 
-          // Store article in the database
-          await set(articleRef, newArticle);
+          if (articleId) {
+            await update(articleRef, newArticle);
+            toast.success("Article updated successfully!", {
+              transition: Zoom,
+            });
+            navigate("/article");
+          } else {
+            await set(articleRef, newArticle);
+            const updatedCreatedArticles = userData.createdArticles
+              ? `${userData.createdArticles},${newArticle.id}`
+              : newArticle.id;
 
-          // Update user's createdArticles field
-          const updatedCreatedArticles = userData.createdArticles
-            ? `${userData.createdArticles},${articleId}`
-            : articleId;
+            await set(userRef, {
+              ...userData,
+              createdArticles: updatedCreatedArticles,
+            });
+            toast.success("Article created successfully!", {
+              transition: Zoom,
+            });
+          }
 
-          await set(userRef, {
-            ...userData,
-            createdArticles: updatedCreatedArticles,
-          });
-
-          toast.success("Article created successfully!", { transition: Zoom });
           navigate("/article");
         }
       } catch (error) {
-        console.error("Error creating article:", error);
-        toast.error("Failed to create article", { transition: Zoom });
+        console.error("Error creating/updating article:", error);
+        toast.error("Failed to create/update article", { transition: Zoom });
       }
     } else {
       toast.error("Please login first", { transition: Zoom });
@@ -109,7 +138,7 @@ const ArticleWritingPage: React.FC = () => {
     <Card className="article-write shadow">
       <Card.Title className="article-write-title">
         <Typography variant="h4" component="h1" fontWeight={600} gutterBottom>
-          Write a New Article
+          {articleId ? "Edit Article" : "Write a New Article"}
         </Typography>
       </Card.Title>
 
@@ -149,7 +178,7 @@ const ArticleWritingPage: React.FC = () => {
           color="primary"
           className="mt-4 submit-button"
         >
-          Submit
+          {articleId ? "Update" : "Submit"}
         </Button>
       </form>
     </Card>

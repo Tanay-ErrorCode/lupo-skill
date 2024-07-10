@@ -10,7 +10,7 @@ import {
   CardActions,
   Modal,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ref, get, update, set } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -30,6 +30,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EmailIcon from "@mui/icons-material/Email";
 import XIcon from "@mui/icons-material/X";
 import theme from "../../theme";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface Article {
   id: string;
@@ -54,7 +55,7 @@ const ArticlePage: React.FC = () => {
   const [show, setShow] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const userUid = localStorage.getItem("userUid");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchArticle = async () => {
       const userUid = localStorage.getItem("userUid");
@@ -290,6 +291,13 @@ const ArticlePage: React.FC = () => {
               <IconButton size="small" onClick={handleShareClick}>
                 <IosShareIcon style={{ color: "#d1d1d1" }} />
               </IconButton>
+              {userUid === article.createdBy && (
+                <IconButton
+                  onClick={() => navigate(`/editArticle/${article.id}`)}
+                >
+                  <EditIcon style={{ color: "#d1d1d1" }} />
+                </IconButton>
+              )}
             </div>
           </CardActions>
           <Box
