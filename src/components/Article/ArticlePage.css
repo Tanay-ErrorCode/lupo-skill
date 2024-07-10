@@ -26,6 +26,8 @@
 
 .artcle-page-up {
   border-bottom: 1px solid rgba(0, 0, 0, 0.189);
+  display: flex;
+  justify-content: space-between;
 }
 
 .article-content p {
