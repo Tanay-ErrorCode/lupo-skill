@@ -213,16 +213,9 @@ const EventCard: React.FC<EventCardProps> = (props) => {
     }
   };
 
-  const date = new Date(props.date);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-
-  const timeString = props.time;
-  const [time, timeZone] = timeString.split(" ");
-  const [hours, minutes, seconds] = time.split(":").map(Number);
-
-  const eventDateTime = new Date(year, month, day, hours, minutes, seconds);
+  // Corrected parsing of date and time
+  const eventDateTime = new Date(`${props.date} ${props.time}`);
+  const now = new Date();
 
   return (
     <>
@@ -261,7 +254,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       </span>
                     ))}
                   </Card.Text>
-                  {eventDateTime > new Date() ? (
+                  {eventDateTime > now ? (
                     <Button
                       className={`${
                         (props.isValid && props.isRegistered) || registerData
@@ -362,7 +355,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                       )}
                     </Card.Text>
                     {!props.isDashboard ? (
-                      eventDateTime > new Date() ? (
+                      eventDateTime > now ? (
                         <Button
                           className="btn-c position-absolute bottom-0 end-0 m-3"
                           onClick={registerForEvent}
