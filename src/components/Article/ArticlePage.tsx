@@ -8,6 +8,7 @@ import {
   IconButton,
   CircularProgress,
   CardActions,
+  Modal,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { ref, get, update, set } from "firebase/database";
@@ -22,6 +23,13 @@ import moment from "moment";
 import PageTitle from "../../utils/PageTitle";
 import { toast, Zoom } from "react-toastify";
 import Signup from "../Signup/Signup";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import EmailIcon from "@mui/icons-material/Email";
+import XIcon from "@mui/icons-material/X";
+import theme from "../../theme";
 
 interface Article {
   id: string;
@@ -44,7 +52,9 @@ const ArticlePage: React.FC = () => {
   const [isLiking, setIsLiking] = useState<boolean>(false);
 
   const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const userUid = localStorage.getItem("userUid");
+
   useEffect(() => {
     const fetchArticle = async () => {
       const userUid = localStorage.getItem("userUid");
@@ -134,6 +144,47 @@ const ArticlePage: React.FC = () => {
     } finally {
       setIsLiking(false);
     }
+  };
+
+  const handleShareClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        toast.success("Copied!!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy!");
+        console.error("Could not copy text: ", err);
+      });
+  };
+  const stripMarkdown = (content: string) => {
+    const cleanHtml = DOMPurify.sanitize(marked(content) as string);
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = cleanHtml;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
+  const shareUrl = encodeURIComponent(window.location.href);
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+    textAlign: "center",
   };
 
   const createMarkup = (content: string) => {
@@ -231,6 +282,9 @@ const ArticlePage: React.FC = () => {
               />
               <span className="clap-count">{article.likes}</span>
             </IconButton>
+            <IconButton size="small" onClick={handleShareClick}>
+              <IosShareIcon style={{ color: "#d1d1d1" }} />
+            </IconButton>
           </CardActions>
           <Box
             className="article-content"
@@ -238,6 +292,98 @@ const ArticlePage: React.FC = () => {
           />
         </Paper>
       </Container>
+      <Modal open={showModal} onClose={handleCloseModal} className="shadow">
+        <Box sx={style}>
+          <Box display="flex" alignItems="center" mt={1} mb={3}>
+            <Link to={`/profile/${article.createdBy}`}>
+              <Avatar
+                alt={article.author}
+                src={article.pic}
+                className="article-avatar"
+              />
+            </Link>
+            <Box ml={2}>
+              <Link
+                to={`/profile/${article.createdBy}`}
+                className="article_link"
+              >
+                <Typography variant="subtitle1" component="div">
+                  {article.author}
+                </Typography>
+              </Link>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                component="div"
+              >
+                {article.readtime} · {moment(article.createdAt).fromNow()}
+              </Typography>
+            </Box>
+          </Box>
+          <div className="modal-event-detail">
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              className="articlepage-title"
+              sx={{
+                fontSize: { xs: "1rem", md: "1.5rem" }, // Adjust font sizes as needed
+                textAlign: "left",
+              }}
+            >
+              {article.title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              className="article-description"
+              sx={{
+                textAlign: "left",
+              }}
+            >
+              {stripMarkdown(article.content)}
+            </Typography>
+          </div>
+          <div className="share-button-icons">
+            <IconButton
+              style={{ backgroundColor: "#000", color: "#fff" }}
+              href={`https://twitter.com/intent/tweet?url=${shareUrl}`}
+            >
+              <XIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#25D366", color: "#fff" }}
+              href={`https://api.whatsapp.com/send?text=${shareUrl}`}
+            >
+              <WhatsAppIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#0077B5", color: "#fff" }}
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}`}
+            >
+              <LinkedInIcon />
+            </IconButton>
+            <IconButton
+              style={{ backgroundColor: "#EA4335", color: "#fff" }}
+              href={`mailto:?subject=${encodeURIComponent(
+                "Check out this Article"
+              )}&body=${shareUrl}`}
+            >
+              <EmailIcon />
+            </IconButton>
+            <IconButton
+              style={{
+                backgroundColor: "transparent",
+                color: "#000",
+                border: "1px solid #1c1c1c66",
+              }}
+              onClick={handleCopyToClipboard}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 };
