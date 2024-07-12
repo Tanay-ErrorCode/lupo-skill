@@ -19,6 +19,18 @@ const BoldTextField = styled(TextField)({
     fontWeight: "bold",
   },
 });
+interface Article {
+  title: string;
+  content: string;
+  author: string;
+  pic: string;
+  likes: number;
+  comments: number;
+  readtime: string;
+  createdBy: string;
+  createdAt: number;
+  id: string;
+}
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -76,6 +88,7 @@ const ArticleWritingPage: React.FC = () => {
     e.preventDefault();
     const newarticleId = generateUUID();
     const userUid = localStorage.getItem("userUid");
+
     if (userUid) {
       const articleRef = articleId
         ? ref(database, `articles/${articleId}`)
@@ -89,16 +102,27 @@ const ArticleWritingPage: React.FC = () => {
           const author = userData.name || "Anonymous";
           const pic = userData.pic || userData.profile || "";
 
+          // Fetch existing article data if updating
+          let existingArticleData: Partial<Article> = {};
+          if (articleId) {
+            const articleSnapshot = await get(articleRef);
+            if (articleSnapshot.exists()) {
+              existingArticleData = articleSnapshot.val();
+            } else {
+              console.error("Article not found");
+              toast.error("Article not found", { transition: Zoom });
+              return;
+            }
+          }
+
           const newArticle = {
+            ...existingArticleData, // Merge existing data
             title,
             content,
-            author,
-            pic,
-            likes: 0,
-            comments: 0,
-            readtime: "2 min",
+            author: existingArticleData.author || author,
+            pic: existingArticleData.pic || pic,
             createdBy: userUid,
-            createdAt: Date.now(),
+            createdAt: existingArticleData.createdAt || Date.now(),
             id: articleId || newarticleId,
           };
 
