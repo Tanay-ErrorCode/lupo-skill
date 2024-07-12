@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import logo from "./logo.svg";
 import "./App.css";
-import preloader from "./preloader.gif";
 import NavBar from "./components/NavBar/NavBar";
 import EventList from "./components/EventList/EventList";
 import { Routes, Route, HashRouter } from "react-router-dom";
@@ -9,6 +9,7 @@ import Dashboard from "./components/DashBoard/DashBoard";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import EventDetails from "./components/EventDetails/EventDetails";
 
+import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";
 import Footer from "./components/Footer/Footer";
@@ -20,23 +21,22 @@ import ArticleWritingPage from "./components/Article/ArticleWritingPage";
 import ArticlePage from "./components/Article/ArticlePage";
 
 function App() {
-  const [screenLoading, setScreenLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setScreenLoading(true);
     setTimeout(() => {
-      setScreenLoading(false);
+      setIsLoading(false);
     }, 2000);
   }, []);
 
   return (
     <div className="App">
-      {screenLoading ? (
-        <div className="preloader">
-          <img src={preloader} alt="Loading..." />
+      {isLoading ? (
+        <div className="parent">
+          <div className="loader" />
         </div>
       ) : (
-        <div>
+        <>
           <NotificationsPannel />
           <HashRouter>
             <NavBar />
@@ -94,7 +94,7 @@ function App() {
             </Routes>
           </HashRouter>
           <Footer />
-        </div>
+        </>
       )}
     </div>
   );
