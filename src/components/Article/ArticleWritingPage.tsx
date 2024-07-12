@@ -4,9 +4,9 @@ import { styled } from "@mui/material/styles";
 import "./ArticleWritingPage.css";
 import { Card } from "react-bootstrap";
 import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
-import { ref, get, child, set, update } from "firebase/database";
+import { ref, get, child, set } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BoldTextField = styled(TextField)({
   "& .MuiInputBase-input": {
@@ -19,18 +19,6 @@ const BoldTextField = styled(TextField)({
     fontWeight: "bold",
   },
 });
-interface Article {
-  title: string;
-  content: string;
-  author: string;
-  pic: string;
-  likes: number;
-  comments: number;
-  readtime: string;
-  createdBy: string;
-  createdAt: number;
-  id: string;
-}
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -56,102 +44,61 @@ const ArticleWritingPage: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
-  const { articleId } = useParams<{ articleId: string }>();
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
     }
-
-    // adding content and title only when route contains some article Id
-    if (articleId) {
-      const fetchArticle = async () => {
-        try {
-          const articleRef = ref(database, `articles/${articleId}`);
-          const snapshot = await get(articleRef);
-          if (snapshot.exists()) {
-            const articleData = snapshot.val();
-            setTitle(articleData.title);
-            setContent(articleData.content);
-          } else {
-            console.error("Article not found");
-          }
-        } catch (error) {
-          console.error("Error fetching article:", error);
-        }
-      };
-
-      fetchArticle();
-    }
-  }, [articleId]);
-
+  });
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const newarticleId = generateUUID();
-    const userUid = localStorage.getItem("userUid");
 
+    const userUid = localStorage.getItem("userUid");
     if (userUid) {
-      const articleRef = articleId
-        ? ref(database, `articles/${articleId}`)
-        : ref(database, `articles/${newarticleId}`);
+      const articleId = generateUUID();
+
+      const articleRef = ref(database, `articles/${articleId}`);
       const userRef = ref(database, `users/${userUid}`);
 
       try {
+        // Fetch user details
         const userSnapshot = await get(userRef);
         if (userSnapshot.exists()) {
           const userData = userSnapshot.val();
           const author = userData.name || "Anonymous";
           const pic = userData.pic || userData.profile || "";
 
-          // Fetch existing article data if updating
-          let existingArticleData: Partial<Article> = {};
-          if (articleId) {
-            const articleSnapshot = await get(articleRef);
-            if (articleSnapshot.exists()) {
-              existingArticleData = articleSnapshot.val();
-            } else {
-              console.error("Article not found");
-              toast.error("Article not found", { transition: Zoom });
-              return;
-            }
-          }
-
           const newArticle = {
-            ...existingArticleData, // Merge existing data
+            id: articleId,
             title,
             content,
-            author: existingArticleData.author || author,
-            pic: existingArticleData.pic || pic,
+            author,
+            pic,
+            likes: 0,
+            comments: 0,
+            readtime: "2 min",
             createdBy: userUid,
-            createdAt: existingArticleData.createdAt || Date.now(),
-            id: articleId || newarticleId,
+            createdAt: Date.now(),
           };
 
-          if (articleId) {
-            await update(articleRef, newArticle);
-            toast.success("Article updated successfully!", {
-              transition: Zoom,
-            });
-            navigate("/article");
-          } else {
-            await set(articleRef, newArticle);
-            const updatedCreatedArticles = userData.createdArticles
-              ? `${userData.createdArticles},${newArticle.id}`
-              : newArticle.id;
+          // Store article in the database
+          await set(articleRef, newArticle);
 
-            await set(userRef, {
-              ...userData,
-              createdArticles: updatedCreatedArticles,
-            });
-            toast.success("Article created successfully!", {
-              transition: Zoom,
-            });
-          }
+          // Update user's createdArticles field
+          const updatedCreatedArticles = userData.createdArticles
+            ? `${userData.createdArticles},${articleId}`
+            : articleId;
 
+          await set(userRef, {
+            ...userData,
+            createdArticles: updatedCreatedArticles,
+          });
+
+          toast.success("Article created successfully!", { transition: Zoom });
           navigate("/article");
         }
       } catch (error) {
-        console.error("Error creating/updating article:", error);
-        toast.error("Failed to create/update article", { transition: Zoom });
+        console.error("Error creating article:", error);
+        toast.error("Failed to create article", { transition: Zoom });
       }
     } else {
       toast.error("Please login first", { transition: Zoom });
@@ -162,7 +109,7 @@ const ArticleWritingPage: React.FC = () => {
     <Card className="article-write shadow">
       <Card.Title className="article-write-title">
         <Typography variant="h4" component="h1" fontWeight={600} gutterBottom>
-          {articleId ? "Edit Article" : "Write a New Article"}
+          Write a New Article
         </Typography>
       </Card.Title>
 
@@ -202,7 +149,7 @@ const ArticleWritingPage: React.FC = () => {
           color="primary"
           className="mt-4 submit-button"
         >
-          {articleId ? "Update" : "Submit"}
+          Submit
         </Button>
       </form>
     </Card>

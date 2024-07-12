@@ -293,9 +293,16 @@ const ArticlePage: React.FC = () => {
               </IconButton>
               {userUid === article.createdBy && (
                 <IconButton
-                  onClick={() => navigate(`/editArticle/${article.id}`)}
+                  style={{ color: "#d1d1d1" }}
+                  size="small"
+                  className="edit-icon"
+                  onClick={() =>
+                    navigate(`/edit-article/${id}`, {
+                      state: { title: article.title, content: article.content },
+                    })
+                  }
                 >
-                  <EditIcon style={{ color: "#d1d1d1" }} />
+                  <EditIcon />
                 </IconButton>
               )}
             </div>
