@@ -19,6 +19,7 @@ import CreateEvent from "./components/Cards/CreateEvent/CreateEvent";
 import ArticlesHomepage from "./components/Article/ArticlesHomepage";
 import ArticleWritingPage from "./components/Article/ArticleWritingPage";
 import ArticlePage from "./components/Article/ArticlePage";
+import ArticleEditingPage from "./components/Article/ArticleEditingPage";
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
               </>
             }
           />
+          <Route path="/edit-article/:id" element={<ArticleEditingPage />} />
         </Routes>
       </HashRouter>
       <Footer />
