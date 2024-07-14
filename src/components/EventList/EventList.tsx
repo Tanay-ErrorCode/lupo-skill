@@ -12,6 +12,8 @@ import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { ref, get, set } from "firebase/database";
 import { database } from "../../firebaseConf";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface Event {
   banner: string;
@@ -46,7 +48,18 @@ const EventList = () => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+  useEffect(() => {
+    setTimeout(() => {
+      AOS.init({
+        duration: 1200,
+      });
+    }, 100);
 
+    // Refresh AOS on component unmount
+    return () => {
+      AOS.refreshHard();
+    };
+  }, []);
   const sortEvents = (
     events: Event[],
     option: "All" | "Ongoing" | "Past" | "Upcoming"
@@ -268,7 +281,7 @@ const EventList = () => {
                 const user_uid = localStorage.getItem("userUid");
                 const isRegistered = card.registrants.includes(user_uid!);
                 return (
-                  <div className="event-card-wrapper" key={index}>
+                  <div className="event-card-wrapper" key={index} data-aos="fade-up">
                     <EventCard
                       isValid={true}
                       id={card.id}

@@ -81,8 +81,13 @@
     ]
   },
   "devDependencies": {
+
+    "@types/aos": "^3.0.7",
+
     "@types/dompurify": "^3.0.5",
+
     "@types/react-datepicker": "^6.2.0",
+    "aos": "^2.3.4",
     "framer-motion": "^11.2.9",
     "husky": "^4.3.8",
     "lint-staged": "^15.2.2",
