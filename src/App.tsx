@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import NavBar from "./components/NavBar/NavBar";
@@ -19,83 +19,68 @@ import CreateEvent from "./components/Cards/CreateEvent/CreateEvent";
 import ArticlesHomepage from "./components/Article/ArticlesHomepage";
 import ArticleWritingPage from "./components/Article/ArticleWritingPage";
 import ArticlePage from "./components/Article/ArticlePage";
+import ArticleEditingPage from "./components/Article/ArticleEditingPage";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
-
   return (
     <div className="App">
-      {isLoading ? (
-        <div className="parent">
-          <div className="loader" />
-        </div>
-      ) : (
-        <>
-          <NotificationsPannel />
-          <HashRouter>
-            <NavBar />
-            <ScrollToTop />
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <HomePage />
-                    <PageTitle title="Lupo Skill" />
-                  </>
-                }
-              />
-              <Route
-                path="/events"
-                element={
-                  <>
-                    <EventList /> <PageTitle title="Events | Lupo Skill" />
-                  </>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <>
-                    <Dashboard /> <PageTitle title="Dashboard | Lupo Skill" />
-                  </>
-                }
-              />
-              <Route path="/createEvent" element={<CreateEvent />} />
-              <Route path="/profile/:id" element={<ProfilePage />} />
-              <Route path="/eventDetails/:id" element={<EventDetails />} />
-              <Route path="*" element={<ErrorPage />} />
+      <NotificationsPannel />
+      <HashRouter>
+        <NavBar />
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <HomePage />
+                <PageTitle title="Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <>
+                <EventList /> <PageTitle title="Events | Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <>
+                <Dashboard /> <PageTitle title="Dashboard | Lupo Skill" />
+              </>
+            }
+          />
+          <Route path="/createEvent" element={<CreateEvent />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/eventDetails/:id" element={<EventDetails />} />
+          <Route path="*" element={<ErrorPage />} />
 
-              <Route path="/article/:id" element={<ArticlePage />} />
-              <Route
-                path="/article"
-                element={
-                  <>
-                    <ArticlesHomepage />{" "}
-                    <PageTitle title="Articles | Lupo Skill" />
-                  </>
-                }
-              />
-              <Route
-                path="/article/write"
-                element={
-                  <>
-                    <ArticleWritingPage />{" "}
-                    <PageTitle title="Create Article | Lupo Skill" />
-                  </>
-                }
-              />
-            </Routes>
-          </HashRouter>
-          <Footer />
-        </>
-      )}
+          <Route path="/article/:id" element={<ArticlePage />} />
+          <Route
+            path="/article"
+            element={
+              <>
+                <ArticlesHomepage /> <PageTitle title="Articles | Lupo Skill" />
+              </>
+            }
+          />
+          <Route
+            path="/article/write"
+            element={
+              <>
+                <ArticleWritingPage />{" "}
+                <PageTitle title="Create Article | Lupo Skill" />
+              </>
+            }
+          />
+          <Route path="/edit-article/:id" element={<ArticleEditingPage />} />
+        </Routes>
+      </HashRouter>
+      <Footer />
     </div>
   );
 }
