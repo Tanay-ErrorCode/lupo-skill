@@ -12,6 +12,7 @@ import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { ref, get, set } from "firebase/database";
 import { database } from "../../firebaseConf";
+import { motion } from "framer-motion";
 
 interface Event {
   banner: string;
@@ -170,6 +171,10 @@ const EventList = () => {
       handleSearch();
     }
   };
+  const eventVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <div
@@ -269,22 +274,32 @@ const EventList = () => {
                 const isRegistered = card.registrants.includes(user_uid!);
                 return (
                   <div className="event-card-wrapper" key={index}>
-                    <EventCard
-                      isValid={true}
-                      id={card.id}
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      variants={eventVariants}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="event-card-wrapper"
                       key={index}
-                      title={card.title}
-                      description={card.description}
-                      date={card.date}
-                      time={card.time}
-                      tags={card.tags}
-                      host={card.host}
-                      isDashboard={false}
-                      image={card.banner}
-                      isRegistered={isRegistered}
-                      hostName={card.hostName}
-                      lastEdited={card.lastEdited}
-                    />
+                    >
+                      <EventCard
+                        isValid={true}
+                        id={card.id}
+                        key={index}
+                        title={card.title}
+                        description={card.description}
+                        date={card.date}
+                        time={card.time}
+                        tags={card.tags}
+                        host={card.host}
+                        isDashboard={false}
+                        image={card.banner}
+                        isRegistered={isRegistered}
+                        hostName={card.hostName}
+                        lastEdited={card.lastEdited}
+                      />
+                    </motion.div>
                   </div>
                 );
               })
