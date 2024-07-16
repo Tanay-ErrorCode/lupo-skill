@@ -273,15 +273,18 @@ const EventList = () => {
                 const user_uid = localStorage.getItem("userUid");
                 const isRegistered = card.registrants.includes(user_uid!);
                 return (
-                  <div className="event-card-wrapper" key={index}>
+                  <div
+                    className="event-card-wrapper"
+                    key={`${card.id}-${currentPage}`}
+                  >
                     <motion.div
                       initial="hidden"
                       whileInView="visible"
-                      viewport={{ once: true }}
+                      viewport={{ once: false }}
                       variants={eventVariants}
                       transition={{ duration: 0.5, ease: "easeInOut" }}
                       className="event-card-wrapper"
-                      key={index}
+                      key={`${currentPage}-${index}`}
                     >
                       <EventCard
                         isValid={true}
