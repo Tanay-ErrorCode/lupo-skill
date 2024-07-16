@@ -30,6 +30,7 @@ import {
   Typography,
 } from "@mui/material";
 import theme from "../../../theme";
+import EventCard from "../EventCard/EventCard";
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -59,6 +60,9 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
 
+  const [showPreviewModal, setShowPreviewModal] = useState(false); // State for preview modal
+  const [hostname, sethostname] = useState<string>("HostName");
+
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       // toast.error("Please Login first", { transition: Zoom });
@@ -75,7 +79,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
       onNavLinkClick();
     }
   };
-
+  const userid = localStorage.getItem("userUid") || "";
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
@@ -245,6 +249,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     createdAt: Date.now(),
                     hostName: auth.currentUser?.displayName,
                   };
+                  sethostname(auth.currentUser?.displayName || "");
                   set(eventRefChild, event);
 
                   handleClose();
@@ -293,6 +298,22 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
         .filter((ele) => ele !== tag)
         .join(", ")
     );
+  };
+  const handlePublish = () => {
+    // Collect data for preview
+    if (
+      title &&
+      description &&
+      tags &&
+      startDate &&
+      startTime &&
+      imagePreview
+    ) {
+      // Show the preview modal
+      setShowPreviewModal(true);
+    } else {
+      toast.error("Fill All the Details First");
+    }
   };
 
   return (
@@ -427,7 +448,11 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 >
                   Publish
                 </Button>
-                <Button variant="outlined" className="preview-button">
+                <Button
+                  variant="outlined"
+                  className="preview-button"
+                  onClick={handlePublish}
+                >
                   Preview
                 </Button>
               </Box>
@@ -457,6 +482,52 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
             </Card>
           </Box>
         </Box>
+
+        <Modal
+          show={showPreviewModal}
+          onHide={() => setShowPreviewModal(false)}
+          size="lg"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Event Preview</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {imagePreview && (
+              <EventCard
+                title={title}
+                description={description}
+                tags={tags}
+                date={startDate ? startDate.format("MMMM D, YYYY") : ""}
+                time={startTime ? startTime.format("hh:mm A") : ""}
+                image={imagePreview ?? "default_image_url"}
+                host={userid} // Replace with actual value
+                isDashboard={false}
+                id="example_id"
+                isValid={true}
+                hostName={hostname}
+              />
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowPreviewModal(false)}
+            >
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                // Add your publish logic here
+                createEventDb();
+                // handleClose();
+              }}
+            >
+              Confirm Publish
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <Modal
           show={showCropperModal}
