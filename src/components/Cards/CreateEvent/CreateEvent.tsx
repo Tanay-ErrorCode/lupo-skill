@@ -61,7 +61,9 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [cropperAspectRatio, setCropperAspectRatio] = useState<number>(16 / 9);
 
   const [showPreviewModal, setShowPreviewModal] = useState(false); // State for preview modal
-  const [hostname, sethostname] = useState<string>("HostName");
+  const [hostname, sethostname] = useState<string>(
+    `${localStorage.getItem("username")}`
+  );
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
@@ -502,7 +504,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 time={startTime ? startTime.format("hh:mm A") : ""}
                 image={imagePreview ?? "default_image_url"}
                 host={userid} // Replace with actual value
-                isDashboard={false}
+                isDashboard={true}
                 id="example_id"
                 isValid={true}
                 hostName={hostname}
