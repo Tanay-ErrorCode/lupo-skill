@@ -504,9 +504,11 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 time={startTime ? startTime.format("hh:mm A") : ""}
                 image={imagePreview ?? "default_image_url"}
                 host={userid} // Replace with actual value
-                isDashboard={true}
+                isDashboard={false}
                 id="example_id"
-                isValid={true}
+                isRegistered={false}
+                isValid={false}
+                ispreview={true}
                 hostName={hostname}
               />
             )}
