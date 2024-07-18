@@ -35,6 +35,7 @@ interface EventCardProps {
   onEditEvent?: () => void;
   lastEdited?: number;
   showDeleteIcon?: boolean;
+  ispreview?: boolean;
 }
 
 const EventCard: React.FC<EventCardProps> = (props) => {
@@ -257,7 +258,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                   {eventDateTime > now ? (
                     <Button
                       className={`${
-                        (props.isValid && props.isRegistered) || registerData
+                        (props.isValid && props.isRegistered) || registerData //( props.ispreview? false: registerData)
                           ? "btn-unregister"
                           : "btn-c"
                       }   position-absolute end-0 bottom-0 m-3`}
@@ -266,6 +267,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
                           ? cancelRegistration
                           : registerForEvent
                       }
+                      disabled={props.ispreview}
                     >
                       {(props.isValid && props.isRegistered) || registerData
                         ? "Unregister"
