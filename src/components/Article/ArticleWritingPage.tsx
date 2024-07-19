@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import "./ArticleWritingPage.css";
 import { Card } from "react-bootstrap";
 import { database } from "../../firebaseConf"; // Adjust the import path according to your project structure
-import { ref, get, child, set } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -44,11 +44,13 @@ const ArticleWritingPage: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
+
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
     }
   });
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -104,6 +106,14 @@ const ArticleWritingPage: React.FC = () => {
       toast.error("Please login first", { transition: Zoom });
     }
   };
+
+  useEffect(() => {
+    if (title || content) {
+      localStorage.setItem("articleDraft", "true");
+    } else {
+      localStorage.removeItem("articleDraft");
+    }
+  }, [title, content]);
 
   return (
     <Card className="article-write shadow">

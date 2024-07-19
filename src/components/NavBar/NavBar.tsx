@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
@@ -38,21 +38,40 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import NotificationsPanel from "../Notification/NotificationsPanel";
 import { Switch } from "@mui/material";
+import useNavigationPrompt from "../../utils/useNavigationPrompt";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
   const [show, setShow] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const [mode, SetMode] = useState(true);
-
+  const [isPromptActive, setIsPromptActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const draft = localStorage.getItem("articleDraft");
+      setIsPromptActive(draft === "true");
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const { handleNavigation } = useNavigationPrompt(
+    "Changes you made may not be saved.",
+    true
+  );
+
+  // useEffect(() => {
+  //   setIsPromptActive(draft === "true");
+  // }, [articleDraft]);
+
   const isActive = (path: String) => {
     return location.pathname === path;
   };
-
   const isHome = location.pathname === "/";
 
   const toggleMobileMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -90,6 +109,24 @@ const NavBar = () => {
   const handleDashboard = () => {
     if (!is_signup) setShow(!show);
     handleMobileMenuClose();
+  };
+  const handleNavigationWithPrompt = (path: string) => {
+    if (isPromptActive) {
+      const proceed = handleNavigation(path);
+      if (proceed) {
+        handleDashboard();
+        if (is_signup) {
+          navigate(path);
+        }
+      } else {
+        console.log("checking", window.location.href);
+      }
+    } else {
+      handleDashboard();
+      if (is_signup) {
+        navigate(path);
+      }
+    }
   };
 
   // const CustomSwitch = styled(Switch)(({ theme }) => ({
@@ -154,7 +191,7 @@ const NavBar = () => {
             <ListItemButton
               component={Link}
               to={item.route}
-              onClick={handleMobileMenuClose}
+              onClick={() => handleNavigationWithPrompt(item.route)}
             >
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -226,7 +263,7 @@ const NavBar = () => {
                 variant="h6"
                 noWrap
                 component="a"
-                href="#/"
+                // href="#/"
                 sx={{
                   fontWeight: 700,
                   color: "inherit",
@@ -262,7 +299,7 @@ const NavBar = () => {
               }}
             >
               <Button
-                href="#/"
+                // href="#/"
                 sx={{
                   boxSizing: "border-box",
                   fontWeight: 700,
@@ -297,12 +334,13 @@ const NavBar = () => {
                     border: isHome ? "2px solid white" : "none",
                   },
                 }}
+                onClick={() => handleNavigationWithPrompt("/")}
               >
                 Home
               </Button>
               <Button
-                href="#/dashboard"
-                onClick={handleDashboard}
+                // href="#/dashboard"
+                onClick={() => handleNavigationWithPrompt("/dashboard")}
                 sx={{
                   boxSizing: "border-box",
                   display: "block",
@@ -339,8 +377,8 @@ const NavBar = () => {
                 Dashboard
               </Button>
               <Button
-                href="#/events"
-                onClick={handleMobileMenuClose}
+                // href="#/events"
+                onClick={() => handleNavigationWithPrompt("/events")}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -377,8 +415,8 @@ const NavBar = () => {
                 Events
               </Button>
               <Button
-                href="#/article"
-                onClick={handleMobileMenuClose}
+                // href="#/article"
+                onClick={() => handleNavigationWithPrompt("/article")}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -416,8 +454,8 @@ const NavBar = () => {
               </Button>
 
               <Button
-                href="#/createEvent"
-                onClick={handleDashboard}
+                // href="#/createEvent"
+                onClick={() => handleNavigationWithPrompt("/createEvent")}
                 sx={{
                   display: "block",
                   fontWeight: 600,

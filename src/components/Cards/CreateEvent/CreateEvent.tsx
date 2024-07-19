@@ -295,6 +295,14 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     );
   };
 
+  useEffect(() => {
+    if (title || description || tags || popTags || image) {
+      localStorage.setItem("articleDraft", "true");
+    } else {
+      localStorage.removeItem("articleDraft");
+    }
+  }, [title, description, tags, popTags, startDate, startTime, image]);
+
   return (
     <>
       <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
