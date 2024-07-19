@@ -246,7 +246,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     hostName: auth.currentUser?.displayName,
                   };
                   set(eventRefChild, event);
-
+                  localStorage.removeItem("articleDraft");
                   handleClose();
                   window.location.reload();
                 });

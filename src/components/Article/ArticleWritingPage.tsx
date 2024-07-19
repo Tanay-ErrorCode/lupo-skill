@@ -96,6 +96,7 @@ const ArticleWritingPage: React.FC = () => {
           });
 
           toast.success("Article created successfully!", { transition: Zoom });
+          localStorage.removeItem("articleDraft");
           navigate("/article");
         }
       } catch (error) {
