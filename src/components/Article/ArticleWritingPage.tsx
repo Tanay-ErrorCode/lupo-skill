@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import { TextField, Button, Typography } from "@mui/material";
+import { TextField, Button, Typography, TextareaAutosize } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import "./ArticleWritingPage.css";
 import { Card } from "react-bootstrap";
@@ -19,6 +19,20 @@ const BoldTextField = styled(TextField)({
     fontWeight: "bold",
   },
 });
+
+const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
+  width: "100%",
+  maxWidth: "100%",
+  padding: "16.5px 14px",
+  fontSize: "1rem",
+  borderRadius: "4px",
+  border: "1px solid rgba(0, 0, 0, 0.23)",
+  minHeight: "200px",
+  resize: "both",
+  "&:focus": {
+    border: "2px solid rgb(0 136 255 / 56%);",
+  },
+}));
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -44,11 +58,13 @@ const ArticleWritingPage: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
+
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
       window.location.href = "#/";
     }
-  });
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -128,20 +144,11 @@ const ArticleWritingPage: React.FC = () => {
             placeholder: "Title",
           }}
         />
-        <TextField
-          label="Tell your story..."
+        <StyledTextarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          required
-          fullWidth
-          multiline
-          rows={10}
-          margin="normal"
+          placeholder="Tell your story..."
           className="article-textarea"
-          InputLabelProps={{ style: { fontWeight: "bold" } }}
-          InputProps={{
-            placeholder: "Tell your story...",
-          }}
         />
         <Button
           type="submit"
