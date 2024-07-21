@@ -115,14 +115,19 @@ const NavBar = () => {
       const proceed = handleNavigation(path);
       if (proceed) {
         handleDashboard();
+        handleMenuClose();
         if (is_signup) {
           navigate(path);
         }
       } else {
+        handleDashboard();
+        handleMobileMenuClose();
+        handleMenuClose();
         console.log("checking", window.location.href);
       }
     } else {
       handleDashboard();
+      handleMenuClose();
       if (is_signup) {
         navigate(path);
       }
@@ -189,8 +194,8 @@ const NavBar = () => {
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
-              component={Link}
-              to={item.route}
+              // component={Link}
+              // to={item.route}
               onClick={() => handleNavigationWithPrompt(item.route)}
             >
               <ListItemText primary={item.text} />
@@ -578,9 +583,12 @@ const NavBar = () => {
                       sx={{ margin: 1 }}
                     >
                       <MenuItem
-                        component={Link}
-                        to={`/profile/${userUid ? userUid : ""}`}
-                        onClick={handleMenuClose}
+                        onClick={() => {
+                          handleNavigationWithPrompt(
+                            `/profile/${userUid ? userUid : ""}`
+                          );
+                          handleMenuClose();
+                        }}
                         sx={{ color: "green" }}
                       >
                         View Profile
