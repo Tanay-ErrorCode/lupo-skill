@@ -253,7 +253,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                   };
                   sethostname(auth.currentUser?.displayName || "");
                   set(eventRefChild, event);
-
+                  localStorage.removeItem("articleDraft");
                   handleClose();
                   window.location.reload();
                 });
@@ -317,6 +317,14 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
       toast.error("Fill All the Details First");
     }
   };
+
+  useEffect(() => {
+    if (title || description || tags || popTags || image) {
+      localStorage.setItem("articleDraft", "true");
+    } else {
+      localStorage.removeItem("articleDraft");
+    }
+  }, [title, description, tags, popTags, startDate, startTime, image]);
 
   return (
     <>
