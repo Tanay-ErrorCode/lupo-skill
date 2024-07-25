@@ -20,6 +20,7 @@ import ArticlesHomepage from "./components/Article/ArticlesHomepage";
 import ArticleWritingPage from "./components/Article/ArticleWritingPage";
 import ArticlePage from "./components/Article/ArticlePage";
 import ArticleEditingPage from "./components/Article/ArticleEditingPage";
+import MeetingPage from "./components/Meetings/MeetingPage";
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
             }
           />
           <Route path="/edit-article/:id" element={<ArticleEditingPage />} />
+          <Route path="/meeting/:id" element={<MeetingPage />} />
         </Routes>
       </HashRouter>
       <Footer />
