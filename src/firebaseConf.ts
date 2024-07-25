@@ -11,14 +11,7 @@ import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyACwYfedOUUpBXvH_FeqpwITQq26u7670s",
-  authDomain: "lupo-skill-2c8e7.firebaseapp.com",
-  databaseURL: "https://lupo-skill-2c8e7-default-rtdb.firebaseio.com",
-  projectId: "lupo-skill-2c8e7",
-  storageBucket: "lupo-skill-2c8e7.appspot.com",
-  messagingSenderId: "426559151354",
-  appId: "1:426559151354:web:6512009c9d5a58945d7d43",
-  measurementId: "G-069DBSHS81"
+  //config firebase
 };
 
 // Initialize Firebase
