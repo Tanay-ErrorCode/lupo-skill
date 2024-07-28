@@ -45,7 +45,8 @@ const NotificationsPanel = () => {
                 (notification: Notification) =>
                   currentTime - notification.date < 7 * 24 * 60 * 60 * 1000
               )
-              .sort((a: Notification, b: Notification) => b.date - a.date); // Sort by date descending
+              .sort((a: Notification, b: Notification) => b.date - a.date) // Sort by date descending
+              .slice(0, 5); // Limit to 5 most recent notifications
 
             update(userRef, { notifications: validNotifications });
 
