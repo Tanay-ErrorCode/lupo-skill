@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-import { ref, update } from "firebase/database";
+import { ref, update, get, child } from "firebase/database";
+
 import { storage, database } from "../../../firebaseConf";
 import {
   getDownloadURL,
@@ -28,8 +29,27 @@ interface Event {
   description: string;
   banner: string;
   title: string;
-
+  registrants?: string;
   // other properties...
+}
+function generateUUID() {
+  var d = new Date().getTime();
+  var d2 =
+    (typeof performance !== "undefined" &&
+      performance.now &&
+      performance.now() * 1000) ||
+    0;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16;
+    if (d > 0) {
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
 }
 
 const EditEventModal: React.FC<EditEventModalProps> = ({
@@ -44,7 +64,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [formData, setFormData] = useState<Event | null>(null);
-
+  const userUid = localStorage.getItem("userUid");
   useEffect(() => {
     if (event) {
       setFormData(event);
@@ -171,18 +191,16 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
         isNaN(startDate.toDate().getTime()) ||
         isNaN(startTime.toDate().getTime())
       ) {
-        toast.error("Invalid date or time", {
-          transition: Zoom,
-        });
+        toast.error("Invalid date or time", { transition: Zoom });
         return;
       }
 
       const formattedDate = startDate.format("YYYY-MM-DD");
       const formattedTime = startTime.format("hh:mm A");
-      // const timezoneOffset =
-      //   startTime.toDate().toTimeString().match(/\((.*)\)/)?.[1] || "";
 
-      // const formattedTimeWithTimezone = `${formattedTime} GMT+0530 (${timezoneOffset})`;
+      // Check if the date or time has changed
+      const hasDateChanged = formattedDate !== event.date;
+      const hasTimeChanged = formattedTime !== event.time;
 
       // Upload image if a new one is provided
       let bannerUrl = formData.banner;
@@ -207,13 +225,36 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
       try {
         await update(eventRef, {
           ...formData,
-          date: formattedDate, // e.g., "Tue Jun 04 2024"
-          time: formattedTime, // e.g., "15:41:58 GMT+0530 (India Standard Time)"
+          date: formattedDate,
+          time: formattedTime,
           banner: bannerUrl,
           lastEdited: Date.now(),
         });
-        toast.success("EVENT DETAILS UPDATED SUCCESSFULLY");
-        window.location.reload();
+
+        // Notify users if the event date or time has changed
+        if (hasDateChanged || hasTimeChanged) {
+          const registrantsArray = event.registrants
+            ? event.registrants.split(",")
+            : [];
+          registrantsArray.forEach(async (userUid: string) => {
+            const userRef = child(ref(database, "users"), userUid);
+            const userSnapshot = await get(userRef);
+            if (userSnapshot.exists()) {
+              const notifications = userSnapshot.val().notifications || [];
+              notifications.push({
+                id: generateUUID(),
+                title: "Event Rescheduled",
+                text: `The event "${formData.title}" has been rescheduled.`,
+                date: Date.now(),
+                link: `/eventDetails/${event.id}`,
+              });
+
+              await update(userRef, { notifications });
+            }
+          });
+        }
+
+        toast.success("Event details updated successfully");
         handleClose();
         refreshEvents();
       } catch (error) {
@@ -228,7 +269,6 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
       });
     }
   };
-
   const isEventStartTimeValid = (): boolean => {
     if (!event || !startDate || !startTime) {
       return false;
