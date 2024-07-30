@@ -18,7 +18,7 @@ import ClapIcon from "./clap.svg";
 import ClapIconFilled from "./fillclap.svg";
 import "./ArticlesHomepage.css";
 import { database } from "../../firebaseConf";
-import { ref, get, set, update } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 import Signup from "../Signup/Signup";
 
@@ -31,7 +31,7 @@ interface Article {
   content: string;
   readtime: string;
   likes: number;
-  comments: number;
+  comments: string; // Change this to string
   createdBy: string;
 }
 
@@ -184,7 +184,7 @@ const ArticlesHomepage: React.FC = () => {
                         <Typography className="comment-icon">
                           <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                           <span className="comment-count">
-                            {article.comments}
+                            {article.comments.split(",").length}
                           </span>
                         </Typography>
                         <Typography

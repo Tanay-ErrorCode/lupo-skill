@@ -31,6 +31,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import XIcon from "@mui/icons-material/X";
 import theme from "../../theme";
 import EditIcon from "@mui/icons-material/Edit";
+import DiscussionModal from "./DiscussionModal";
 
 interface Article {
   id: string;
@@ -41,7 +42,7 @@ interface Article {
   content: string;
   readtime: string;
   likes: number;
-  comments: number;
+  comments: string;
   createdBy: string;
 }
 
@@ -51,7 +52,7 @@ const ArticlePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
   const [isLiking, setIsLiking] = useState<boolean>(false);
-
+  const [showDiscussion, setShowDiscussion] = useState(false);
   const [show, setShow] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const userUid = localStorage.getItem("userUid");
@@ -153,6 +154,9 @@ const ArticlePage: React.FC = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+  const handleCommentIconClick = () => {
+    setShowDiscussion(true);
   };
 
   const handleCopyToClipboard = () => {
@@ -265,9 +269,15 @@ const ArticlePage: React.FC = () => {
           </Box>
           <CardActions className="artcle-page-up">
             <div>
-              <IconButton size="small" className="comment-icon">
+              <IconButton
+                size="small"
+                className="comment-icon"
+                onClick={handleCommentIconClick}
+              >
                 <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-                <span className="comment-count">{article.comments}</span>
+                <span className="comment-count">
+                  {article.comments.split(",").length}
+                </span>
               </IconButton>
               <IconButton
                 size="small"
@@ -405,6 +415,11 @@ const ArticlePage: React.FC = () => {
           </div>
         </Box>
       </Modal>
+      <DiscussionModal
+        isOpen={showDiscussion}
+        handleClose={() => setShowDiscussion(false)}
+        blogId={id || ""}
+      />
     </>
   );
 };
