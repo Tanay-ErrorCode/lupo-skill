@@ -1,7 +1,9 @@
 // src/components/EventBannerUpload/EventBannerUpload.tsx
 import React from 'react';
-import { Box, Card, Typography } from '@mui/material';
-import DropZone from '../../../utils/DropZone';
+import { Card,  Button } from 'react-bootstrap';
+import Typography from '@mui/material/Typography';
+
+import './EventBannerUpload.css'; // Assuming you have a CSS file for styling
 
 interface EventBannerUploadProps {
   handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,21 +16,19 @@ const EventBannerUpload: React.FC<EventBannerUploadProps> = ({ handleImageChange
       <Typography variant="h6" className="upload-box-head">
         Upload Event Banner
       </Typography>
-      <Box>
-        <DropZone handleImageChange={handleImageChange} />
+      <div className="upload-content">
+        <Button variant="outline-primary" as="label">
+          + Upload
+          <input type="file" accept="image/*" onChange={handleImageChange} hidden />
+        </Button>
         {imagePreview && (
           <img
             src={imagePreview}
             alt="Uploaded Preview"
-            className="mt-4"
-            style={{
-              width: "100%",
-              maxHeight: "300px",
-              objectFit: "cover",
-            }}
+            className="mt-4 preview-image"
           />
         )}
-      </Box>
+      </div>
     </Card>
   );
 };

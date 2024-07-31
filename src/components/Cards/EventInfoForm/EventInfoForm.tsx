@@ -32,27 +32,27 @@ const EventInfoForm: React.FC<EventInfoFormProps> = ({
 }) => {
   return (
     <Card className="box1">
-      <Typography variant="h5" className="font-bold">
+      <Typography variant="h4" className="fw-bold m-3">
         Event Info
       </Typography>
       <form>
-        <Box className="mt-3">
-          <Typography className="create-event-label">
+        <Box className="m-3">
+          <Typography className="create-event-label fw-bold">
             Event Title
           </Typography>
           <TextField
             label="Event Title"
             variant="outlined"
             fullWidth
-            className="mt-3 create-event-input"
+            className="ml-3 create-event-input"
             value={title}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setTitle(e.target.value)
             }
           />
         </Box>
-        <Box className="mt-3">
-          <Typography className="create-event-label">
+        <Box className="m-3">
+          <Typography className="create-event-label fw-bold">
             Event Description
           </Typography>
           <TextField
@@ -61,52 +61,53 @@ const EventInfoForm: React.FC<EventInfoFormProps> = ({
             fullWidth
             multiline
             rows={5}
-            className="mt-3 create-event-input"
+            className="ml-3 create-event-input"
             value={description}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               setDescription(e.target.value)
             }
           />
         </Box>
-        <Box className="mt-3">
-          <Typography className="create-event-label">Date</Typography>
+        <Box className="m-3">
+          <Typography className="create-event-label fw-bold">Date</Typography>
           <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
+              className="ml-3"
               label="Select Date"
               value={startDate}
               onChange={(newValue) => setStartDate(newValue)}
             />
           </LocalizationProvider>
         </Box>
-        <Box className="mt-3">
-          <Typography className="create-event-label">Time</Typography>
+        <Box className="m-3">
+          <Typography className="create-event-label fw-bold">Time</Typography>
           <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               label="Select Time"
               value={startTime}
               onChange={(newValue) => setStartTime(newValue)}
-              className="custom-timepicker"
+              className="ml-3 custom-timepicker"
             />
           </LocalizationProvider>
         </Box>
-        <Box className="mt-3">
-          <Typography className="create-event-label">
+        <Box className="m-3">
+          <Typography className="create-event-label fw-bold">
             Event Tags
           </Typography>
           <TextField
             label="Event Tags"
             variant="outlined"
             fullWidth
-            className="mt-3 create-event-input"
+            className="ml-3 create-event-input"
             value={popTags}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPopTags(e.target.value)
             }
             onKeyDown={handleKeyDown}
           />
-          <Stack direction="row" className="mt-2" spacing={1}>
+          <Stack direction="row" className="m-2" spacing={1}>
             {listTags.map((ele, index) => (
               <Chip
                 key={index}

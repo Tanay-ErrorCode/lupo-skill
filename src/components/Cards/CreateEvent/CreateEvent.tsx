@@ -1,10 +1,9 @@
-// src/components/CreateEvent/CreateEvent.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Button, Nav } from "react-bootstrap";
 import "./CreateEvent.css";
 import { auth, database, storage } from "../../../firebaseConf";
-import { ref, get, child, set } from "firebase/database";
+import { ref, get, child, set, getDatabase } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import {
   ref as storageRef,
@@ -103,6 +102,7 @@ const CreateEvent: React.FC = () => {
       await uploadBytes(fileRef, blob);
 
       const downloadUrl = await getDownloadURL(fileRef);
+      const database = getDatabase();
 
       await set(ref(database, `events/${uniqueId}`), {
         title,
@@ -125,7 +125,7 @@ const CreateEvent: React.FC = () => {
         transition: Zoom,
       });
 
-      navigate('/hosted-events');
+      navigate('/');
     } catch (error) {
       toast.error("Failed to publish event. Please try again later.");
       console.error("Error publishing event:", error);
@@ -135,45 +135,49 @@ const CreateEvent: React.FC = () => {
   return (
     <div className="create-event-container">
       <div className="create-event-header">
-        <Nav.Link onClick={() => navigate('/hosted-events')}>
+        <Nav.Link onClick={() => navigate('')}>
           <i className="fa-solid fa-arrow-left"></i>
         </Nav.Link>
         <h2>Create Event</h2>
       </div>
 
       <div className="create-event-content">
-        <EventInfoForm
-          title={title}
-          setTitle={setTitle}
-          description={description}
-          setDescription={setDescription}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          startTime={startTime}
-          setStartTime={setStartTime}
-          tags={tags}
-          popTags={popTags}
-          setPopTags={setPopTags}
-          listTags={listTags}
-          setTags={setTags}
-          setListTags={setListTags}
-          handleKeyDown={handleKeyDown}
-          handleDelete={handleDelete}
-        />
-
-        <EventBannerUpload
-          handleImageChange={handleImageChange}
-          imagePreview={imagePreview}
-        />
-      </div>
-
-      <div className="create-event-footer">
-        <Button onClick={() => setShowPreview(true)}>
-          Preview Event
-        </Button>
-        <Button onClick={handlePublish}>
-          Publish Event
-        </Button>
+        <div className="left-section">
+          <EventInfoForm
+            title={title}
+            setTitle={setTitle}
+            description={description}
+            setDescription={setDescription}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            startTime={startTime}
+            setStartTime={setStartTime}
+            tags={tags}
+            popTags={popTags}
+            setPopTags={setPopTags}
+            listTags={listTags}
+            setTags={setTags}
+            setListTags={setListTags}
+            handleKeyDown={handleKeyDown}
+            handleDelete={handleDelete}
+          />
+        </div>
+        <div className="right-section">
+          <div className="button-container">
+            <Button onClick={() => setShowPreview(true)}>
+              Preview Event
+            </Button>
+            </div>
+            <div className="button-container">
+            <Button onClick={handlePublish}>
+              Publish Event
+            </Button>
+          </div>
+          <EventBannerUpload
+            handleImageChange={handleImageChange}
+            imagePreview={imagePreview}
+          />
+        </div>
       </div>
 
       <EventPreviewModal
