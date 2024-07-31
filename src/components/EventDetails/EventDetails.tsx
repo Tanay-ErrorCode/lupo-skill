@@ -264,7 +264,12 @@ const EventDetails = () => {
             src={banner_Image}
             alt="Event Banner"
             width="100%"
-            style={{ objectFit: "cover", marginBottom: "16px", userSelect: "none", borderRadius:theme.borderRadius.small}}
+            style={{
+              objectFit: "cover",
+              marginBottom: "16px",
+              userSelect: "none",
+              borderRadius: theme.borderRadius.small,
+            }}
           />
           <div className="modal-event-detail">
             <h5>{title}</h5>
@@ -291,7 +296,9 @@ const EventDetails = () => {
             </IconButton>
             <IconButton
               style={{ backgroundColor: "#EA4335", color: "#fff" }}
-              href={`mailto:?subject=${encodeURIComponent('Check out this event')}&body=${shareUrl}`}
+              href={`mailto:?subject=${encodeURIComponent(
+                "Check out this event"
+              )}&body=${shareUrl}`}
             >
               <EmailIcon />
             </IconButton>

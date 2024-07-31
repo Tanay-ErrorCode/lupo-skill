@@ -66,6 +66,7 @@ const CreateEvent: React.FC = () => {
   const handleSaveCroppedImage = (croppedImageUrl: string | null) => {
     setCroppedImageUrl(croppedImageUrl);
     setShowCropper(false);
+
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,12 +87,38 @@ const CreateEvent: React.FC = () => {
       return;
     }
 
-    try {
-      const user = auth.currentUser;
-      if (!user) {
-        toast.error("User not authenticated.");
-        return;
-      }
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("User not authenticated.");
+      return;
+    }
+  } catch (error) {
+    console.error("Error checking user authentication:", error);
+    toast.error("An error occurred. Please try again.");
+  }
+
+  useEffect(() => {
+    if (title || description || tags || popTags || image) {
+      localStorage.setItem("articleDraft", "true");
+    } else {
+      localStorage.removeItem("articleDraft");
+    }
+  }, [title, description, tags, popTags, startDate, startTime, image]);
+
+      return (
+        <>
+          <Signup isShow={isSignupModelOpen} returnShow={setIsSignupModelOpen} />
+          {props === "other" ? (
+            <Button variant="primary" onClick={handleShow} className="main-button">
+              Create Event
+            </Button>
+          ) : (
+            <Nav.Link onClick={handleShow}>Create Event</Nav.Link>
+          )}
+        </>
+      );
+
 
       const userId = user.uid;
       const uniqueId = Date.now().toString();

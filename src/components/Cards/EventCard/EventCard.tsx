@@ -31,6 +31,25 @@ interface EventCardProps {
   showDeleteIcon?: boolean;
   ispreview?: boolean;
 }
+function generateUUID() {
+  var d = new Date().getTime();
+  var d2 =
+    (typeof performance !== "undefined" &&
+      performance.now &&
+      performance.now() * 1000) ||
+    0;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16;
+    if (d > 0) {
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
 
 const EventCard: React.FC<EventCardProps> = (props) => {
   const [registerData, setRegisterData] = useState<boolean>(false);
@@ -156,31 +175,64 @@ const EventCard: React.FC<EventCardProps> = (props) => {
   };
 
   const handleDeleteEvent = async () => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this event?"
+    );
+    if (!confirmDelete) return;
 
     try {
       const eventRef = ref(database, `events/${props.id}`);
+      const eventSnapshot = await get(eventRef);
+      if (!eventSnapshot.exists()) {
+        toast.error("Event does not exist", { transition: Zoom });
+        return;
+      }
+
+      // Get registrants and event details
+      const eventData = eventSnapshot.val();
+      const registrantsArray = eventData.registrants
+        ? eventData.registrants.split(",")
+        : [];
+
+      // Remove the event
       await remove(eventRef);
 
-      const userUid = localStorage.getItem("userUid");
-      if (userUid) {
-        const userRef = ref(database, `users/${userUid}`);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          let createdEventsArray: string[] = snapshot.val().createdEvents.split(",");
-          createdEventsArray = createdEventsArray.filter(eventId => eventId !== props.id);
-          await update(userRef, {
-            createdEvents: createdEventsArray.join(","),
-          });
-        }
-      }
+const userUid = localStorage.getItem("userUid");
+if (userUid) {
+  const userRef = ref(database, `users/${userUid}`);
+  const snapshot = await get(userRef);
+  if (snapshot.exists()) {
+    let createdEventsArray: string[] = snapshot.val().createdEvents.split(",");
+    createdEventsArray = createdEventsArray.filter(eventId => eventId !== props.id);
+    await update(userRef, {
+      createdEvents: createdEventsArray.join(","),
+    });
 
+    // Notify all registrants about the event deletion
+    const eventRef = ref(database, `events/${props.id}`);
+    const eventSnapshot = await get(eventRef);
+    if (eventSnapshot.exists()) {
+      const registrantsArray = eventSnapshot.val().registrants ? eventSnapshot.val().registrants.split(",") : [];
+      registrantsArray.forEach(async (userUid: string) => {
+        const userRef = child(ref(database, "users"), userUid);
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          const notifications = userSnapshot.val().notifications || [];
+          notifications.push({
+            id: generateUUID(), // Ensure each notification has a unique ID
+            title: "Event Deleted",
+            text: `The event '${eventSnapshot.val().title}' has been deleted.`,
+            date: new Date().getTime(),
+            link: "",
+          });
+          await update(userRef, { notifications });
+        }
+      });
+    
       toast.success("Event successfully deleted", { transition: Zoom });
       window.location.reload();
-
-      if (props.onBackToDashboard) {
-        props.onBackToDashboard();
-      }
+      if (props.onBackToDashboard) props.onBackToDashboard();
     } catch (error) {
       console.error("Error deleting event:", error);
       toast.error("Failed to delete event", { transition: Zoom });
