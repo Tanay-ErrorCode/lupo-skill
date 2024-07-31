@@ -8,7 +8,6 @@ import HomePage from "./components/HomePage/HomePage";
 import Dashboard from "./components/DashBoard/DashBoard";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import EventDetails from "./components/EventDetails/EventDetails";
-import HostedEvent from "./components/HostedEvent/HostedEvent";
 import Signup from "./components/Signup/Signup";
 import { NotificationsPannel } from "./components/NotificationsPannel";
 import ErrorPage from "./components/ErrorPage/404ErrorPage";
@@ -78,7 +77,6 @@ function App() {
             }
           />
           <Route path="/edit-article/:id" element={<ArticleEditingPage />} />
-          <Route path="/hosted-events" element={<HostedEvent />} />
         </Routes>
       </HashRouter>
       <Footer />
