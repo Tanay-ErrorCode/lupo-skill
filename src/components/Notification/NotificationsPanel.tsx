@@ -28,10 +28,26 @@ const NotificationsPanel = () => {
   const isHome = location.pathname === "/";
   const navigate = useNavigate();
   const screenTheme = useTheme();
+  const [scrolled, setScrolled] = useState(false);
   const isSmallScreen = useMediaQuery(screenTheme.breakpoints.down("sm"));
   const userUid = localStorage.getItem("userUid");
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
+  // Effect to handle scroll event for adding dark background
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
 
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   useEffect(() => {
     if (userUid) {
       const userRef = ref(database, `users/${userUid}`);
@@ -91,7 +107,11 @@ const NotificationsPanel = () => {
           padding: iconPadding,
           borderRadius: "32px",
           alignItems: "center",
-          backgroundColor: isHome ? "rgba(255, 255, 255, 0.17)" : "transparent",
+          transition: "all 0.3s linear",
+          backgroundColor:
+            scrolled || !isHome
+              ? theme.colors.darkBackground
+              : "rgba(255, 255, 255, 0.17)",
         }}
       >
         <Badge badgeContent={notifications.length} color="primary">

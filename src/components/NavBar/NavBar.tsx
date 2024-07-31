@@ -45,6 +45,7 @@ const NavBar = () => {
   const [show, setShow] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
   const [mode, SetMode] = useState(true);
   const [isPromptActive, setIsPromptActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -64,6 +65,23 @@ const NavBar = () => {
     "Changes you made may not be saved.",
     true
   );
+
+  // Effect to handle scroll event for adding dark background
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // useEffect(() => {
   //   setIsPromptActive(draft === "true");
@@ -223,6 +241,7 @@ const NavBar = () => {
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
+
   return (
     <AppBar
       position="fixed"
@@ -254,7 +273,14 @@ const NavBar = () => {
                 display: "flex",
                 alignItems: "center",
                 flex: 0,
+                padding: "10px",
+                borderRadius: "8px",
+                transition: "all 0.3s linear",
                 justifyContent: "center",
+                backgroundColor:
+                  scrolled || !isHome
+                    ? theme.colors.darkBackground
+                    : "transparent",
               }}
             >
               <img
@@ -296,11 +322,13 @@ const NavBar = () => {
                 padding: isHome ? "10px 16px" : "0px 12px",
                 gap: mdGap,
                 borderRadius: "32px",
+                transition: "all 0.3s linear",
                 alignItems: "center",
 
-                backgroundColor: isHome
-                  ? "rgba(255, 255, 255, 0.17)"
-                  : "transparent",
+                backgroundColor:
+                  scrolled || !isHome
+                    ? theme.colors.darkBackground
+                    : "transparent",
               }}
             >
               <Button
@@ -538,7 +566,6 @@ const NavBar = () => {
                 <IconButton>
                   <NotificationsPanel />
                 </IconButton>
-
                 {!is_signup ? (
                   // <Signup />
 
@@ -552,10 +579,11 @@ const NavBar = () => {
                       gap: "32px",
                       borderRadius: "32px",
                       alignItems: "center",
-
-                      backgroundColor: isHome
-                        ? "rgba(255, 255, 255, 0.17)"
-                        : "transparent",
+                      transition: "all 0.3s linear",
+                      backgroundColor:
+                        scrolled || !isHome
+                          ? theme.colors.darkBackground
+                          : "rgba(255, 255, 255, 0.17)",
                     }}
                   >
                     <PersonIcon />
@@ -569,9 +597,11 @@ const NavBar = () => {
                         borderColor: theme.colors.lightBackground,
                         borderRadius: "32px",
                         alignItems: "center",
-                        backgroundColor: isHome
-                          ? "rgba(255, 255, 255, 0.17)"
-                          : "transparent",
+                        transition: "all 0.3s linear",
+                        backgroundColor:
+                          scrolled || !isHome
+                            ? theme.colors.darkBackground
+                            : "rgba(255, 255, 255, 0.17)",
                       }}
                     >
                       <Avatar alt="User Avatar" src={userPic || default_user} />
