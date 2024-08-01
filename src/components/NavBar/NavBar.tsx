@@ -246,7 +246,7 @@ const NavBar = () => {
     <AppBar
       position="fixed"
       sx={{
-        background: isHome ? "transparent" : theme.colors.darkBackground,
+        background: isHome ? "#00000059" : theme.colors.darkBackground,
         backdropFilter: isHome ? "blur(12px)" : "none",
         zIndex: 1000,
         paddingTop: "1rem",
@@ -260,7 +260,7 @@ const NavBar = () => {
       <Toolbar>
         <Container maxWidth="xl">
           <Box
-            sx={{
+            sx={{lol
               margin: 0,
               width: "100%",
               display: "flex",
