@@ -1,0 +1,145 @@
+.meeting-page_main {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background-color: #1c1c1c;
+  position: relative;
+}
+
+.meeting-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  color: white;
+  transition: margin-right 0.3s ease-in-out; /* Smooth transition for shifting content */
+}
+
+.meeting-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.mute_icon_meeting {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  transition: right 0.3s ease-in-out; /* Smooth transition for shifting icons */
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.user-info {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+}
+
+.bottom-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  transition: margin-right 0.3s ease-in-out; /* Smooth transition for shifting content */
+}
+.chat_icon {
+  display: none !important;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.center-icon-div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon_back {
+  background-color: #424141 !important;
+}
+
+.red {
+  background-color: rgb(231, 39, 39) !important;
+}
+
+.chat-drawer {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  background-color: white;
+  color: black;
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-drawer.closed {
+  transform: translateX(100%);
+}
+
+.chat-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-input-container {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  gap: 10px;
+  align-items: center;
+  padding: 0px 20px;
+  width: 100%;
+}
+
+.send_button_chat {
+  color: #706e6e;
+}
+
+@media (max-width: 768px) {
+  .left-icon-div {
+    display: none;
+  }
+  .right-icon-div {
+    display: flex;
+  }
+  .chat_icon {
+    display: block !important;
+  }
+  .chat-drawer {
+    position: fixed;
+    transform: translateX(100%);
+  }
+  .chat-drawer.open {
+    transform: translateX(0);
+  }
+  .chat-drawer .close-btn {
+    display: block !important;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+}
+.chat-drawer .close-btn {
+  display: none;
+}
