@@ -13,17 +13,9 @@ import { getDatabase, ref, set, onValue, get, update } from "firebase/database";
 import moment from "moment";
 
 const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 800,
-  height: 500,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  overflowY: "auto",
-  borderRadius: 2,
+  borderTop: "1px solid rgba(0, 0, 0, 0.189)",
+  marginTop: "2rem",
+  paddingTop: "2rem",
 };
 
 interface User {
@@ -41,14 +33,14 @@ interface CommentData {
 
 interface DiscussionModalProps {
   blogId: string;
-  isOpen: boolean;
-  handleClose: () => void;
+  // isOpen: boolean;
+  // handleClose: () => void;
 }
 
 const DiscussionModal: React.FC<DiscussionModalProps> = ({
   blogId,
-  isOpen,
-  handleClose,
+  // isOpen,
+  // handleClose,
 }) => {
   const [comments, setComments] = useState<CommentData[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -163,15 +155,16 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
   };
 
   return (
-    <Modal open={isOpen} onClose={handleClose}>
+    // <Modal open={isOpen} onClose={handleClose}>
+    <div>
       <Box sx={modalStyle}>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h6">
             Discussions ({comments.length} Threads)
           </Typography>
-          <IconButton onClick={handleClose}>
+          {/* <IconButton onClick={handleClose}>
             <Close />
-          </IconButton>
+          </IconButton> */}
         </Box>
         <Box mt={2}>
           {user && (
@@ -202,7 +195,7 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
           ))}
         </Box>
       </Box>
-    </Modal>
+    </div>
   );
 };
 

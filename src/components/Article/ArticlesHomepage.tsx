@@ -184,7 +184,10 @@ const ArticlesHomepage: React.FC = () => {
                         <Typography className="comment-icon">
                           <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                           <span className="comment-count">
-                            {article.comments.split(",").length}
+                            {article.comments &&
+                            typeof article.comments === "string"
+                              ? article.comments.split(",").length
+                              : 0}
                           </span>
                         </Typography>
                         <Typography

@@ -9,7 +9,9 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
+.discussion_box {
+  border-top: 1px solid black !important;
+}
 .discussion-modal-content {
   background: #fff;
   border-radius: 8px;

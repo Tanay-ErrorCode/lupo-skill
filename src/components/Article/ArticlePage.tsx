@@ -276,7 +276,9 @@ const ArticlePage: React.FC = () => {
               >
                 <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                 <span className="comment-count">
-                  {article.comments.split(",").length}
+                  {article.comments && typeof article.comments === "string"
+                    ? article.comments.split(",").length
+                    : 0}
                 </span>
               </IconButton>
               <IconButton
@@ -320,6 +322,11 @@ const ArticlePage: React.FC = () => {
           <Box
             className="article-content"
             dangerouslySetInnerHTML={createMarkup(article.content)}
+          />
+          <DiscussionModal
+            // isOpen={showDiscussion}
+            // handleClose={() => setShowDiscussion(false)}
+            blogId={id || ""}
           />
         </Paper>
       </Container>
@@ -415,11 +422,6 @@ const ArticlePage: React.FC = () => {
           </div>
         </Box>
       </Modal>
-      <DiscussionModal
-        isOpen={showDiscussion}
-        handleClose={() => setShowDiscussion(false)}
-        blogId={id || ""}
-      />
     </>
   );
 };
