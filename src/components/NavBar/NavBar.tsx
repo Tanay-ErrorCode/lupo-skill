@@ -260,7 +260,7 @@ const NavBar = () => {
       <Toolbar>
         <Container maxWidth="xl">
           <Box
-            sx={{lol
+            sx={{
               margin: 0,
               width: "100%",
               display: "flex",
