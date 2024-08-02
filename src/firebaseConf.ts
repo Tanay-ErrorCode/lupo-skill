@@ -13,7 +13,9 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
-const firebaseConfig = {};
+const firebaseConfig = {
+  // firebase config
+};
 
 const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
