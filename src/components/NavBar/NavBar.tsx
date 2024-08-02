@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
 import CreateEvent from "../Cards/CreateEvent/CreateEvent";
@@ -38,58 +38,21 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import NotificationsPanel from "../Notification/NotificationsPanel";
 import { Switch } from "@mui/material";
-import useNavigationPrompt from "../../utils/useNavigationPrompt";
 
 const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
   const [show, setShow] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
   const [mode, SetMode] = useState(true);
-  const [isPromptActive, setIsPromptActive] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const draft = localStorage.getItem("articleDraft");
-      setIsPromptActive(draft === "true");
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const { handleNavigation } = useNavigationPrompt(
-    "Changes you made may not be saved.",
-    true
-  );
-
-  // Effect to handle scroll event for adding dark background
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // useEffect(() => {
-  //   setIsPromptActive(draft === "true");
-  // }, [articleDraft]);
-
   const isActive = (path: String) => {
     return location.pathname === path;
   };
+
   const isHome = location.pathname === "/";
 
   const toggleMobileMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -127,29 +90,6 @@ const NavBar = () => {
   const handleDashboard = () => {
     if (!is_signup) setShow(!show);
     handleMobileMenuClose();
-  };
-  const handleNavigationWithPrompt = (path: string) => {
-    if (isPromptActive) {
-      const proceed = handleNavigation(path);
-      if (proceed) {
-        handleDashboard();
-        handleMenuClose();
-        if (is_signup) {
-          navigate(path);
-        }
-      } else {
-        handleDashboard();
-        handleMobileMenuClose();
-        handleMenuClose();
-        console.log("checking", window.location.href);
-      }
-    } else {
-      handleDashboard();
-      handleMenuClose();
-      if (is_signup) {
-        navigate(path);
-      }
-    }
   };
 
   // const CustomSwitch = styled(Switch)(({ theme }) => ({
@@ -212,9 +152,9 @@ const NavBar = () => {
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
-              // component={Link}
-              // to={item.route}
-              onClick={() => handleNavigationWithPrompt(item.route)}
+              component={Link}
+              to={item.route}
+              onClick={handleMobileMenuClose}
             >
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -241,12 +181,11 @@ const NavBar = () => {
   const iconPadding = isSmallScreen ? "8px 10px" : "16px";
   const mdGap = isMediumScreen ? "16px" : "32px";
   const mdFontSize = isMediumScreen ? "16px" : theme.fontSize.textBody;
-
   return (
     <AppBar
       position="fixed"
       sx={{
-        background: isHome ? "#00000059" : theme.colors.darkBackground,
+        background: isHome ? "transparent" : theme.colors.darkBackground,
         backdropFilter: isHome ? "blur(12px)" : "none",
         zIndex: 1000,
         paddingTop: "1rem",
@@ -254,6 +193,7 @@ const NavBar = () => {
         // paddingY: "20px",
         boxShadow: "none",
         display: "flex",
+        backgroundColor:"#00000059"
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
@@ -273,14 +213,7 @@ const NavBar = () => {
                 display: "flex",
                 alignItems: "center",
                 flex: 0,
-                padding: "10px",
-                borderRadius: "8px",
-                transition: "all 0.3s linear",
                 justifyContent: "center",
-                backgroundColor:
-                  scrolled || !isHome
-                    ? theme.colors.darkBackground
-                    : "transparent",
               }}
             >
               <img
@@ -294,7 +227,7 @@ const NavBar = () => {
                 variant="h6"
                 noWrap
                 component="a"
-                // href="#/"
+                href="#/"
                 sx={{
                   fontWeight: 700,
                   color: "inherit",
@@ -322,17 +255,15 @@ const NavBar = () => {
                 padding: isHome ? "10px 16px" : "0px 12px",
                 gap: mdGap,
                 borderRadius: "32px",
-                transition: "all 0.3s linear",
                 alignItems: "center",
 
-                backgroundColor:
-                  scrolled || !isHome
-                    ? theme.colors.darkBackground
-                    : "transparent",
+                backgroundColor: isHome
+                  ? "rgba(255, 255, 255, 0.17)"
+                  : "transparent",
               }}
             >
               <Button
-                // href="#/"
+                href="#/"
                 sx={{
                   boxSizing: "border-box",
                   fontWeight: 700,
@@ -367,13 +298,12 @@ const NavBar = () => {
                     border: isHome ? "2px solid white" : "none",
                   },
                 }}
-                onClick={() => handleNavigationWithPrompt("/")}
               >
                 Home
               </Button>
               <Button
-                // href="#/dashboard"
-                onClick={() => handleNavigationWithPrompt("/dashboard")}
+                href="#/dashboard"
+                onClick={handleDashboard}
                 sx={{
                   boxSizing: "border-box",
                   display: "block",
@@ -410,8 +340,8 @@ const NavBar = () => {
                 Dashboard
               </Button>
               <Button
-                // href="#/events"
-                onClick={() => handleNavigationWithPrompt("/events")}
+                href="#/events"
+                onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -448,8 +378,8 @@ const NavBar = () => {
                 Events
               </Button>
               <Button
-                // href="#/article"
-                onClick={() => handleNavigationWithPrompt("/article")}
+                href="#/article"
+                onClick={handleMobileMenuClose}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -487,8 +417,8 @@ const NavBar = () => {
               </Button>
 
               <Button
-                // href="#/createEvent"
-                onClick={() => handleNavigationWithPrompt("/createEvent")}
+                href="#/createEvent"
+                onClick={handleDashboard}
                 sx={{
                   display: "block",
                   fontWeight: 600,
@@ -566,6 +496,7 @@ const NavBar = () => {
                 <IconButton>
                   <NotificationsPanel />
                 </IconButton>
+
                 {!is_signup ? (
                   // <Signup />
 
@@ -579,11 +510,10 @@ const NavBar = () => {
                       gap: "32px",
                       borderRadius: "32px",
                       alignItems: "center",
-                      transition: "all 0.3s linear",
-                      backgroundColor:
-                        scrolled || !isHome
-                          ? theme.colors.darkBackground
-                          : "rgba(255, 255, 255, 0.17)",
+
+                      backgroundColor: isHome
+                        ? "rgba(255, 255, 255, 0.17)"
+                        : "transparent",
                     }}
                   >
                     <PersonIcon />
@@ -597,11 +527,9 @@ const NavBar = () => {
                         borderColor: theme.colors.lightBackground,
                         borderRadius: "32px",
                         alignItems: "center",
-                        transition: "all 0.3s linear",
-                        backgroundColor:
-                          scrolled || !isHome
-                            ? theme.colors.darkBackground
-                            : "rgba(255, 255, 255, 0.17)",
+                        backgroundColor: isHome
+                          ? "rgba(255, 255, 255, 0.17)"
+                          : "transparent",
                       }}
                     >
                       <Avatar alt="User Avatar" src={userPic || default_user} />
@@ -613,12 +541,9 @@ const NavBar = () => {
                       sx={{ margin: 1 }}
                     >
                       <MenuItem
-                        onClick={() => {
-                          handleNavigationWithPrompt(
-                            `/profile/${userUid ? userUid : ""}`
-                          );
-                          handleMenuClose();
-                        }}
+                        component={Link}
+                        to={`/profile/${userUid ? userUid : ""}`}
+                        onClick={handleMenuClose}
                         sx={{ color: "green" }}
                       >
                         View Profile
