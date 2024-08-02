@@ -1,15 +1,6 @@
 import React, { useState, useEffect, FormEvent } from "react";
-import {
-  Modal,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  IconButton,
-  Avatar,
-} from "@mui/material";
-import { Close } from "@mui/icons-material";
-import { getDatabase, ref, set, onValue, get, update } from "firebase/database";
+import { Box, TextField, Button, Typography, Avatar } from "@mui/material";
+import { getDatabase, ref, set, onValue, get } from "firebase/database";
 import moment from "moment";
 
 const modalStyle = {
@@ -74,21 +65,13 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
     const fetchComments = async () => {
       const db = getDatabase();
       const commentsRef = ref(db, `articles/${blogId}/comments`);
-      onValue(commentsRef, async (snapshot) => {
-        const commentIdsString = snapshot.val();
-        if (commentIdsString) {
-          const commentIds = commentIdsString.split(",");
-          const commentsArray: CommentData[] = [];
-          for (const commentId of commentIds) {
-            const commentRef = ref(db, `comments/${commentId}`);
-            const commentSnapshot = await get(commentRef);
-            if (commentSnapshot.exists()) {
-              commentsArray.push({
-                id: commentId,
-                ...commentSnapshot.val(),
-              });
-            }
-          }
+      onValue(commentsRef, (snapshot) => {
+        const commentsData = snapshot.val();
+        if (commentsData) {
+          const commentsArray = Object.keys(commentsData).map((key) => ({
+            id: key,
+            ...commentsData[key],
+          }));
           setComments(commentsArray);
         } else {
           setComments([]);
@@ -136,19 +119,9 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
         timestamp: new Date().toISOString(),
       };
 
-      // Store comment details in `comments` node
-      const commentRef = ref(db, `comments/${newCommentId}`);
+      // Store comment details directly in `articles/{blogId}/comments` node
+      const commentRef = ref(db, `articles/${blogId}/comments/${newCommentId}`);
       await set(commentRef, newCommentData);
-
-      // Update comment IDs in `articles/{blogId}/comments` node
-      const articleCommentRef = ref(db, `articles/${blogId}/comments`);
-      const articleCommentsSnapshot = await get(articleCommentRef);
-      let updatedCommentIds = newCommentId;
-      if (articleCommentsSnapshot.exists()) {
-        const existingCommentIds = articleCommentsSnapshot.val();
-        updatedCommentIds = `${existingCommentIds},${newCommentId}`;
-      }
-      await set(articleCommentRef, updatedCommentIds);
 
       setNewComment("");
     }
@@ -208,7 +181,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
 
   return (
     <Box mt={2} borderBottom="1px solid #ddd" pb={2}>
-      <Box display="flex" alignItems="center" className="hearder_comment">
+      <Box display="flex" alignItems="center" className="header_comment">
         <Avatar src={data.avatar || placeholderAvatar} alt={data.author} />
         <Box ml={2}>
           <Typography variant="subtitle2">{data.author}</Typography>

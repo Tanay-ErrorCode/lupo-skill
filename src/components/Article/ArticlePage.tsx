@@ -11,7 +11,7 @@ import {
   Modal,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ref, get, update, set } from "firebase/database";
+import { ref, get, update, set, onValue, off } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ClapIcon from "./clap.svg";
@@ -42,8 +42,8 @@ interface Article {
   content: string;
   readtime: string;
   likes: number;
-  comments: string;
   createdBy: string;
+  comments: Array<any>;
 }
 
 const ArticlePage: React.FC = () => {
@@ -69,8 +69,8 @@ const ArticlePage: React.FC = () => {
         } else {
           console.error("No article found");
         }
+
         if (userUid) {
-          // Fetch liked articles
           const likedArticlesRef = ref(
             database,
             `users/${userUid}/likedArticles`
@@ -83,6 +83,21 @@ const ArticlePage: React.FC = () => {
         } else {
           setLikedArticles([]);
         }
+
+        // Set up a listener for comments count
+        const commentsRef = ref(database, `articles/${id}/comments`);
+        onValue(commentsRef, (snapshot) => {
+          const comments = snapshot.val() || [];
+          const commentsArray = Object.values(comments);
+          setArticle((prevArticle) =>
+            prevArticle
+              ? {
+                  ...prevArticle,
+                  comments: commentsArray,
+                }
+              : null
+          );
+        });
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -91,6 +106,12 @@ const ArticlePage: React.FC = () => {
     };
 
     fetchArticle();
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      const commentsRef = ref(database, `articles/${id}/comments`);
+      off(commentsRef);
+    };
   }, [id]);
 
   const handleLike = async () => {
@@ -221,7 +242,9 @@ const ArticlePage: React.FC = () => {
       </>
     );
   }
-
+  const commentsCount = article.comments
+    ? Object.keys(article.comments).length
+    : 0;
   return (
     <>
       <Signup isShow={show} returnShow={setShow} />
@@ -275,11 +298,7 @@ const ArticlePage: React.FC = () => {
                 onClick={handleCommentIconClick}
               >
                 <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-                <span className="comment-count">
-                  {article.comments && typeof article.comments === "string"
-                    ? article.comments.split(",").length
-                    : 0}
-                </span>
+                <span className="comment-count">{commentsCount}</span>
               </IconButton>
               <IconButton
                 size="small"

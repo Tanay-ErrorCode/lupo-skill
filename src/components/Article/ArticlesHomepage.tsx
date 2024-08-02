@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Typography,
-  IconButton,
   Avatar,
   CardHeader,
   CardActions,
@@ -31,8 +30,8 @@ interface Article {
   content: string;
   readtime: string;
   likes: number;
-  comments: string; // Change this to string
   createdBy: string;
+  commentCount: number; // Add this to track the number of comments
 }
 
 const ArticlesHomepage: React.FC = () => {
@@ -49,15 +48,27 @@ const ArticlesHomepage: React.FC = () => {
         const snapshot = await get(articlesRef);
         if (snapshot.exists()) {
           const articlesData = snapshot.val();
-          const articlesList = Object.keys(articlesData).map((key) => {
-            const article = articlesData[key];
-            return {
-              ...article,
-              id: key,
-              createdAt: article.createdAt,
-            };
-          });
+          const articlesList = await Promise.all(
+            Object.keys(articlesData).map(async (key) => {
+              const article = articlesData[key];
+
+              // Fetch comments and count them
+              const commentsRef = ref(database, `articles/${key}/comments`);
+              const commentsSnapshot = await get(commentsRef);
+              const commentCount = commentsSnapshot.exists()
+                ? Object.keys(commentsSnapshot.val()).length
+                : 0;
+
+              return {
+                ...article,
+                id: key,
+                createdAt: article.createdAt,
+                commentCount, // Include comment count in the article data
+              };
+            })
+          );
           setArticles(articlesList);
+
           if (userUid) {
             const likedArticlesRef = ref(
               database,
@@ -184,10 +195,7 @@ const ArticlesHomepage: React.FC = () => {
                         <Typography className="comment-icon">
                           <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
                           <span className="comment-count">
-                            {article.comments &&
-                            typeof article.comments === "string"
-                              ? article.comments.split(",").length
-                              : 0}
+                            {article.commentCount}
                           </span>
                         </Typography>
                         <Typography
