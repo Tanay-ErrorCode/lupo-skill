@@ -1,29 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, Spinner, Pagination } from "react-bootstrap";
-import Signup from "../Signup/Signup";
-import CreateEvent from "../Cards/CreateEvent/CreateEvent";
-import ProfilePage from "../ProfilePage/ProfilePage";
-import bannerImage3 from "../image_assets/bannerImage3.png";
-import "./DashBoard.css";
+import { ref, get, child } from "firebase/database";
 import EventCard from "../Cards/EventCard/EventCard";
-
-import {
-  auth,
-  firestore,
-  database,
-  storage,
-  signInWithGooglePopup,
-} from "../../firebaseConf";
-import GoogleButton from "react-google-button";
-import { ref, get, child, set } from "firebase/database";
-import { Zoom, toast } from "react-toastify";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import { reload } from "firebase/auth";
-import PageTitle from "../../utils/PageTitle";
+import { database } from "../../firebaseConf";
+import "./DashBoard.css";
 
 interface Event {
   banner: string;
@@ -123,6 +103,23 @@ const Dashboard = () => {
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
+        </div>
+      ) : eventCardsData.length === 0 ? (
+        <div
+          className="d-flex flex-column align-items-center justify-content-center no-events-container"
+          style={{
+            minHeight: "30vh",
+            textAlign: "center",
+            padding: "1em",
+          }}
+        >
+          <h2>You have not created any events as of now.</h2>
+          <Button
+            onClick={() => (window.location.href = "#/createevent")}
+            className="mt-3"
+          >
+            Create Now
+          </Button>
         </div>
       ) : (
         <>
