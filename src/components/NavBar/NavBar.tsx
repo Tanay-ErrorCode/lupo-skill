@@ -235,7 +235,7 @@ const NavBar = () => {
         // paddingY: "20px",
         boxShadow: "none",
         display: "flex",
-        backgroundColor:"#00000059"
+        backgroundColor:isHome ? "#00000059" : "",
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
