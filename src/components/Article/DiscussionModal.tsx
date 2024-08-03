@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import { Box, TextField, Button, Typography, Avatar } from "@mui/material";
 import { getDatabase, ref, set, onValue, get } from "firebase/database";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const modalStyle = {
   borderTop: "1px solid rgba(0, 0, 0, 0.189)",
@@ -12,6 +13,7 @@ const modalStyle = {
 interface User {
   name: string;
   pic: string;
+  uid: string;
 }
 
 interface CommentData {
@@ -20,6 +22,7 @@ interface CommentData {
   avatar: string;
   content: string;
   timestamp: string;
+  authoruid: string;
 }
 
 interface DiscussionModalProps {
@@ -52,6 +55,7 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
             setUser({
               name: userData.name || "Guest User",
               pic: userData.pic || placeholderAvatar,
+              uid: userData.uid || "",
             });
           }
         } catch (error) {
@@ -115,6 +119,7 @@ const DiscussionModal: React.FC<DiscussionModalProps> = ({
         id: newCommentId,
         author: user.name,
         avatar: user.pic,
+        authoruid: user.uid,
         content: newComment,
         timestamp: new Date().toISOString(),
       };
@@ -182,9 +187,15 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
   return (
     <Box mt={2} borderBottom="1px solid #ddd" pb={2}>
       <Box display="flex" alignItems="center" className="header_comment">
-        <Avatar src={data.avatar || placeholderAvatar} alt={data.author} />
+        <Link to={`/profile/${data.authoruid}`}>
+          {" "}
+          <Avatar src={data.avatar || placeholderAvatar} alt={data.author} />
+        </Link>
         <Box ml={2}>
-          <Typography variant="subtitle2">{data.author}</Typography>
+          <Link className="article_link" to={`/profile/${data.authoruid}`}>
+            {" "}
+            <Typography variant="subtitle2">{data.author}</Typography>
+          </Link>
           <Typography variant="caption" color="textSecondary">
             {moment(data.timestamp).fromNow()}
           </Typography>
