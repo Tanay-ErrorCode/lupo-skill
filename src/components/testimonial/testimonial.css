@@ -13,7 +13,7 @@
   .workshop{
     z-index: 101;
   }
-  .card1:hover,.card3:hover{
+  .card1:hover,.card3:hover,.card2:hover,.gardening:hover,.workshop:hover,.uiux:hover{
     animation: zindexanimation forwards 1s;
   }
   .uiux{

@@ -257,7 +257,7 @@ const HomePage = () => {
         <motion.img initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} src={card2} style={{position:"absolute",right:'263px'}} alt="Card" width={160} height={220} />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card2" src={card2} style={{position:"absolute",right:'263px'}} alt="Card" width={160} height={220} />
         <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
