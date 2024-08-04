@@ -19,6 +19,12 @@ import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import { Link } from "react-router-dom";
 import TestimonialsCarousel from "../testimonial/TestimonialsCarousel";
+import card1 from "../image_assets/card (1).png";
+import card2 from "../image_assets/card (2).png";
+import card3 from "../image_assets/card (3).png";
+import uiux from "../image_assets/uiux.png";
+import gardening from "../image_assets/gardening.png";
+import workshop from "../image_assets/workshop.png";
 
 const HomePage = () => {
   const loggedIn = localStorage.getItem("userUid");
@@ -103,7 +109,10 @@ const HomePage = () => {
       }
     }
   };
-
+  const eventVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0 },
+  };
   return (
     <div
       style={{
@@ -232,18 +241,41 @@ const HomePage = () => {
           </Grid>
           {/* Background image column */}
           <Grid
-            item
-            xs={12}
-            lg={6}
-            style={{
-              marginTop: "2.2rem",
-              backgroundImage: `url(${back})`,
-              backgroundSize: "auto 95vh",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right",
-              height: "100vh",
-            }}
-          />
+           item
+           xs={12}
+           lg={6} 
+           style={{
+            marginTop: "2.2rem",
+            height: "100vh",
+            position:"relative"
+          }}
+          >
+        <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card1" src={card1} style={{position:"absolute",right:'180px',bottom:"132px"}} alt="Card" width={240} height={300} />
+        <motion.img initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} src={card2} style={{position:"absolute",right:'263px'}} alt="Card" width={160} height={220} />
+        <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card3" src={card3} style={{position:"absolute",right:'50px',top:"32px"}} alt="Card" width={200} height={300} />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="uiux" src={uiux} alt="uiux"  />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="gardening" src={gardening} alt="gardening"  />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop"  src={workshop} style={{position:"absolute",right:'302px',top:"207px"}} alt="workshop" width={200} height={130} />
+
+          </Grid>
 
           <Grid
             item

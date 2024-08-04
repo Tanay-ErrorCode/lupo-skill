@@ -7,6 +7,64 @@
 .box {
   background-color: white;
 }
+.card1{
+  z-index: 100;}
+  .workshop{
+    z-index: 101;
+  }
+  .card1:hover,.card3:hover{
+    animation: zindexanimation forwards 1s;
+  }
+  .uiux{
+    position: absolute;
+    right: 140px;
+    opacity: 1;
+    transform: none;
+    bottom: 117px;
+    z-index: 200;
+    height: 25px;
+    width: 70px;
+  }
+  .gardening{
+    position: absolute;
+    opacity: 1;
+    transform: none;
+    bottom: 81px !important;
+    height: 25px;
+    right: 217px;
+  }
+  @keyframes zindexanimation {
+    from{
+      z-index: 0;
+      opacity: 0.10;
+    }to{
+      z-index: 300;
+      opacity: 1;
+    }
+  }
+  
+  @media only screen and ( max-width:555px) {
+      .gardening{
+        right: 167px;
+  
+      }
+      .uiux{
+      right: 90px;
+      }
+      .card3{
+        right: 0px !important;
+      }
+      .card2{
+        right: 216px !important;
+      }
+      .card1{
+        right: 130px !important;
+      }
+      .workshop{
+        right: 252px !important;
+      }
+  }
+  
 .carousel-item {
   transition: transform 1.5s ease, opacity 1.5s ease !important;
   padding: 20px;
