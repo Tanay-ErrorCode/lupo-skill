@@ -106,19 +106,6 @@ const ProfilePage = () => {
     const articlesRef = ref(database, "articles");
     const articleList = articleIds.split(",");
     const articlePromises = articleList.map(async (articleId: string) => {
-      if (userUid) {
-        const likedArticlesRef = ref(
-          database,
-          `users/${userUid}/likedArticles`
-        );
-        const likedArticlesSnapshot = await get(likedArticlesRef);
-        if (likedArticlesSnapshot.exists()) {
-          const likedArticlesString = likedArticlesSnapshot.val();
-          setLikedArticles(likedArticlesString.split(","));
-        }
-      } else {
-        setLikedArticles([]);
-      }
       const articleRef = child(articlesRef, articleId.trim());
       const articleSnapshot = await get(articleRef);
       return articleSnapshot.exists() ? articleSnapshot.val() : null;
