@@ -253,7 +253,7 @@ const HomePage = () => {
         <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} className="card1" src={card1} style={{position:"absolute",right:'180px',bottom:"132px"}} alt="Card" width={240} height={300} />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card1" src={card1} style={{position:"absolute",right:'180px',top:"323px"}} alt="Card" width={240} height={300} />
         <motion.img initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
@@ -265,15 +265,15 @@ const HomePage = () => {
  <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} className="uiux" src={uiux} alt="uiux"  />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="uiux" src={uiux} alt="Card"  />
  <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} className="gardening" src={gardening} alt="gardening"  />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="gardening" src={gardening} alt="Card"  />
  <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop"  src={workshop} style={{position:"absolute",right:'302px',top:"207px"}} alt="workshop" width={200} height={130} />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop"  src={workshop} style={{position:"absolute",right:'302px',top:"207px"}} alt="Card" width={200} height={130} />
 
           </Grid>
 

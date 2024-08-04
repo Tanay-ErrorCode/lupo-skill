@@ -7,6 +7,7 @@
 .box {
   background-color: white;
 }
+
 .card1{
   z-index: 100;}
   .workshop{
@@ -20,7 +21,7 @@
     right: 140px;
     opacity: 1;
     transform: none;
-    bottom: 117px;
+    top: 593px;
     z-index: 200;
     height: 25px;
     width: 70px;
@@ -29,7 +30,7 @@
     position: absolute;
     opacity: 1;
     transform: none;
-    bottom: 81px !important;
+    top: 630px !important;
     height: 25px;
     right: 217px;
   }
@@ -42,7 +43,27 @@
       opacity: 1;
     }
   }
-  
+  @media only screen and (max-width:506px) {
+    
+    .uiux{
+    right: 90px;
+    }
+    .card3{
+      right: 0px !important;
+    }
+    .card2{
+      right: 210px !important;
+    }
+    .card1{
+      width: 190px !important;
+      height: 250px !important;
+    }
+    .workshop{
+      width: 170px !important;
+      height: 100px !important;
+      top: 212px !important;
+    }
+  }
   @media only screen and ( max-width:555px) {
       .gardening{
         right: 167px;
@@ -64,7 +85,7 @@
         right: 252px !important;
       }
   }
-  
+    
 .carousel-item {
   transition: transform 1.5s ease, opacity 1.5s ease !important;
   padding: 20px;
