@@ -8,11 +8,6 @@
   background-color: white;
 }
 
-.card1{
-  z-index: 100;}
-  .workshop{
-    z-index: 101;
-  }
   .card1:hover,.card3:hover,.card2:hover,.gardening:hover,.workshop:hover,.uiux:hover{
     animation: zindexanimation forwards 1s;
   }
@@ -22,7 +17,7 @@
     opacity: 1;
     transform: none;
     top: 593px;
-    z-index: 200;
+    z-index: 500;
     height: 25px;
     width: 70px;
   }
@@ -36,10 +31,8 @@
   }
   @keyframes zindexanimation {
     from{
-      z-index: 0;
       opacity: 0.10;
     }to{
-      z-index: 300;
       opacity: 1;
     }
   }
