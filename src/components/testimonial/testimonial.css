@@ -8,9 +8,11 @@
   background-color: white;
 }
 
-  .card1:hover,.card3:hover,.card2:hover,.gardening:hover,.workshop:hover,.uiux:hover{
-    animation: zindexanimation forwards 1s;
-  }
+.card1:hover,.card3:hover,.card2:hover,.gardening:hover,.workshop:hover,.uiux:hover{
+  animation: zindexanimation forwards 0.09s;
+  scale: 1.05;
+  transition: scale 1s;
+}
   .uiux{
     position: absolute;
     right: 140px;
@@ -31,7 +33,7 @@
   }
   @keyframes zindexanimation {
     from{
-      opacity: 0.10;
+      opacity: 0;
     }to{
       opacity: 1;
     }
