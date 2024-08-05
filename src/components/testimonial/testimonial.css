@@ -9,7 +9,6 @@
 }
 
 .card1:hover,.card3:hover,.card2:hover,.gardening:hover,.workshop:hover,.uiux:hover{
-  animation: zindexanimation forwards 0.09s;
   scale: 1.05;
   transition: scale 1s;
 }
