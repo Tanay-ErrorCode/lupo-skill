@@ -296,7 +296,7 @@ const HomePage = () => {
  <motion.img  initial="hidden"
             whileInView="visible"  viewport={{ once: true }}
             variants={eventVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop" onHoverStart={()=>handleHover('workshop')}   src={workshop} style={{position:"absolute",right:'302px',top:"207px",zIndex:`${zindex[0]=="workshop"?"400":(zindex[1]=="workshop")?"300":"200"}}} alt="Card" width={200} height={130} />
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop" onHoverStart={()=>handleHover('workshop')}   src={workshop} style={{position:"absolute",right:'302px',top:"207px",zIndex:`${zindex[0]=="workshop"?"400":(zindex[1]=="workshop")?"300":"200"}`}} alt="Card" width={200} height={130} />
 
           </Grid>
 
