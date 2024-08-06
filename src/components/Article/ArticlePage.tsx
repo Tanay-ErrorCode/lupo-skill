@@ -65,7 +65,19 @@ const ArticlePage: React.FC = () => {
         const articleRef = ref(database, `articles/${id}`);
         const snapshot = await get(articleRef);
         if (snapshot.exists()) {
-          setArticle(snapshot.val());
+          const articleData = snapshot.val();
+
+          const commentsRef = ref(database, `articles/${id}/comments`);
+          onValue(commentsRef, (snapshot) => {
+            const commentsData = snapshot.val();
+            const commentsArray = commentsData
+              ? Object.values(commentsData)
+              : [];
+            setArticle({
+              ...articleData,
+              comments: commentsArray,
+            });
+          });
         } else {
           console.error("No article found");
         }
@@ -83,21 +95,6 @@ const ArticlePage: React.FC = () => {
         } else {
           setLikedArticles([]);
         }
-
-        // Set up a listener for comments count
-        const commentsRef = ref(database, `articles/${id}/comments`);
-        onValue(commentsRef, (snapshot) => {
-          const comments = snapshot.val() || [];
-          const commentsArray = Object.values(comments);
-          setArticle((prevArticle) =>
-            prevArticle
-              ? {
-                  ...prevArticle,
-                  comments: commentsArray,
-                }
-              : null
-          );
-        });
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -352,7 +349,11 @@ const ArticlePage: React.FC = () => {
             className="article-content"
             dangerouslySetInnerHTML={createMarkup(article.content)}
           />
-          <DiscussionModal ref={discussionModalRef} blogId={id || ""} />
+          <DiscussionModal
+            ref={discussionModalRef}
+            blogId={id || ""}
+            comments={article.comments}
+          />
         </Paper>
       </Container>
       <Modal open={showModal} onClose={handleCloseModal} className="shadow">

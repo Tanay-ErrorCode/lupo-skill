@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent, forwardRef } from "react";
 import { Box, TextField, Button, Typography, Avatar } from "@mui/material";
-import { getDatabase, ref, set, onValue, get } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
@@ -27,61 +27,19 @@ interface CommentData {
 
 interface DiscussionModalProps {
   blogId: string;
-  // isOpen: boolean;
-  // handleClose: () => void;
+  comments: CommentData[];
 }
 
 const DiscussionModal = forwardRef<HTMLDivElement, DiscussionModalProps>(
-  ({ blogId }, refer) => {
-    const [comments, setComments] = useState<CommentData[]>([]);
+  ({ blogId, comments }, refer) => {
     const [newComment, setNewComment] = useState("");
-    const [user, setUser] = useState<User | null>(null);
 
-    const placeholderAvatar = "https://via.placeholder.com/150"; // Placeholder avatar URL
-
-    useEffect(() => {
-      const fetchUserData = async () => {
-        const userUid = localStorage.getItem("userUid");
-        if (userUid) {
-          const db = getDatabase();
-          const userRef = ref(db, `users/${userUid}`);
-          try {
-            const userSnapshot = await get(userRef);
-            if (userSnapshot.exists()) {
-              const userData = userSnapshot.val();
-              setUser({
-                name: userData.name || "Guest User",
-                pic: userData.pic || placeholderAvatar,
-                uid: userData.uid || "",
-              });
-            }
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-          }
-        }
-      };
-
-      fetchUserData();
-
-      const fetchComments = async () => {
-        const db = getDatabase();
-        const commentsRef = ref(db, `articles/${blogId}/comments`);
-        onValue(commentsRef, (snapshot) => {
-          const commentsData = snapshot.val();
-          if (commentsData) {
-            const commentsArray = Object.keys(commentsData).map((key) => ({
-              id: key,
-              ...commentsData[key],
-            }));
-            setComments(commentsArray);
-          } else {
-            setComments([]);
-          }
-        });
-      };
-
-      fetchComments();
-    }, [blogId]);
+    // Retrieve user information from localStorage
+    const user: User = {
+      name: localStorage.getItem("username") || "Guest User",
+      pic: localStorage.getItem("userPic") || "https://via.placeholder.com/150",
+      uid: localStorage.getItem("userUid") || "",
+    };
 
     function generateUUID() {
       var d = new Date().getTime();
@@ -121,7 +79,6 @@ const DiscussionModal = forwardRef<HTMLDivElement, DiscussionModalProps>(
           timestamp: new Date().toISOString(),
         };
 
-        // Store comment details directly in `articles/{blogId}/comments` node
         const commentRef = ref(
           db,
           `articles/${blogId}/comments/${newCommentId}`
@@ -133,26 +90,20 @@ const DiscussionModal = forwardRef<HTMLDivElement, DiscussionModalProps>(
     };
 
     return (
-      // <Modal open={isOpen} onClose={handleClose}>
       <div>
         <Box sx={modalStyle} ref={refer}>
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h6">
               Discussions ({comments.length} Threads)
             </Typography>
-            {/* <IconButton onClick={handleClose}>
-            <Close />
-          </IconButton> */}
           </Box>
           <Box mt={2}>
-            {user && (
-              <Box display="flex" alignItems="center">
-                <Avatar src={user.pic || placeholderAvatar} alt={user.name} />
-                <Typography ml={2} variant="subtitle1">
-                  {user.name}
-                </Typography>
-              </Box>
-            )}
+            <Box display="flex" alignItems="center">
+              <Avatar src={user.pic} alt={user.name} />
+              <Typography ml={2} variant="subtitle1">
+                {user.name}
+              </Typography>
+            </Box>
             <TextField
               fullWidth
               variant="outlined"
@@ -183,18 +134,14 @@ interface CommentProps {
 }
 
 const Comment: React.FC<CommentProps> = ({ data }) => {
-  const placeholderAvatar = "https://via.placeholder.com/150"; // Placeholder avatar URL
-
   return (
     <Box mt={2} borderBottom="1px solid #ddd" pb={2}>
       <Box display="flex" alignItems="center" className="header_comment">
         <Link to={`/profile/${data.authoruid}`}>
-          {" "}
-          <Avatar src={data.avatar || placeholderAvatar} alt={data.author} />
+          <Avatar src={data.avatar} alt={data.author} />
         </Link>
         <Box ml={2}>
           <Link className="article_link" to={`/profile/${data.authoruid}`}>
-            {" "}
             <Typography variant="subtitle2">{data.author}</Typography>
           </Link>
           <Typography variant="caption" color="textSecondary">
