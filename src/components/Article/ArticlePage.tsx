@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Typography,
@@ -177,7 +177,17 @@ const ArticlePage: React.FC = () => {
     setShowModal(false);
   };
   const handleCommentIconClick = () => {
-    setShowDiscussion(true);
+    if (discussionModalRef.current) {
+      const offset = 60; // Adjust this value as needed
+      const elementPosition =
+        discussionModalRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
   };
 
   const handleCopyToClipboard = () => {
@@ -199,7 +209,7 @@ const ArticlePage: React.FC = () => {
   };
 
   const shareUrl = encodeURIComponent(window.location.href);
-
+  const discussionModalRef = useRef<HTMLDivElement>(null);
   const style = {
     position: "absolute",
     top: "50%",
@@ -342,11 +352,7 @@ const ArticlePage: React.FC = () => {
             className="article-content"
             dangerouslySetInnerHTML={createMarkup(article.content)}
           />
-          <DiscussionModal
-            // isOpen={showDiscussion}
-            // handleClose={() => setShowDiscussion(false)}
-            blogId={id || ""}
-          />
+          <DiscussionModal ref={discussionModalRef} blogId={id || ""} />
         </Paper>
       </Container>
       <Modal open={showModal} onClose={handleCloseModal} className="shadow">
