@@ -42,7 +42,7 @@ const Signup: React.FC<SignupProps> = ({ isShow, returnShow }) => {
       if (snapshot.exists()) {
         const userData = snapshot.val();
         localStorage.setItem("userUid", uid);
-        localStorage.setItem("username", `${username}`);
+        localStorage.setItem("username", `${userData.name}`);
         localStorage.setItem("userPic", userData.profile || userData.pic || "");
         window.location.reload();
         toast.success("Logged in successfully", { transition: Zoom });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Typography,
@@ -65,7 +65,19 @@ const ArticlePage: React.FC = () => {
         const articleRef = ref(database, `articles/${id}`);
         const snapshot = await get(articleRef);
         if (snapshot.exists()) {
-          setArticle(snapshot.val());
+          const articleData = snapshot.val();
+
+          const commentsRef = ref(database, `articles/${id}/comments`);
+          onValue(commentsRef, (snapshot) => {
+            const commentsData = snapshot.val();
+            const commentsArray = commentsData
+              ? Object.values(commentsData)
+              : [];
+            setArticle({
+              ...articleData,
+              comments: commentsArray,
+            });
+          });
         } else {
           console.error("No article found");
         }
@@ -83,21 +95,6 @@ const ArticlePage: React.FC = () => {
         } else {
           setLikedArticles([]);
         }
-
-        // Set up a listener for comments count
-        const commentsRef = ref(database, `articles/${id}/comments`);
-        onValue(commentsRef, (snapshot) => {
-          const comments = snapshot.val() || [];
-          const commentsArray = Object.values(comments);
-          setArticle((prevArticle) =>
-            prevArticle
-              ? {
-                  ...prevArticle,
-                  comments: commentsArray,
-                }
-              : null
-          );
-        });
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -177,7 +174,17 @@ const ArticlePage: React.FC = () => {
     setShowModal(false);
   };
   const handleCommentIconClick = () => {
-    setShowDiscussion(true);
+    if (discussionModalRef.current) {
+      const offset = 60; // Adjust this value as needed
+      const elementPosition =
+        discussionModalRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
   };
 
   const handleCopyToClipboard = () => {
@@ -199,7 +206,7 @@ const ArticlePage: React.FC = () => {
   };
 
   const shareUrl = encodeURIComponent(window.location.href);
-
+  const discussionModalRef = useRef<HTMLDivElement>(null);
   const style = {
     position: "absolute",
     top: "50%",
@@ -343,9 +350,9 @@ const ArticlePage: React.FC = () => {
             dangerouslySetInnerHTML={createMarkup(article.content)}
           />
           <DiscussionModal
-            // isOpen={showDiscussion}
-            // handleClose={() => setShowDiscussion(false)}
+            ref={discussionModalRef}
             blogId={id || ""}
+            comments={article.comments}
           />
         </Paper>
       </Container>
