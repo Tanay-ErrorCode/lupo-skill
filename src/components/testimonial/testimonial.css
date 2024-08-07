@@ -37,7 +37,7 @@
       opacity: 1;
     }
   }
-  @media only screen and (max-width:506px) {
+   @media only screen and (max-width:506px) {
     
     .uiux{
     right: 90px;
@@ -55,7 +55,7 @@
     .workshop{
       width: 170px !important;
       height: 100px !important;
-      top: 212px !important;
+      top: 232px !important;
     }
   }
   @media only screen and ( max-width:555px) {
@@ -70,15 +70,48 @@
         right: 0px !important;
       }
       .card2{
-        right: 216px !important;
+        right: 196px !important;
       }
       .card1{
-        right: 130px !important;
+        right: 100px !important;
       }
       .workshop{
-        right: 252px !important;
+        right: 192px !important;
+      }
+      .card3{
+        height: 250px !important;
+        width: 190px !important;
       }
   }
+  @media only screen and ( max-width:400px) {
+    .gardening{
+      right: 167px;
+
+    }
+    .uiux{
+    right: 90px;
+    }
+    .card3{
+      right: 0px !important;
+    }
+    .card2{
+      right: 156px !important;
+      height: 250px !important;
+      width: 150px !important;
+    }
+    .card1{
+      right: 100px !important;
+      top: 363px !important;
+    }
+    .workshop{
+      right: 162px !important;
+      top: 262px !important;
+    }
+    .card3{
+      height: 250px !important;
+      width: 150px !important;
+    }
+}
     
 .carousel-item {
   transition: transform 1.5s ease, opacity 1.5s ease !important;
