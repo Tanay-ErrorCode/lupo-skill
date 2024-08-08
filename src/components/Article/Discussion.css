@@ -1,0 +1,45 @@
+.discussion-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.discussion_box {
+  border-top: 1px solid black !important;
+}
+.discussion-modal-content {
+  background: #fff;
+  border-radius: 8px;
+  width: 800px;
+  padding: 20px;
+}
+
+.comment-box {
+  margin-top: 20px;
+}
+
+.comment {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-time {
+  font-size: 0.8rem;
+  color: #999;
+}
+.comment_text {
+  word-break: break-word !important;
+  margin-left: 40px !important;
+}
+.css-d0uhtl {
+  line-height: 1;
+}

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Spinner, Pagination } from "react-bootstrap";
-import EventCard from "../Cards/EventCard/EventCard";
-import { ref, get } from "firebase/database";
-import { database } from "../../firebaseConf";
-
 // Import static image for fallback
 import defaultBannerImage from "../image_assets/bannerImage.png";
+import { Button, Spinner, Pagination } from "react-bootstrap";
+import { ref, get, child } from "firebase/database";
+import EventCard from "../Cards/EventCard/EventCard";
+import { database } from "../../firebaseConf";
+import "./DashBoard.css";
+
 
 interface Event {
   banner: string; // URL or path to the banner image
@@ -72,6 +73,23 @@ const Dashboard: React.FC = () => {
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
+        </div>
+      ) : eventCardsData.length === 0 ? (
+        <div
+          className="d-flex flex-column align-items-center justify-content-center no-events-container"
+          style={{
+            minHeight: "30vh",
+            textAlign: "center",
+            padding: "1em",
+          }}
+        >
+          <h2>You have not created any events as of now.</h2>
+          <Button
+            onClick={() => (window.location.href = "#/createevent")}
+            className="mt-3"
+          >
+            Create Now
+          </Button>
         </div>
       ) : (
         <>
