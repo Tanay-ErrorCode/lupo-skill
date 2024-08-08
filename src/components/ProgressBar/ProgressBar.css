@@ -1,5 +1,4 @@
 .progress-container {
-  height: 8px;
   width: 100%;
   background: black;
   position: fixed;
@@ -9,6 +8,19 @@
 }
 
 .progress-fill {
-  height: 8px;
-  background-color: white;
+  background-color: #BBE9FF;
+}
+
+@media (min-width: 768px) {
+  .progress-container,
+  .progress-fill {
+    height: 8px;
+  }
+}
+
+@media (max-width: 767px) {
+  .progress-container,
+  .progress-fill {
+    height: 4px;
+  }
 }
