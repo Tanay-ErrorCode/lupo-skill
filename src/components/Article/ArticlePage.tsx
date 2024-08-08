@@ -32,6 +32,7 @@ import XIcon from "@mui/icons-material/X";
 import theme from "../../theme";
 import EditIcon from "@mui/icons-material/Edit";
 import DiscussionModal from "./DiscussionModal";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 interface Article {
   id: string;
@@ -254,6 +255,8 @@ const ArticlePage: React.FC = () => {
     : 0;
   return (
     <>
+      {/*  Scroll Indicator */}
+      <ProgressBar />
       <Signup isShow={show} returnShow={setShow} />
       <PageTitle
         title={`${article.title} | by ${article.author} | Lupo Skill`}
