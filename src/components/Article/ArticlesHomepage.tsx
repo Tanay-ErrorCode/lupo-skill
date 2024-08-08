@@ -20,6 +20,7 @@ import { database } from "../../firebaseConf";
 import { ref, get } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 import Signup from "../Signup/Signup";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 interface Article {
   id: string;
@@ -111,6 +112,8 @@ const ArticlesHomepage: React.FC = () => {
           </div>
         ) : (
           <>
+            {/*  Scroll Indicator */}
+            <ProgressBar />
             <div className="Articlehead">
               <Typography
                 variant="h4"

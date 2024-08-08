@@ -1,0 +1,14 @@
+.progress-container {
+  height: 8px;
+  width: 100%;
+  background: black;
+  position: fixed;
+  top: 0;
+  z-index: 1200;
+  left: 0;
+}
+
+.progress-fill {
+  height: 8px;
+  background-color: white;
+}
