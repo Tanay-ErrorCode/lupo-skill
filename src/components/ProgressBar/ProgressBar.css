@@ -1,0 +1,26 @@
+.progress-container {
+  width: 100%;
+  background: black;
+  position: fixed;
+  top: 0;
+  z-index: 1200;
+  left: 0;
+}
+
+.progress-fill {
+  background-color: #BBE9FF;
+}
+
+@media (min-width: 768px) {
+  .progress-container,
+  .progress-fill {
+    height: 8px;
+  }
+}
+
+@media (max-width: 767px) {
+  .progress-container,
+  .progress-fill {
+    height: 4px;
+  }
+}
