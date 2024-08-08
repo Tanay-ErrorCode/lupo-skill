@@ -521,7 +521,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                 )}
               </Box>
             </Card>
-            {/* {Added Ui just Update Backend}  below*/}
+
             <Card
               className="upload-box"
               style={{ borderRadius: theme.borderRadius.large }}
