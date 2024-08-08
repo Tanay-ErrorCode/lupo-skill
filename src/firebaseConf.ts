@@ -15,13 +15,6 @@ import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
   // firebase config
-  apiKey: "AIzaSyA5G4AFncEB0Itb72-PdobvBcKxNBg4QQ0",
-  authDomain: "trail-26ddb.firebaseapp.com",
-  databaseURL: "https://trail-26ddb-default-rtdb.firebaseio.com",
-  projectId: "trail-26ddb",
-  storageBucket: "trail-26ddb.appspot.com",
-  messagingSenderId: "548090084912",
-  appId: "1:548090084912:web:1f4117cd912b0bd68177f5",
 };
 
 const app = firebase.initializeApp(firebaseConfig);
