@@ -27,7 +27,7 @@ const ProgressBar = () => {
   return (
     <div className="progress-container">
       <div className={`progress-fill`} style={{ width: `${progressWidth}%` }}>
-        hi
+        
       </div>
     </div>
   );
