@@ -21,7 +21,9 @@
   align-items: center;
   gap: 5px;
 }
-
+.articleshadow {
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.181);
+}
 .instagram-icon {
   font-size: 24px;
   color: #e4405f;

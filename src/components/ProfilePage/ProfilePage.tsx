@@ -16,13 +16,26 @@ import EditProfile from "../Cards/EditProfile/EditProfile";
 import EditEventModal from "../Cards/EditEventModal/EditEventModal";
 import { ref, get, child } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { auth, database } from "../../firebaseConf";
 // import { Instagram, Twitter, Facebook } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
 import { X } from "@mui/icons-material";
 import PageTitle from "../../utils/PageTitle";
 import { classifyLink } from "../../utils/InputLink";
+import {
+  Avatar,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Typography,
+} from "@mui/material";
+import moment from "moment";
+import ChatBubbleOutline from "@mui/icons-material/ChatBubbleOutline";
+import ClapIcon from "../Article/clap.svg";
+import ClapIconFilled from "../Article/fillclap.svg";
 
 const currentUserUid = localStorage.getItem("userUid");
 
@@ -39,6 +52,18 @@ interface Event {
   time: string;
   title: string;
   lastEdited?: number;
+}
+interface Article {
+  id: string;
+  title: string;
+  author: string;
+  pic: string;
+  createdAt: number;
+  content: string;
+  readtime: string;
+  likes: number;
+  createdBy: string;
+  commentCount: number; // Add this to track the number of comments
 }
 interface Link {
   [key: string]: string;
@@ -62,6 +87,12 @@ const ProfilePage = () => {
   const [links, setLinks] = useState<Link>({});
   const [totalCreatedPages, setTotalCreatedPages] = useState(1);
   const [totalJoinedPages, setTotalJoinedPages] = useState(1);
+  const [createdArticlesData, setCreatedArticlesData] = useState<Article[]>([]);
+  const [isALoading, setIsALoading] = useState(true);
+  const [likedArticles, setLikedArticles] = useState<string[]>([]);
+  const [currentArticlePage, setCurrentArticlePage] = useState(1);
+  const [totalArticlePages, setTotalArticlePages] = useState(1);
+
   const [username, setUsername] = useState<string>("");
   const userUid = localStorage.getItem("userUid");
   if (userUid === null) {
@@ -70,6 +101,18 @@ const ProfilePage = () => {
   const openEditModal = (event: Event) => {
     setCurrentEvent(event);
     setShowEditModal(true);
+  };
+  const fetchArticles = async (articleIds: string) => {
+    const articlesRef = ref(database, "articles");
+    const articleList = articleIds.split(",");
+    const articlePromises = articleList.map(async (articleId: string) => {
+      const articleRef = child(articlesRef, articleId.trim());
+      const articleSnapshot = await get(articleRef);
+      return articleSnapshot.exists() ? articleSnapshot.val() : null;
+    });
+
+    const articles = await Promise.all(articlePromises);
+    return articles.filter((article): article is Article => article !== null);
   };
 
   useEffect(() => {
@@ -98,6 +141,15 @@ const ProfilePage = () => {
               Math.ceil(createdEvents.length / itemsPerPage)
             );
           }
+          if (userData.createdArticles) {
+            const createdArticles = await fetchArticles(
+              userData.createdArticles
+            );
+            setCreatedArticlesData(createdArticles);
+            setTotalArticlePages(
+              Math.ceil(createdArticles.length / itemsPerPage)
+            );
+          }
           if (userData.registeredEvents) {
             const joinedEvents = await fetchEvents(userData.registeredEvents);
             setJoinedEventCardsData(joinedEvents);
@@ -111,6 +163,7 @@ const ProfilePage = () => {
       } finally {
         setIsCLoading(false);
         setIsJLoading(false);
+        setIsALoading(false);
       }
     };
 
@@ -172,9 +225,17 @@ const ProfilePage = () => {
   const handleCreatedPageChange = (page: number) => {
     setCurrentCreatedPage(page);
   };
-
+  const handleArticlePageChange = (page: number) => {
+    setCurrentArticlePage(page);
+  };
   const handleJoinedPageChange = (page: number) => {
     setCurrentJoinedPage(page);
+  };
+  const stripMarkdown = (content: string) => {
+    const cleanHtml = DOMPurify.sanitize(marked(content) as string);
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = cleanHtml;
+    return tempDiv.textContent || tempDiv.innerText || "";
   };
 
   return (
@@ -425,6 +486,138 @@ const ProfilePage = () => {
                           active={i + 1 === currentJoinedPage}
                           onClick={() => {
                             handleJoinedPageChange(i + 1);
+                            window.scrollTo({
+                              top: 0,
+                              left: 0,
+                              behavior: "smooth",
+                            });
+                          }}
+                        >
+                          {i + 1}
+                        </Pagination.Item>
+                      ))}
+                    </Pagination>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+            <Card className="mb-3">
+              <Card.Body>
+                <Row>
+                  <Col sm={3}>
+                    <h6 className="mb-0">Created Articles</h6>
+                  </Col>
+                </Row>
+                <hr />
+                {isALoading ? (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" />
+                  </div>
+                ) : (
+                  <div>
+                    {createdArticlesData.length === 0 ? (
+                      <p className="text-center p-3">No Articles created</p>
+                    ) : (
+                      createdArticlesData
+                        .slice(
+                          (currentArticlePage - 1) * itemsPerPage,
+                          currentArticlePage * itemsPerPage
+                        )
+                        .map((article, index) => (
+                          <Link
+                            key={article.id}
+                            to={`/article/${article.id}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Card className="article-card mb-3 articleshadow">
+                              <CardHeader
+                                avatar={
+                                  <Link to={`/profile/${article.createdBy}`}>
+                                    <Avatar
+                                      alt={article.author}
+                                      src={article.pic}
+                                    />
+                                  </Link>
+                                }
+                                title={
+                                  <Link
+                                    className="article_link"
+                                    to={`/profile/${article.createdBy}`}
+                                  >
+                                    By {article.author}
+                                  </Link>
+                                }
+                                subheader={moment(article.createdAt).fromNow()}
+                              />
+                              <CardContent className="article-details">
+                                <Typography
+                                  variant="h5"
+                                  component="div"
+                                  className="article-title"
+                                >
+                                  {article.title}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  className="article-description"
+                                >
+                                  {stripMarkdown(article.content)}
+                                </Typography>
+                                <div className="meta-info">
+                                  <Typography
+                                    variant="body2"
+                                    className="read-time"
+                                  >
+                                    {article.readtime} read
+                                  </Typography>
+                                </div>
+                              </CardContent>
+                              <CardActions>
+                                <Typography className="comment-icon">
+                                  <ChatBubbleOutline
+                                    style={{ color: "#d1d1d1" }}
+                                  />
+                                  <span className="comment-count">
+                                    {article.commentCount}
+                                  </span>
+                                </Typography>
+                                <Typography
+                                  className="clap-icon"
+                                  style={{ userSelect: "none" }}
+                                >
+                                  <img
+                                    src={
+                                      likedArticles.includes(article.id)
+                                        ? ClapIconFilled
+                                        : ClapIcon
+                                    }
+                                    alt="Clap icon"
+                                    style={{
+                                      width: "1.3rem",
+                                      userSelect: "none",
+                                    }}
+                                  />
+                                  <span className="clap-count">
+                                    {article.likes}
+                                  </span>
+                                </Typography>
+                              </CardActions>
+                            </Card>
+                          </Link>
+                        ))
+                    )}
+                  </div>
+                )}
+                {createdArticlesData.length > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination>
+                      {[...Array(totalArticlePages)].map((_, i) => (
+                        <Pagination.Item
+                          key={i + 1}
+                          active={i + 1 === currentArticlePage}
+                          onClick={() => {
+                            setCurrentArticlePage(i + 1);
                             window.scrollTo({
                               top: 0,
                               left: 0,

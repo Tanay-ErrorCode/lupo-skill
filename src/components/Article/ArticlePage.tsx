@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Typography,
@@ -11,7 +11,7 @@ import {
   Modal,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ref, get, update, set } from "firebase/database";
+import { ref, get, update, set, onValue, off } from "firebase/database";
 import { database } from "../../firebaseConf";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ClapIcon from "./clap.svg";
@@ -31,6 +31,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import XIcon from "@mui/icons-material/X";
 import theme from "../../theme";
 import EditIcon from "@mui/icons-material/Edit";
+import DiscussionModal from "./DiscussionModal";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 interface Article {
   id: string;
@@ -41,8 +43,8 @@ interface Article {
   content: string;
   readtime: string;
   likes: number;
-  comments: number;
   createdBy: string;
+  comments: Array<any>;
 }
 
 const ArticlePage: React.FC = () => {
@@ -51,7 +53,7 @@ const ArticlePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [likedArticles, setLikedArticles] = useState<string[]>([]);
   const [isLiking, setIsLiking] = useState<boolean>(false);
-
+  const [showDiscussion, setShowDiscussion] = useState(false);
   const [show, setShow] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const userUid = localStorage.getItem("userUid");
@@ -64,12 +66,24 @@ const ArticlePage: React.FC = () => {
         const articleRef = ref(database, `articles/${id}`);
         const snapshot = await get(articleRef);
         if (snapshot.exists()) {
-          setArticle(snapshot.val());
+          const articleData = snapshot.val();
+
+          const commentsRef = ref(database, `articles/${id}/comments`);
+          onValue(commentsRef, (snapshot) => {
+            const commentsData = snapshot.val();
+            const commentsArray = commentsData
+              ? Object.values(commentsData)
+              : [];
+            setArticle({
+              ...articleData,
+              comments: commentsArray,
+            });
+          });
         } else {
           console.error("No article found");
         }
+
         if (userUid) {
-          // Fetch liked articles
           const likedArticlesRef = ref(
             database,
             `users/${userUid}/likedArticles`
@@ -90,6 +104,12 @@ const ArticlePage: React.FC = () => {
     };
 
     fetchArticle();
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      const commentsRef = ref(database, `articles/${id}/comments`);
+      off(commentsRef);
+    };
   }, [id]);
 
   const handleLike = async () => {
@@ -154,6 +174,19 @@ const ArticlePage: React.FC = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  const handleCommentIconClick = () => {
+    if (discussionModalRef.current) {
+      const offset = 60; // Adjust this value as needed
+      const elementPosition =
+        discussionModalRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const handleCopyToClipboard = () => {
     navigator.clipboard
@@ -174,7 +207,7 @@ const ArticlePage: React.FC = () => {
   };
 
   const shareUrl = encodeURIComponent(window.location.href);
-
+  const discussionModalRef = useRef<HTMLDivElement>(null);
   const style = {
     position: "absolute",
     top: "50%",
@@ -217,9 +250,13 @@ const ArticlePage: React.FC = () => {
       </>
     );
   }
-
+  const commentsCount = article.comments
+    ? Object.keys(article.comments).length
+    : 0;
   return (
     <>
+      {/*  Scroll Indicator */}
+      <ProgressBar />
       <Signup isShow={show} returnShow={setShow} />
       <PageTitle
         title={`${article.title} | by ${article.author} | Lupo Skill`}
@@ -265,9 +302,13 @@ const ArticlePage: React.FC = () => {
           </Box>
           <CardActions className="artcle-page-up">
             <div>
-              <IconButton size="small" className="comment-icon">
+              <IconButton
+                size="small"
+                className="comment-icon"
+                onClick={handleCommentIconClick}
+              >
                 <ChatBubbleOutlineIcon style={{ color: "#d1d1d1" }} />
-                <span className="comment-count">{article.comments}</span>
+                <span className="comment-count">{commentsCount}</span>
               </IconButton>
               <IconButton
                 size="small"
@@ -310,6 +351,11 @@ const ArticlePage: React.FC = () => {
           <Box
             className="article-content"
             dangerouslySetInnerHTML={createMarkup(article.content)}
+          />
+          <DiscussionModal
+            ref={discussionModalRef}
+            blogId={id || ""}
+            comments={article.comments}
           />
         </Paper>
       </Container>
