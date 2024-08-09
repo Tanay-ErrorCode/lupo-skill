@@ -235,13 +235,13 @@ const HomePage = () => {
             item
             xs={12}
             lg={6}
-            style={{
+            sx={{
               marginTop: "2.2rem",
               backgroundImage: `url(${back})`,
-              backgroundSize: "auto 95vh",
+              backgroundSize: "contain",
               backgroundRepeat: "no-repeat",
-              backgroundPosition: "right",
-              height: "100vh",
+              backgroundPosition: "center center",
+              height: { xs: "50vh", lg: "100vh" },
             }}
           />
 
