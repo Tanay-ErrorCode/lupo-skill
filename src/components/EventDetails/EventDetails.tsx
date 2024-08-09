@@ -282,6 +282,7 @@ const EventDetails = () => {
                           variant="primary"
                           href={fileUrl}
                           as="a"
+                          target="_blank"
                           download
                         >
                           Download
