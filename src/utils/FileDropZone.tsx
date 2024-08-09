@@ -1,4 +1,5 @@
 import React, { useRef, useState, ChangeEvent, DragEvent } from "react";
+import { toast, Zoom } from "react-toastify";
 
 interface DropZoneProps {
   handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -19,8 +20,10 @@ const FileDropZone: React.FC<DropZoneProps> = ({ handleFileChange }) => {
     const files = event.dataTransfer.files;
     if (files.length > 0 && validateFiles(files)) {
       setIsFileUploaded(true);
+      handleFileChange({ target: { files } } as ChangeEvent<HTMLInputElement>);
+    } else {
+      resetInputField();
     }
-    handleFileChange({ target: { files } } as ChangeEvent<HTMLInputElement>);
   };
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -31,8 +34,10 @@ const FileDropZone: React.FC<DropZoneProps> = ({ handleFileChange }) => {
     const files = event.target.files;
     if (files && files.length > 0 && validateFiles(files)) {
       setIsFileUploaded(true);
+      handleFileChange(event);
+    } else {
+      resetInputField();
     }
-    handleFileChange(event);
   };
 
   const validateFiles = (files: FileList) => {
@@ -43,11 +48,20 @@ const FileDropZone: React.FC<DropZoneProps> = ({ handleFileChange }) => {
         fileType !== "application/pdf" &&
         !fileType.includes("presentation")
       ) {
-        alert("Only PDF and PPT files are allowed.");
+        toast.error("Only PDF and PPT files are allowed.", {
+          transition: Zoom,
+        });
         return false;
       }
     }
     return true;
+  };
+
+  const resetInputField = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setIsFileUploaded(false);
   };
 
   return (
