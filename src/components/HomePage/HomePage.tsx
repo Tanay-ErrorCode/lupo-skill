@@ -19,6 +19,13 @@ import bannerImage2 from "../image_assets/bannerImage2.png";
 import bannerImage3 from "../image_assets/bannerImage3.png";
 import { Link } from "react-router-dom";
 import TestimonialsCarousel from "../testimonial/TestimonialsCarousel";
+import card1 from "../image_assets/card (1).png";
+import card2 from "../image_assets/card (2).png";
+import card3 from "../image_assets/card (3).png";
+import uiux from "../image_assets/uiux.png";
+import gardening from "../image_assets/gardening.png";
+import workshop from "../image_assets/workshop.png";
+import { useState } from "react";
 
 const HomePage = () => {
   const loggedIn = localStorage.getItem("userUid");
@@ -103,7 +110,32 @@ const HomePage = () => {
       }
     }
   };
+  let [zindex,setZIndex]=useState(["workshop","card1","card3"])
 
+  const eventVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0 },
+  };
+  function handleHover(card:String){
+    if(card=="card1"){
+      let arr=[...zindex]
+      arr=arr.filter((data:String)=>data!=="card1")
+      arr.unshift("card1")
+      setZIndex([...arr])
+    }else if(card=="card3"){
+      let arr=[...zindex]
+      arr=arr.filter((data:String)=>data!=="card3")
+      arr.unshift("card3")
+      
+      setZIndex([...arr])
+    }else{
+
+      let arr=[...zindex]
+      arr=arr.filter((data:String)=>data!=="workshop")
+      arr.unshift("workshop")
+      setZIndex([...arr])
+    }
+  }
   return (
     <div
       style={{
@@ -232,18 +264,41 @@ const HomePage = () => {
           </Grid>
           {/* Background image column */}
           <Grid
-            item
-            xs={12}
-            lg={6}
-            style={{
-              marginTop: "2.2rem",
-              backgroundImage: `url(${back})`,
-              backgroundSize: "auto 95vh",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right",
-              height: "100vh",
-            }}
-          />
+           item
+           xs={12}
+           lg={6} 
+           style={{
+            marginTop: "2.2rem",
+            height: "100vh",
+            position:"relative"
+          }}
+          >
+        <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card1" onHoverStart={()=>handleHover('card1')}  src={card1} style={{position:"absolute",right:'180px',top:"323px",zIndex:`${zindex[0]=="card1"?"400":(zindex[1]=="card1")?"300":"200"}`}} alt="Card" width={240} height={300} />
+        <motion.img initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card2" src={card2} style={{position:"absolute",right:'263px'}} alt="Card" width={160} height={220} />
+        <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="card3" onHoverStart={()=>handleHover('card3')}  src={card3} style={{position:"absolute",right:'50px',top:"32px",zIndex:`${zindex[0]=="card3"?"400":(zindex[1]=="card3")?"300":"200"}`}} alt="Card" width={200} height={300} />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="uiux" src={uiux} alt="Card"  />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="gardening" src={gardening} alt="Card"  />
+ <motion.img  initial="hidden"
+            whileInView="visible"  viewport={{ once: true }}
+            variants={eventVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }} className="workshop" onHoverStart={()=>handleHover('workshop')}   src={workshop} style={{position:"absolute",right:'302px',top:"207px",zIndex:`${zindex[0]=="workshop"?"400":(zindex[1]=="workshop")?"300":"200"}`}} alt="Card" width={200} height={130} />
+
+          </Grid>
 
           <Grid
             item
