@@ -31,6 +31,7 @@ import {
 } from "@mui/material";
 import theme from "../../../theme";
 import EventCard from "../EventCard/EventCard";
+import FileDropZone from "../../../utils/FileDropZone";
 
 function generateUUID() {
   var d = new Date().getTime();
@@ -64,6 +65,9 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [hostname, sethostname] = useState<string>(
     `${localStorage.getItem("username")}`
   );
+  //files
+  const [file, setFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (localStorage.getItem("userUid") == null) {
@@ -193,8 +197,30 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     });
   };
 
+  // Handle file change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+
+    if (selectedFile) {
+      // Check if the file size is greater than 10MB
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        toast.error("File cannot be greater than 10MB", { transition: Zoom });
+        // Reset the file input
+        e.target.value = ""; // This clears the input field
+        return;
+      }
+
+      setFile(selectedFile);
+    } else {
+      toast.error("Please select a valid PDF or PPT file", {
+        transition: Zoom,
+      });
+    }
+  };
+
   const createEventDb = async () => {
     const userUid = localStorage.getItem("userUid");
+
     if (
       image &&
       title.trim() !== "" &&
@@ -204,72 +230,77 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
       startTime &&
       userUid
     ) {
-      const eventRef = ref(database, "events");
-      const newEventId = generateUUID();
+      try {
+        const eventRef = ref(database, "events");
+        const newEventId = generateUUID();
 
-      const usersRef = ref(database, "users");
-      const userRef = child(usersRef, userUid);
+        const usersRef = ref(database, "users");
+        const userRef = child(usersRef, userUid);
 
-      get(userRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            set(userRef, {
-              ...snapshot.val(),
-              createdEvents: snapshot.val().createdEvents
-                ? snapshot.val().createdEvents + "," + newEventId
-                : newEventId,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          await set(userRef, {
+            ...userSnapshot.val(),
+            createdEvents: userSnapshot.val().createdEvents
+              ? userSnapshot.val().createdEvents + "," + newEventId
+              : newEventId,
+          });
+        }
 
-      let ImageUrl = "";
-      const eventRefChild = child(eventRef, newEventId);
-      get(eventRefChild)
-        .then((snapshot) => {
-          if (!snapshot.exists()) {
-            const bannerRef = storageRef(
+        let ImageUrl = "";
+        let fileUrl = "";
+        const eventRefChild = child(eventRef, newEventId);
+        const eventSnapshot = await get(eventRefChild);
+
+        if (!eventSnapshot.exists()) {
+          const bannerRef = storageRef(
+            storage,
+            `/event-banners/banner-${newEventId}`
+          );
+
+          if (file) {
+            const fileRef = storageRef(
               storage,
-              `/event-banners/banner-${newEventId}`
+              `/event-attachments/${newEventId}/${file.name}`
             );
-
-            toast.promise(
-              uploadBytes(bannerRef, image).then(() => {
-                getDownloadURL(bannerRef).then((value) => {
-                  const event = {
-                    title: title,
-                    description: description,
-                    tags: tags,
-                    date: startDate.toDate().toDateString(),
-                    time: startTime.format("hh:mm A"),
-                    id: newEventId,
-                    host: userUid,
-                    registrants: "",
-                    banner: value,
-                    createdAt: Date.now(),
-                    hostName: auth.currentUser?.displayName,
-                  };
-                  sethostname(auth.currentUser?.displayName || "");
-                  set(eventRefChild, event);
-                  localStorage.removeItem("articleDraft");
-                  handleClose();
-                  window.location.reload();
-                });
-              }),
-              {
-                pending: "Creating Event ...",
-                success: "Event Created successfully!",
-                error: "Failed to create event",
-              },
-              { transition: Zoom }
-            );
+            await uploadBytes(fileRef, file);
+            fileUrl = await getDownloadURL(fileRef);
           }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+
+          await toast.promise(
+            uploadBytes(bannerRef, image).then(async () => {
+              const bannerUrl = await getDownloadURL(bannerRef);
+              const event = {
+                title: title,
+                description: description,
+                tags: tags,
+                date: startDate.toDate().toDateString(),
+                time: startTime.format("hh:mm A"),
+                id: newEventId,
+                host: userUid,
+                registrants: "",
+                fileUrl,
+                banner: bannerUrl,
+                createdAt: Date.now(),
+                hostName: auth.currentUser?.displayName,
+              };
+              sethostname(auth.currentUser?.displayName || "");
+              await set(eventRefChild, event);
+              localStorage.removeItem("articleDraft");
+              handleClose();
+              window.location.reload();
+            }),
+            {
+              pending: "Creating Event ...",
+              success: "Event Created successfully!",
+              error: "Failed to create event",
+            },
+            { transition: Zoom }
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       if (!userUid) {
         // toast.error("Please Login first", { transition: Zoom });
@@ -319,12 +350,12 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   };
 
   useEffect(() => {
-    if (title || description || tags || popTags || image) {
+    if (title || description || tags || popTags || image || file) {
       localStorage.setItem("articleDraft", "true");
     } else {
       localStorage.removeItem("articleDraft");
     }
-  }, [title, description, tags, popTags, startDate, startTime, image]);
+  }, [title, description, tags, popTags, startDate, startTime, image, file]);
 
   return (
     <>
@@ -488,6 +519,20 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
                     }}
                   />
                 )}
+              </Box>
+            </Card>
+
+            <Card
+              className="upload-box"
+              style={{ borderRadius: theme.borderRadius.large }}
+            >
+              {/* File Upload  */}
+              <Typography variant="h6" className="upload-box-head">
+                Upload Event Files
+              </Typography>
+              <Box>
+                <FileDropZone handleFileChange={handleFileChange} />
+                {file && <p className="mt-4">Selected file: {file.name}</p>}
               </Box>
             </Card>
           </Box>

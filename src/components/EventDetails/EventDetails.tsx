@@ -44,6 +44,8 @@ const EventDetails = () => {
   const [hostName, setHostName] = useState("");
   const [lastEdited, setLastEdited] = useState(null);
   const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [fileUrl, setFileUrl] = useState("");
+
   const [googleMeetLink, setGoogleMeetLink] = useState(
     "Nothing yet, ask the host to add one"
   );
@@ -68,6 +70,7 @@ const EventDetails = () => {
         setHost(eventData.host);
         setHostName(eventData.hostName);
         setLastEdited(eventData.lastEdited);
+        setFileUrl(eventData.fileUrl || "");
 
         if (eventData.host === userUid) {
           setIsHost(true);
@@ -126,6 +129,22 @@ const EventDetails = () => {
 
   const shareUrl = encodeURIComponent(window.location.href);
 
+  // Extract file name from fileUrl
+  const getFileName = (url: any) => {
+    if (!url) return "";
+    const parts = url.split("%2F");
+    const lastPart = parts[parts.length - 1];
+    return decodeURIComponent(lastPart.split("?")[0]);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = getFileName(fileUrl); // Ensure getFileName function returns the correct file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const style = {
     position: "absolute",
     top: "50%",
@@ -252,6 +271,26 @@ const EventDetails = () => {
                     Number of registrants : {registeredUsers.length}
                   </Card.Body>
                 </Card>
+                {fileUrl && (
+                  <Card className="p-1 mt-2 shadow">
+                    <Card.Body>
+                      <div>
+                        Event Attachment:{" "}
+                        <strong>{getFileName(fileUrl)}</strong>
+                        <Button
+                          className="ms-3"
+                          variant="primary"
+                          href={fileUrl}
+                          as="a"
+                          target="_blank"
+                          download
+                        >
+                          Download
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                )}
               </Col>
             </Row>
           </Container>
