@@ -111,24 +111,37 @@ const NavBar = () => {
     handleMobileMenuClose();
   };
   const handleNavigationWithPrompt = (path: string) => {
+    const isSpecialPath =
+      path === "/events" ||
+      path === "/article" ||
+      path === "/createEvent" ||
+      path === "/";
+    const hasUserUid = !!userUid;
+
     if (isPromptActive) {
       const proceed = handleNavigation(path);
       if (proceed) {
-        handleDashboard();
+        if (!isSpecialPath) {
+          handleDashboard();
+        }
         handleMenuClose();
-        if (is_signup) {
+        if (is_signup || isSpecialPath) {
           navigate(path);
         }
       } else {
-        handleDashboard();
+        if (!isSpecialPath) {
+          handleDashboard();
+        }
         handleMobileMenuClose();
         handleMenuClose();
         console.log("checking", window.location.href);
       }
     } else {
-      handleDashboard();
+      if (!isSpecialPath) {
+        handleDashboard();
+      }
       handleMenuClose();
-      if (is_signup) {
+      if (is_signup || isSpecialPath) {
         navigate(path);
       }
     }
@@ -235,7 +248,7 @@ const NavBar = () => {
         // paddingY: "20px",
         boxShadow: "none",
         display: "flex",
-        backgroundColor:isHome ? "#00000059" : "",
+        backgroundColor: isHome ? "#00000059" : "",
       }}
     >
       <Signup isShow={show} returnShow={setShow} />

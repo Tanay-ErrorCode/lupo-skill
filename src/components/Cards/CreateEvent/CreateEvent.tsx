@@ -69,12 +69,12 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
   const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (localStorage.getItem("userUid") == null) {
-      // toast.error("Please Login first", { transition: Zoom });
-      window.location.href = "#/";
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem("userUid") == null) {
+  //     // toast.error("Please Login first", { transition: Zoom });
+  //     window.location.href = "#/";
+  //   }
+  // }, []);
   const handleClose = () => setShow(false);
 
   const handleShow = () => {
@@ -317,7 +317,7 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
     } else {
       if (!userUid) {
         // toast.error("Please Login first", { transition: Zoom });
-        window.location.href = "#/";
+        setIsSignupModelOpen(true);
       } else {
         toast.error("Fill all the required details first", {
           transition: Zoom,
