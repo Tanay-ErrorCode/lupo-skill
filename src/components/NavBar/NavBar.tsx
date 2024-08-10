@@ -200,10 +200,6 @@ const NavBar = () => {
             route: "/article",
             text: "Articles",
           },
-          {
-            route: "/createEvent",
-            text: "Create Event",
-          },
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
@@ -472,7 +468,7 @@ const NavBar = () => {
                 Articles
               </Button>
 
-              <Button
+              {/* <Button
                 // href="#/createEvent"
                 onClick={() => handleNavigationWithPrompt("/createEvent")}
                 sx={{
@@ -509,7 +505,7 @@ const NavBar = () => {
                 }}
               >
                 Create Event
-              </Button>
+              </Button> */}
             </Box>
             {/* icons */}
             <Box
