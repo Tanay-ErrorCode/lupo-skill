@@ -230,6 +230,19 @@ const CreateEvent = ({ onNavLinkClick, props }: any) => {
       startTime &&
       userUid
     ) {
+      const currentDateTime = new Date();
+      const eventDateTime = new Date(
+        startDate.toDate().toDateString() + " " + startTime.format("hh:mm A")
+      );
+
+      if (eventDateTime <= currentDateTime) {
+        toast.error(
+          "Events cannot be scheduled for past dates. Please select a future date.",
+          { transition: Zoom }
+        );
+        return;
+      }
+
       try {
         const eventRef = ref(database, "events");
         const newEventId = generateUUID();
