@@ -265,7 +265,9 @@ const NavBar = () => {
                 alignItems: "center",
                 flex: 0,
                 justifyContent: "center",
+                cursor: "pointer",
               }}
+              onClick={() => handleNavigationWithPrompt("/")}
             >
               <img
                 src={logo}
