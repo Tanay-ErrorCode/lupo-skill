@@ -22,3 +22,11 @@
 
   /* TODO:I have to fix this card is on the top*/
 }
+
+.navbar {
+  transition: background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(0, 0, 0, 0.9);
+}
