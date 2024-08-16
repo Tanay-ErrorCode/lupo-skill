@@ -13,6 +13,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ref, get } from "firebase/database";
 import { database } from "../../firebaseConf";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import Signup from "../Signup/Signup";
 
 interface Event {
   banner: string;
@@ -43,6 +45,7 @@ const EventList = () => {
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
   const [showMessage, setShowMessage] = useState(false);
   const searchTimeoutRef = useRef<number | null>(null);
+  const [show, setShow] = useState(false);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -185,15 +188,47 @@ const EventList = () => {
         paddingTop: "6.5em",
       }}
     >
+      <Signup isShow={show} returnShow={setShow} />
       {isLoading ? (
         <div className=" d-flex justify-content-center align-items-center spinner-container">
           <Spinner animation="border" />
         </div>
       ) : (
         <>
-          <h1 style={{ textAlign: "center", marginBottom: "1em" }}>
-            All Events
-          </h1>
+          <div className="Events_head">
+            <h1 style={{ textAlign: "center" }}>All Events</h1>
+            {localStorage.getItem("userUid") ? (
+              <Button
+                variant="dark"
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "white",
+                  borderColor: "#007bff",
+                  padding: "10px 15px",
+                }}
+                onClick={() => {
+                  window.location.href = "#/createEvent";
+                }}
+              >
+                Create Event
+              </Button>
+            ) : (
+              <Button
+                variant="dark"
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "white",
+                  borderColor: "#007bff",
+                  padding: "10px 15px",
+                }}
+                onClick={() => {
+                  setShow(true);
+                }}
+              >
+                Create Event
+              </Button>
+            )}
+          </div>
 
           <div className="d-flex justify-content-center align-items-center">
             <div className="search-bar-container m-2">
