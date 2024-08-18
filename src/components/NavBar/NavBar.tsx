@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import "./NavBar.css";
 import default_user from "../image_assets/default_user.png";
+import CreateEvent from "../Cards/CreateEvent/CreateEvent";
 import Signup from "../Signup/Signup";
 import { toast } from "react-toastify";
 import { signOutUser } from "../../firebaseConf";
