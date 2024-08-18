@@ -10,7 +10,7 @@ import {
 import "./EventList.css";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { ref, get, set } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { database } from "../../firebaseConf";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -24,7 +24,7 @@ interface Event {
   host: string;
   hostName: string;
   id: string;
-  registrants: string[];
+  registrants: string[]; // Ensure this is defined
   tags: string;
   time: string;
   title: string;
@@ -124,12 +124,14 @@ const EventList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const dbRef = ref(database, "events");
       const snapshot = await get(dbRef);
       if (snapshot.exists()) {
         const snapshotValue = snapshot.val();
         if (snapshotValue !== null && typeof snapshotValue === "object") {
           const res: Event[] = Object.values(snapshotValue) as Event[];
+          console.log("Fetched Events:", res); // Log fetched data for debugging
           res.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
           setEventCardsData(res);
           setSortedEvents(res);
@@ -174,6 +176,7 @@ const EventList = () => {
       handleSearch();
     }
   };
+  
   const eventVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0 },
@@ -306,7 +309,9 @@ const EventList = () => {
               )
               .map((card: Event, index) => {
                 const user_uid = localStorage.getItem("userUid");
-                const isRegistered = card.registrants.includes(user_uid!);
+                const isRegistered = card.registrants
+                  ? card.registrants.includes(user_uid!)
+                  : false;
                 return (
                   <div
                     className="event-card-wrapper"
