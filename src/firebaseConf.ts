@@ -4,19 +4,20 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { initializeApp } from "firebase/app";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/database";
+import "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { Zoom, toast } from "react-toastify";
 
 const firebaseConfig = {
-  //firebase config
+  // firebase config
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase authentication
 const auth = getAuth(app);
 
@@ -31,13 +32,11 @@ const storage = getStorage(app);
 
 const provider = new GoogleAuthProvider();
 
-// Whenever a user interacts with the provider, we force them to select an account
+// whenever a user interacts with the provider, we force them to select an account
 provider.setCustomParameters({
-  prompt: "select_account",
+  prompt: "select_account ",
 });
-
 const signInWithGooglePopup = () => signInWithPopup(auth, provider);
-
 const signOutUser = () => {
   signOut(auth)
     .then(() => {
@@ -47,12 +46,10 @@ const signOutUser = () => {
       window.location.reload();
     })
     .catch((error) => {
-      // Handle sign out error
-      console.error("Sign out error:", error);
-      toast.error("Failed to log out. Please try again later.", { transition: Zoom });
+      // An error happened.
+      console.error(error);
     });
 };
-
 export {
   auth,
   firestore,

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-// Import static image for fallback
-import defaultBannerImage from "../image_assets/bannerImage.png";
 import { Button, Spinner, Pagination } from "react-bootstrap";
 import { ref, get, child } from "firebase/database";
 import EventCard from "../Cards/EventCard/EventCard";
 import { database } from "../../firebaseConf";
 import "./DashBoard.css";
 
-
 interface Event {
-  banner: string; // URL or path to the banner image
+  banner: string;
   createdAt: number;
   date: string;
   description: string;
@@ -23,7 +20,7 @@ interface Event {
   lastEdited?: number;
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [totalPages, setTotalPages] = useState(1);
@@ -36,15 +33,48 @@ const Dashboard: React.FC = () => {
     }
 
     const fetchData = async () => {
-      const eventsRef = ref(database, "events");
-      const snapshot = await get(eventsRef);
+      const usersRef = ref(database, "users");
+      const userUid = localStorage.getItem("userUid");
+
+      if (!userUid) {
+        console.error("User is not logged In.");
+        return;
+      }
+
+      const userRef = child(usersRef, userUid);
+      const snapshot = await get(userRef);
 
       if (snapshot.exists()) {
+        let eventList: any[] = [];
+        if (snapshot.hasChild("createdEvents")) {
+          eventList = [
+            ...eventList,
+            ...snapshot.val().createdEvents.split(","),
+          ];
+        }
+        if (snapshot.hasChild("registeredEvents")) {
+          const registeredEvents = snapshot.val().registeredEvents.split(",");
+          registeredEvents.forEach((event: string) => {
+            if (!eventList.includes(event)) {
+              eventList.push(event);
+            }
+          });
+        }
         const fetchedEvents: Event[] = [];
-        snapshot.forEach((childSnapshot) => {
-          const event = childSnapshot.val();
-          fetchedEvents.push(event);
-        });
+        await Promise.all(
+          eventList.map(async (eventId: string) => {
+            const trimmedEventId = eventId.trim();
+            const eventsRef = ref(database, "events");
+            const eventRef = child(eventsRef, trimmedEventId);
+            const eventSnapshot = await get(eventRef);
+            if (eventSnapshot.exists()) {
+              const event = eventSnapshot.val();
+              fetchedEvents.push(event);
+            } else {
+              console.log("No data available for event ID:", trimmedEventId);
+            }
+          })
+        );
 
         fetchedEvents.sort((a: Event, b: Event) => b.createdAt - a.createdAt);
         setEventCardsData(fetchedEvents);
@@ -106,7 +136,18 @@ const Dashboard: React.FC = () => {
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
             .map(
               (
-                card: Event,
+                card: {
+                  id: string;
+                  title: string;
+                  description: string;
+                  date: string;
+                  time: string;
+                  tags: string;
+                  banner: string;
+                  host: string;
+                  hostName: string;
+                  lastEdited?: number;
+                },
                 index
               ) => (
                 <EventCard
@@ -120,7 +161,7 @@ const Dashboard: React.FC = () => {
                   tags={card.tags}
                   host={card.host}
                   isDashboard={true}
-                  image={defaultBannerImage || card.banner} // Use default image if banner is not available
+                  image={card.banner}
                   hostName={card.hostName}
                   lastEdited={card.lastEdited}
                 />

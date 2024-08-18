@@ -5,6 +5,7 @@ import { ref, get, child, set } from "firebase/database";
 import { Zoom, toast } from "react-toastify";
 import { database, storage, signInWithGooglePopup } from "../../firebaseConf";
 import "./Signup.css";
+
 import {
   ref as storageRef,
   uploadBytes,
