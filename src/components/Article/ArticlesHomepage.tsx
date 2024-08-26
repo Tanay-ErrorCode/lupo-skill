@@ -67,6 +67,7 @@ const ArticlesHomepage: React.FC = () => {
               };
             })
           );
+          articlesList.sort((a, b) => b.createdAt - a.createdAt);
           setArticles(articlesList);
 
           if (userUid) {
@@ -92,7 +93,7 @@ const ArticlesHomepage: React.FC = () => {
     };
 
     fetchArticles();
-  }, []);
+  }, [userUid]);
 
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
