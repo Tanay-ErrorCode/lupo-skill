@@ -7,6 +7,7 @@ import { database } from "../../firebaseConf"; // Adjust the import path accordi
 import { ref, get, set } from "firebase/database";
 import { toast, Zoom } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 const BoldTextField = styled(TextField)({
   "& .MuiInputBase-input": {
@@ -141,17 +142,25 @@ const ArticleWritingPage: React.FC = () => {
         />
         <TextField
           label="Tell your story..."
+          minRows={10}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
           fullWidth
           multiline
-          rows={10}
-          margin="normal"
+          variant="outlined"
           className="article-textarea"
-          InputLabelProps={{ style: { fontWeight: "bold" } }}
+          InputLabelProps={{
+            style: { fontWeight: "bold" },
+          }}
           InputProps={{
-            placeholder: "Tell your story...",
+            style: {
+              fontSize: "16px",
+              padding: "12px",
+            },
+          }}
+          style={{
+            marginTop: "16px",
           }}
         />
         <Button
