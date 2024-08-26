@@ -93,7 +93,7 @@ const ArticlesHomepage: React.FC = () => {
     };
 
     fetchArticles();
-  }, [userUid]);
+  }, []);
 
   const stripMarkdown = (content: string) => {
     const cleanHtml = DOMPurify.sanitize(marked(content) as string);
