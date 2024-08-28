@@ -41,6 +41,7 @@ import { Switch } from "@mui/material";
 import useNavigationPrompt from "../../utils/useNavigationPrompt";
 
 const NavBar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [show, setShow] = useState(false);
   const location = useLocation();
@@ -64,6 +65,19 @@ const NavBar = () => {
     "Changes you made may not be saved.",
     true
   );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 50); // Adjust the value as needed
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // useEffect(() => {
   //   setIsPromptActive(draft === "true");
@@ -236,15 +250,19 @@ const NavBar = () => {
     <AppBar
       position="fixed"
       sx={{
-        background: isHome ? "transparent" : theme.colors.darkBackground,
-        backdropFilter: isHome ? "blur(12px)" : "none",
+        backgroundColor: isHome
+          ? isScrolled
+            ? theme.colors.darkBackground // fully opaque when scrolled
+            : "rgba(0, 0, 0, 0.35)" // slightly transparent at the top
+          : theme.colors.darkBackground,
+        backdropFilter: isHome && !isScrolled ? "blur(12px)" : "none",
         zIndex: 1000,
         paddingTop: "1rem",
         paddingBottom: ".6rem",
         // paddingY: "20px",
         boxShadow: "none",
-        display: "flex",
-        backgroundColor: isHome ? "#00000059" : "",
+        // display: "flex",
+        // backgroundColor: isHome ? "#00000059" : "",
       }}
     >
       <Signup isShow={show} returnShow={setShow} />
