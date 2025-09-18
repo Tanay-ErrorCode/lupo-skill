@@ -108,8 +108,8 @@ const Footer: React.FC = () => {
             </Box>
             <Box className="footer-text">
               <LinkedInLink
-                url="https://www.linkedin.com/in/neyati-iiit/"
-                name="Neyati"
+                url="https://github.com/Tanay-ErrorCode/lupo-skill.git"
+                name="Someone"
               />
             </Box>
             <Box className="footer-text">
